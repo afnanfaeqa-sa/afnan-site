@@ -1,0 +1,16 @@
+{
+  "url": "companion-care",
+  "order": 11,
+  "title": "المرافقة والرعاية اليومية",
+  "section": "elder",
+  "image": "img/elderly-care.jpg",
+  "description": "مرافق صحي يقضي اليوم مع المسن.",
+  "includes": [
+    "مرافقة خلال اليوم",
+    "مساعدة في الأنشطة",
+    "متابعة الأدوية"
+  ],
+  "suitable_for": [
+    "كبار السن أثناء غياب الأسرة"
+  ]
+}

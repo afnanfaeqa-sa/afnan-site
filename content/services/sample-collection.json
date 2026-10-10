@@ -1,0 +1,15 @@
+{
+  "url": "sample-collection",
+  "order": 21,
+  "title": "سحب العينات",
+  "section": "lab",
+  "image": "img/lab-tests.jpg",
+  "description": "سحب عينات الدم والعينات المخبرية في المنزل.",
+  "includes": [
+    "سحب بأدوات معقّمة",
+    "حفظ ونقل العينة"
+  ],
+  "suitable_for": [
+    "كل من يحتاج تحليلًا دوريًا"
+  ]
+}
