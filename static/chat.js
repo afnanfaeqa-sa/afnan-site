@@ -48,7 +48,7 @@
   const steps={
     async start(){
       body.innerHTML="";foot.innerHTML="";
-      await bot("أهلًا وسهلًا في <b>أفنان الفائقة</b>. خلّني أرتّب لك الزيارة بخطوات سريعة.");
+      await bot("أهلًا وسهلًا في <b>أفنان الفائقة</b>. خلّني أرتّب طلبك بخطوات سريعة.");
       if(st.svc){await bot(`ممتاز، بنرتّب لك <b>${esc(st.svc)}</b>.`);return steps.who()}
       await bot("وش نوع الرعاية اللي تحتاجها؟");
       chips([...CATS.map(c=>c[1]),"برامج الرعاية","مو متأكد"],async v=>{
@@ -61,7 +61,7 @@
     },
     async who(){
       await bot("الرعاية لمين؟");
-      chips(["لي أنا","لأحد الوالدين","لطفل","لفرد آخر من الأسرة"],async v=>{st.who=v;return steps.city()});
+      chips(["لي أنا","لأحد الوالدين","للأم أو المولود","لفرد آخر من الأسرة"],async v=>{st.who=v;return steps.city()});
     },
     async city(){
       await bot("في أي مدينة؟ نغطي جميع مناطق المملكة.");
@@ -71,8 +71,8 @@
       });
     },
     async when(){
-      await bot("متى يناسبك نزورك؟");
-      chips(["أقرب وقت","اليوم مساءً","بكرة","أحدد الموعد مع الفريق"],async v=>{st.when=v;return steps.pref()});
+      await bot("كم مدة الاشتراك اللي تحتاجها؟");
+      chips(["شهر","شهرين","٣ شهور","٦ شهور","سنة","أحدد مع الفريق"],async v=>{st.when=v;return steps.pref()});
     },
     async pref(){
       await bot("تفضّل ممرض ولا ممرضة؟");
@@ -87,8 +87,8 @@
       input("05xxxxxxxx","tel",v=>{st.phone=v;steps.done()},v=>/^[0-9+\s]{9,15}$/.test(v),"اكتب رقم جوال صحيح، مثل 05xxxxxxxx.");
     },
     async done(){
-      const rows=[["الخدمة",st.svc],["المريض",st.who],["المدينة",st.city],["الموعد",st.when],["تفضيل الكادر",st.pref],["الاسم",st.name],["الجوال",st.phone]];
-      const msg="السلام عليكم، أرغب بحجز زيارة منزلية من مركز أفنان الفائقة.\n"+rows.map(([k,v])=>`${k}: ${v}`).join("\n");
+      const rows=[["الخدمة",st.svc],["المريض",st.who],["المدينة",st.city],["المدة",st.when],["تفضيل الكادر",st.pref],["الاسم",st.name],["الجوال",st.phone]];
+      const msg="السلام عليكم، أرغب بطلب رعاية منزلية من مركز أفنان الفائقة.\n"+rows.map(([k,v])=>`${k}: ${v}`).join("\n");
       const link=`https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`;
       await bot(`طلبك جاهز:<dl class="sum">${rows.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>اضغط الزر تحت ويوصلنا طلبك على واتساب، ونتواصل معك مباشرة.`);
       foot.innerHTML=`<a class="btn btn-green chat-send" href="${link}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2a9.7 9.7 0 0 0-8.3 14.8L2.4 21.8l4.9-1.3A9.7 9.7 0 1 0 12 2.2Zm4.4 11.7c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.3-.2-.5-.3Z"/></svg>أرسل الطلب على واتساب</a><button type="button" class="chat-restart">تعديل الطلب</button>`;
@@ -101,7 +101,7 @@
     lastFocus=document.activeElement;box.hidden=false;document.body.style.overflow="hidden";document.body.classList.add("chat-open");
     if(answers&&answers.cat){ // started from a quick chip outside the panel
       body.innerHTML="";foot.innerHTML="";
-      (async()=>{await bot("أهلًا وسهلًا في <b>أفنان الفائقة</b>. خلّني أرتّب لك الزيارة بخطوات سريعة.");await bot("وش نوع الرعاية اللي تحتاجها؟");me(answers.cat);
+      (async()=>{await bot("أهلًا وسهلًا في <b>أفنان الفائقة</b>. خلّني أرتّب طلبك بخطوات سريعة.");await bot("وش نوع الرعاية اللي تحتاجها؟");me(answers.cat);
         const list=answers.cat==="برامج الرعاية"?PROGRAMS:(CATS.find(c=>c[1]===answers.cat)||[])[3]||[];
         if(answers.cat==="مو متأكد"){st.svc="استشارة لاختيار الخدمة المناسبة";await bot("ولا يهمك، فريقنا بيساعدك تختار بعد ما يفهم الحالة.");return steps.who()}
         if(list.length===1){st.svc=list[0];return steps.who()}
@@ -123,7 +123,7 @@
 
   /* floating assistant (desktop) + one-time nudge (phone tab bar) */
   const svcName=document.body.dataset.svc||"";
-  const tipText=svcName?`تحب أرتّب لك زيارة ${esc(svcName)}؟`:"تحتاج رعاية في البيت؟ أرتّب لك الزيارة.";
+  const tipText=svcName?`تحب أرتّب لك طلب ${esc(svcName)}؟`:"تحتاج رعاية في البيت؟ أرتّب لك طلبك.";
   document.body.insertAdjacentHTML("beforeend",`<div class="afab" id="afab">
     <div class="afab-tip" id="afabTip" hidden role="status">
       <button type="button" class="afab-x" aria-label="إخفاء">×</button>

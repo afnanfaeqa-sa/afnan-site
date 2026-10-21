@@ -17,7 +17,7 @@ const page=n=>(window.SITE_SLUG[n]||"services")+".html";
 const CITIES=["الرياض","جدة","مكة المكرمة","المدينة المنورة","الدمام","الخبر","الظهران","الأحساء","القصيم","حائل","تبوك","أبها","خميس مشيط","جازان","نجران","الباحة","الجوف","الحدود الشمالية","الطائف","ينبع","مدينة أخرى"];
 
 /* mega menu */
-document.getElementById("mega-cols").innerHTML=CATS.slice(0,4).map((c,i)=>`<div>${[c,CATS[i+4]].map(x=>`<h4>${ico(x[0])}${x[1]}</h4><ul>${x[3].map(s=>`<li><a href="${page(s)}">${s}</a></li>`).join("")}</ul>`).join("")}</div>`).join("")+`<div class="mega-promo"><img src="img/home-nursing.jpg" alt=""><div><b>تحتاج ممرض في البيت الليلة؟</b><span>متاحون على مدار الساعة</span><a class="btn btn-green" href="${document.getElementById("book")?"#book":"index.html#book"}" style="justify-self:start">احجز الآن</a></div></div>`;
+document.getElementById("mega-cols").innerHTML=CATS.slice(0,4).map((c,i)=>`<div>${[c,CATS[i+4]].filter(Boolean).map(x=>`<h4>${ico(x[0])}${x[1]}</h4><ul>${x[3].map(s=>`<li><a href="${page(s)}">${s}</a></li>`).join("")}</ul>`).join("")}</div>`).join("")+`<div class="mega-promo"><img src="img/home-nursing.jpg" alt=""><div><b>تحتاج ممرض في البيت الليلة؟</b><span>متاحون على مدار الساعة</span><a class="btn btn-green" href="${document.getElementById("book")?"#book":"index.html#book"}" style="justify-self:start">احجز الآن</a></div></div>`;
 const foot=document.getElementById("foot-svc"); if(foot) foot.innerHTML=CATS.slice(0,6).map(c=>`<li><a href="services.html#${c[0]}">${c[1]}</a></li>`).join("");
 document.getElementById("sheetGrid").innerHTML=CATS.map(c=>`<a class="sitem" href="services.html#${c[0]}"><span class="ic">${ico(c[0])}</span><b>${c[1]}</b><small>${c[2]}</small></a>`).join("");
 
@@ -59,7 +59,7 @@ if(sel){
     if(!svc) return m.textContent="اختر الخدمة المطلوبة.";
     if(!city) return m.textContent="اختر المدينة حتى نرتّب وصول الكادر.";
     if(!/^[0-9+\s]{9,15}$/.test(ph)) return m.textContent="اكتب رقم جوال صحيح، مثل 05xxxxxxxx.";
-    const link=wa(`السلام عليكم، أرغب بحجز زيارة منزلية من مركز أفنان الفائقة.\nالخدمة: ${svc}\nالمدينة: ${city}\nرقم الجوال: ${ph}`);
+    const link=wa(`السلام عليكم، أرغب بطلب رعاية منزلية من مركز أفنان الفائقة.\nالخدمة: ${svc}\nالمدينة: ${city}\nرقم الجوال: ${ph}`);
     m.className="book-msg ok";
     m.innerHTML=`طلبك جاهز. <a href="${link}" target="_blank" rel="noopener" style="font-weight:700;color:var(--green-dk)">اضغط هنا لإرساله على واتساب ←</a>`;
   });

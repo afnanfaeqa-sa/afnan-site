@@ -38,14 +38,12 @@ PREVIEW = bool(settings.get("preview_mode", True))
 SITE_URL = (settings.get("site_url") or "").rstrip("/")
 
 SECTIONS = [  # fixed service sections (id, name, short description)
-    ("med", "الخدمات الطبية", "زيارة الطبيب والاستشارات"),
-    ("nurse", "التمريض المنزلي", "زيارات أو رعاية مقيمة"),
-    ("elder", "كبار السن وذوو الهمم", "رعاية يومية ومرافقة"),
-    ("kids", "الأم والطفل", "المولود والأطفال"),
+    ("med", "الخدمات الطبية", "الطبيب والاستشارات"),
+    ("nurse", "التمريض المنزلي", "ممرضة مقيمة ورعاية مستمرة"),
+    ("elder", "كبار السن", "رعاية يومية ومرافقة"),
+    ("kids", "الأم والمولود", "رعاية ما بعد الولادة"),
     ("rehab", "العلاج الطبيعي والتأهيل", "جلسات وبرامج تأهيل"),
-    ("lab", "التحاليل المنزلية", "سحب عينات ونتائج"),
-    ("food", "التغذية العلاجية", "خطة غذائية لحالتك"),
-    ("car", "النقل الطبي", "نقل آمن مع مرافق"),
+    ("lab", "التحاليل والأشعة", "سحب عينات وأشعة في البيت"),
 ]
 SECNAME = {k: n for k, n, _ in SECTIONS}
 
@@ -110,7 +108,7 @@ def render_slides():
         <span class="tag">{esc(s.get("tag"))}</span>
         <{tag}>{title}</{tag}>
         <p>{esc(s.get("text"))}</p>
-        <div class="btns"><a class="btn btn-green" href="#book">{esc(s.get("button_text") or "احجز زيارة الآن")}</a>{b2}</div>
+        <div class="btns"><a class="btn btn-green" href="#book">{esc(s.get("button_text") or "اطلب الرعاية الآن")}</a>{b2}</div>
       </div></div>
     </div>''')
     return "\n".join(out)
@@ -122,7 +120,7 @@ def render_featured():
 
 def render_reviews():
     return "\n".join(
-        f'    <figure class="rev"><span class="q">”</span><blockquote>{esc(r.get("text"))}</blockquote><figcaption><span>{esc(r.get("name"))}</span><span class="stars">★★★★★</span></figcaption></figure>'
+        f'    <figure class="rev"><span class="q">”</span><blockquote>{esc(r.get("text"))}</blockquote><figcaption><span>{esc(r.get("name"))}</span></figcaption></figure>'
         for r in load("reviews.json").get("reviews", []))
 
 def render_faq():
@@ -159,17 +157,22 @@ WAF = cut('<a class="wa-float"', "</a>")
 TAB = remap(cut('<nav class="tabbar"', '<script src="data.js">', False).strip()).replace('class="tab on"', 'class="tab"')
 
 ROBOTS = '<meta name="robots" content="noindex">\n' if PREVIEW else ""
+GTM_ID = settings.get("gtm_id", "")
+GTM_HEAD = (f"<!-- Google Tag Manager -->\n<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':new Date().getTime(),event:'gtm.js'}});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);}})(window,document,'script','dataLayer','{GTM_ID}');</script>\n<!-- End Google Tag Manager -->\n") if GTM_ID else ""
+GTM_BODY = (f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM_ID}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>') if GTM_ID else ""
+def canon(path):
+    return f'<link rel="canonical" href="{SITE_URL}/{"" if path == "index.html" else path}">\n' if SITE_URL and not PREVIEW else ""
 FONTS = '''<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">'''
 
-def head(title, desc, svc="", extra="", image="img/elderly-walk.jpg"):
+def head(title, desc, svc="", extra="", image="img/elderly-walk.jpg", path=""):
     return f'''<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-{ROBOTS}<title>{esc(title)}</title>
+{GTM_HEAD}{ROBOTS}{canon(path) if path else ""}<title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
@@ -182,6 +185,7 @@ def head(title, desc, svc="", extra="", image="img/elderly-walk.jpg"):
 {extra}
 </head>
 <body data-svc="{esc(svc)}">
+{GTM_BODY}
 {HEADER}
 '''
 TAIL = f'''
@@ -217,7 +221,7 @@ write("index.html", f'''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-{ROBOTS}<meta name="description" content="مركز أفنان الفائقة للخدمات الطبية المنزلية: تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية، ورعاية الأم والطفل. على مدار الساعة في جميع مناطق المملكة.">
+{GTM_HEAD}{ROBOTS}{canon("index.html")}<meta name="description" content="مركز أفنان الفائقة للخدمات الطبية المنزلية: تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية، ورعاية الأم والمولود. باشتراك من شهر حتى سنة، على مدار الساعة في جميع مناطق المملكة.">
 <meta property="og:title" content="مركز أفنان الفائقة | رعاية طبية متكاملة في راحة بيتك">
 <meta property="og:description" content="تمريض منزلي، رعاية كبار السن، علاج طبيعي وتحاليل منزلية، على مدار الساعة في جميع مناطق المملكة.">
 <meta property="og:image" content="img/elderly-walk.jpg">
@@ -226,7 +230,9 @@ write("index.html", f'''<!doctype html>
 <style>body{{margin:0}} img{{max-width:100%}}</style>
 </head>
 <body>
+{GTM_BODY}
 {home[i:]}
+<script src="afnan-popup.js" defer></script>
 </body>
 </html>
 ''')
@@ -240,7 +246,7 @@ for s in SERVICES:
     d = s.get("description", "")
     simg = img(s.get("image"))
     tt = t if ("منزل" in t or "النقل" in t) else t + " في المنزل"
-    lead = d + " نصلك في البيت بكادر مرخّص وأدوات معقّمة، وفي أي وقت يناسبك."
+    lead = d + " بكادر مرخّص، باشتراك من شهر واحد حتى سنة كاملة، وعلى مدار الساعة."
     desc = f"{tt} من مركز أفنان الفائقة: {d} خدمة على مدار الساعة في جميع مناطق المملكة. احجز عبر واتساب."
     ld = {"@context": "https://schema.org", "@type": "Service", "name": t, "serviceType": t, "description": d,
           "areaServed": {"@type": "Country", "name": "المملكة العربية السعودية"},
@@ -264,7 +270,7 @@ for s in SERVICES:
     <span class="tag">{SECNAME[cat]}</span>
     <h1>{esc(tt)}</h1>
     <p class="lead">{esc(lead)}</p>
-    <div class="facts"><span>{TICK}كادر مرخّص</span><span>{TICK}متاح 24/7</span><span>{TICK}جميع مناطق المملكة</span><span>{TICK}ممرض أو ممرضة</span></div>
+    <div class="facts"><span>{TICK}كادر مرخّص</span><span>{TICK}متاح 24/7</span><span>{TICK}جميع مناطق المملكة</span><span>{TICK}ممرض أو ممرضة</span><span>{TICK}اشتراك من شهر لسنة</span></div>
     <div class="btns"><a class="btn btn-green" href="#book">احجز {esc(t)}</a><a class="btn btn-outline" id="heroWa" href="#" target="_blank" rel="noopener">استفسر على واتساب</a></div>
   </div>
   <div class="svc-photo"><img src="{esc(simg)}" alt="{esc(t)} من مركز أفنان الفائقة" width="1600" height="900" fetchpriority="high"><div class="float"><span class="live" style="display:inline-flex"><i></i>متاحون الآن</span></div></div>
@@ -277,11 +283,12 @@ for s in SERVICES:
     <div class="block rv"><h2>كيف تتم الخدمة</h2><ol class="flow">
       <li><b>أرسل طلبك</b><span>من نموذج الحجز أو واتساب أو الاتصال.</span></li>
       <li><b>نراجع الحالة</b><span>يتواصل معك فريقنا ليفهم احتياج المريض.</span></li>
-      <li><b>نحدد الموعد</b><span>في الوقت اللي يناسبك، على مدار الساعة.</span></li>
-      <li><b>نصلك للبيت</b><span>كادر مرخّص، والدفع خلال 24 ساعة بعد الخدمة.</span></li>
+      <li><b>نحدد المدة</b><span>تختار مدة الاشتراك: من شهر واحد حتى سنة كاملة.</span></li>
+      <li><b>نبدأ الرعاية</b><span>يبدأ الكادر الرعاية في بيتكم حسب الخطة المتفق عليها.</span></li>
     </ol></div>
     <div class="block rv"><h2>أسئلة عن {esc(t)}</h2>
-      <details open><summary>هل تتوفر الخدمة في مدينتي؟</summary><p>نعم، نرسل كوادرنا إلى جميع مناطق المملكة الـ 13. اختر مدينتك في نموذج الحجز وسيرتّب فريقنا الزيارة.</p></details>
+      <details open><summary>هل تتوفر الخدمة في مدينتي؟</summary><p>نعم، نرسل كوادرنا إلى جميع مناطق المملكة الـ 13. اختر مدينتك في نموذج الحجز وسيرتّب فريقنا الخدمة.</p></details>
+      <details><summary>هل تقدمون زيارات منفردة؟</summary><p>لا، خدماتنا باشتراك فقط، من شهر واحد حتى سنة كاملة، عشان يكون للحالة خطة رعاية واضحة وفريق ثابت يتابعها.</p></details>
       <details><summary>هل أقدر أختار ممرض أو ممرضة؟</summary><p>نعم، لدينا ممرضون وممرضات، ويمكنك تحديد تفضيلك عند التواصل معنا.</p></details>
       <details><summary>هل أحتاج تقريرًا أو وصفة طبية؟</summary><p>بعض الإجراءات تحتاج تقريرًا أو وصفة من الطبيب المعالج. سيوضح لك فريقنا المطلوب عند مراجعة الحالة.</p></details>
       <details><summary>كيف يتم الدفع؟</summary><p>يتم السداد خلال 24 ساعة من تقديم الخدمة، عبر مدى أو فيزا أو Apple Pay أو التقسيط بتابي وتمارا.</p></details>
@@ -293,7 +300,7 @@ for s in SERVICES:
     <div class="starter-q"><span class="bubble">أهلًا! نرتّب لك {esc(t)}؟</span></div>
     <button class="btn btn-green" type="button" data-book data-svc="{esc(t)}">ابدأ الحجز</button>
     <a class="btn btn-outline" id="sideWa" href="#" target="_blank" rel="noopener">أو راسلنا مباشرة على واتساب</a>
-    <div class="mini"><div><span>التوفر</span><b>على مدار الساعة</b></div><div><span>التغطية</span><b>جميع مناطق المملكة</b></div><div><span>الدفع</span><b>خلال 24 ساعة بعد الخدمة</b></div></div>
+    <div class="mini"><div><span>التوفر</span><b>على مدار الساعة</b></div><div><span>التغطية</span><b>جميع مناطق المملكة</b></div><div><span>المدة</span><b>من شهر حتى سنة</b></div></div>
   </aside>
 </div></section>
 
@@ -304,17 +311,17 @@ for s in SERVICES:
 
 <section class="sec"><div class="wrap">
   <div class="cta rv"><img src="{esc(simg)}" alt="" width="1600" height="900" loading="lazy">
-    <div class="in"><h2>أفنان الفائقة.. رعايتهم في راحة بيتهم</h2><p>كلّمنا الآن، ونرتّب لك زيارة {esc(t)} في أقرب وقت.</p>
+    <div class="in"><h2>أفنان الفائقة.. رعايتهم في راحة بيتهم</h2><p>كلّمنا الآن، ونرتّب لك {esc(t)} في أقرب وقت.</p>
     <div class="btns"><a class="btn btn-white" href="#book">احجز الآن</a><a class="btn btn-navy" id="ctaWa" href="#" target="_blank" rel="noopener">راسلنا على واتساب</a></div></div>
   </div>
 </div></section>
 </main>
 '''
-    write(slug + ".html", head(f"{tt} | مركز أفنان الفائقة", desc, t, extra, simg) + body + TAIL)
+    write(slug + ".html", head(f"{tt} | مركز أفنان الفائقة", desc, t, extra, simg, slug + ".html") + body + TAIL)
 
 chips = '<button type="button" class="chip" data-c="all" aria-pressed="true">كل الخدمات</button>' + "".join(
     f'<button type="button" class="chip" data-c="{c[0]}" aria-pressed="false">{c[1]}</button>' for c in CATS)
-write("services.html", head("خدماتنا | مركز أفنان الفائقة", "جميع خدمات الرعاية الطبية المنزلية من مركز أفنان الفائقة: تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية، رعاية الأم والطفل، والنقل الطبي.") + f'''<main class="page-top">
+write("services.html", head("خدماتنا | مركز أفنان الفائقة", "جميع خدمات الرعاية الطبية المنزلية من مركز أفنان الفائقة: تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية، ورعاية الأم والمولود.", path="services.html") + f'''<main class="page-top">
 <section class="sec" style="padding-top:20px"><div class="wrap">
   <div class="hub-head">
     <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><span>الخدمات</span></nav>
@@ -339,7 +346,7 @@ for f in sorted(glob.glob(P("templates", "legal", "*.html"))):
     title = re.search(r"<!-- title: (.*?) -->", raw).group(1)
     desc = re.search(r"<!-- description: (.*?) -->", raw).group(1)
     content = re.sub(r"<!--.*?-->\n?", "", raw).strip()
-    write(os.path.basename(f), head(f"{title} | مركز أفنان الفائقة", desc) + f'''<main class="page-top">
+    write(os.path.basename(f), head(f"{title} | مركز أفنان الفائقة", desc, path=os.path.basename(f)) + f'''<main class="page-top">
 <section class="sec" style="padding-top:20px"><div class="wrap legal">
   <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><span>{title}</span></nav>
   <h1>{title}</h1>
