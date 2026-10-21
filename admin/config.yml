@@ -160,3 +160,4 @@ collections:
           - { name: staff_count, label: "عدد الكوادر (في العدّاد)", widget: number }
           - { name: site_url, label: "رابط الموقع النهائي", widget: string, required: false, hint: "يُكتب عند الإطلاق، مثال: https://afnancare.sa" }
           - { name: preview_mode, label: "وضع المعاينة (إخفاء الموقع عن جوجل)", widget: boolean, hint: "اقفله يوم الإطلاق على الدومين" }
+          - { name: gtm_id, label: "كود Google Tag Manager", widget: string, required: false, hint: "مثال: GTM-T4TQG35C" }
