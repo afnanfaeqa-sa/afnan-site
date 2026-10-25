@@ -66,6 +66,7 @@ def folder(name):
 
 SERVICES = [s for s in folder("services") if s.get("section") in SECNAME]
 ARTICLES = folder("articles")
+NURSES = folder("nurses")
 CATS = [[k, n, d, [s["title"] for s in SERVICES if s["section"] == k]] for k, n, d in SECTIONS]
 CATS = [c for c in CATS if c[3]]
 SLUG = {s["title"]: s["_slug"] for s in SERVICES}
@@ -356,6 +357,78 @@ for f in sorted(glob.glob(P("templates", "legal", "*.html"))):
 </main>
 ''' + TAIL)
 
+# ------------------------------------------------------------------ nurses
+def ncard(n):
+    tag = '<span class="n-av on">متاحة الآن</span>' if n.get("available") else ""
+    return (f'<a class="ncard rv" href="nurse-{n["_slug"]}.html"><div class="im"><img src="{esc(img(n.get("card_photo") or n.get("photo")))}" alt="{esc(n["title"])}، {esc(n.get("role"))} من مركز أفنان الفائقة" width="600" height="800" loading="lazy">{tag}</div>'
+            f'<div class="bd"><h3>{esc(n["title"])}</h3><span class="n-role">{esc(n.get("role"))}</span>'
+            f'<div class="n-meta"><span>{esc(n.get("nationality"))}</span><span>+{esc(n.get("experience_years"))} سنوات خبرة</span></div>'
+            f'<span class="go">الملف الكامل ←</span></div></a>')
+
+if NURSES:
+    write("nurses.html", head("ممرضاتنا ومقدّمات الرعاية | مركز أفنان الفائقة", "تعرّفوا على ممرضات ومقدّمات الرعاية في مركز أفنان الفائقة قبل التعاقد: الخبرات، المهارات، اللغات، والشهادات.", path="nurses.html") + f"""<main class="page-top">
+<section class="sec" style="padding-top:20px"><div class="wrap">
+  <div class="hub-head">
+    <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><span>ممرضاتنا</span></nav>
+    <h1>تعرّفوا على اللي بيرعى أهلكم</h1>
+    <p>قبل ما تتعاقدون، شوفوا خبرة كل ممرضة ومقدّمة رعاية، ولغاتها، ومهاراتها. وكل الشهادات موثّقة لدى المركز.</p>
+  </div>
+  <div class="nurse-grid">{"".join(ncard(n) for n in NURSES)}</div>
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap">
+  <div class="cta"><img src="img/elderly-care.jpg" alt="" width="1600" height="900" loading="lazy">
+    <div class="in"><h2>تحتاجون ممرضة مقيمة؟</h2><p>قولوا لنا عن الحالة، ونرشّح لكم الأنسب من فريقنا.</p>
+    <div class="btns"><a class="btn btn-white" href="#book">اطلب الرعاية</a><a class="btn btn-navy" id="ctaWa" href="#" target="_blank" rel="noopener">راسلنا على واتساب</a></div></div>
+  </div>
+</div></section>
+</main>
+""" + TAIL)
+
+for n in NURSES:
+    nm, slug = n["title"], n["_slug"]
+    skills = "".join(f"<span>{esc(x)}</span>" for x in n.get("skills", []))
+    langs = "، ".join(esc(x) for x in n.get("languages", []))
+    exp = "".join(f'<div class="xp"><b>{esc(e.get("role"))}</b><small>{esc(e.get("place"))}</small><ul>' + "".join(f"<li>{esc(p)}</li>" for p in e.get("points", [])) + "</ul></div>" for e in n.get("experience", []))
+    quals = "".join(f'<div class="inc"><span class="ck">{TICK}</span><span>{esc(q)}</span></div>' for q in n.get("qualifications", []))
+    avail = '<span class="live" style="display:inline-flex"><i></i>متاحة الآن</span>' if n.get("available") else '<span class="live off" style="display:inline-flex">اسألونا عن موعد التوفّر</span>'
+    req = f"رعاية مقيمة مع {nm}"
+    rest = [x for x in NURSES if x is not n][:3]
+    others = ('<section class="sec mist"><div class="wrap"><div class="sec-head"><div><span class="kicker">فريقنا</span><h2>تعرّفوا على باقي الفريق</h2></div><a class="more-link" href="nurses.html">كل الممرضات ←</a></div><div class="nurse-grid">' + "".join(ncard(x) for x in rest) + '</div></div></section>') if rest else ""
+    body = f"""<main class="page-top">
+<section class="svc-hero nurse-hero"><div class="wrap">
+  <div class="txt">
+    <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><a href="nurses.html">ممرضاتنا</a><span>/</span><span>{esc(nm)}</span></nav>
+    <span class="tag">{esc(n.get("role"))}</span>
+    <h1>{esc(nm)}</h1>
+    <p class="lead">{esc(n.get("summary"))}</p>
+    <div class="facts"><span>{TICK}{esc(n.get("nationality"))}</span><span>{TICK}+{esc(n.get("experience_years"))} سنوات خبرة</span><span>{TICK}{langs}</span><span>{TICK}شهادات موثّقة لدى المركز</span></div>
+    <div class="btns"><a class="btn btn-green" href="#book" data-svc="{esc(req)}">اطلب {esc(nm)}</a><a class="btn btn-outline" id="heroWa" href="#" target="_blank" rel="noopener">اسأل عنها على واتساب</a></div>
+  </div>
+  <div class="nurse-photo"><img src="{esc(img(n.get("photo")))}" alt="{esc(nm)}، {esc(n.get("role"))} من مركز أفنان الفائقة" width="600" height="1067" fetchpriority="high"><div class="float">{avail}</div></div>
+</div></section>
+
+<section class="sec" style="padding-top:40px"><div class="wrap svc-layout">
+  <div class="svc-main">
+    <div class="block rv"><h2>المهارات</h2><div class="who">{skills}</div></div>
+    <div class="block rv"><h2>الخبرات</h2><div class="xps">{exp}</div></div>
+    <div class="block rv"><h2>الشهادات</h2><div class="inc-grid">{quals}</div><p class="n-note">الشهادات الأصلية موثّقة ومحفوظة لدى المركز.</p></div>
+  </div>
+  <aside class="side-book assist" id="book">
+    <div style="display:flex;gap:12px;align-items:center"><span class="chat-av"><img src="img/mark.png" alt="" width="34" height="30"></span><div style="display:grid;gap:2px"><h3>اطلب {esc(nm)}</h3><span class="online"><i></i>مساعد الحجز · متصل الآن</span></div></div>
+    <div class="starter-q"><span class="bubble">نرتّب لك رعاية مقيمة مع {esc(nm)}؟</span></div>
+    <button class="btn btn-green" type="button" data-book data-svc="{esc(req)}">ابدأ الحجز</button>
+    <a class="btn btn-outline" id="sideWa" href="#" target="_blank" rel="noopener">أو راسلنا مباشرة على واتساب</a>
+    <div class="mini"><div><span>الجنسية</span><b>{esc(n.get("nationality"))}</b></div><div><span>الخبرة</span><b>+{esc(n.get("experience_years"))} سنوات</b></div><div><span>المدة</span><b>من شهر حتى سنة</b></div></div>
+  </aside>
+</div></section>
+
+{others}
+</main>
+"""
+    ld = {"@context": "https://schema.org", "@type": "Person", "name": nm, "jobTitle": n.get("role"), "worksFor": {"@type": "MedicalBusiness", "name": "مركز أفنان الفائقة للخدمات الطبية", "telephone": "+" + WA}, "knowsLanguage": n.get("languages", [])}
+    extra = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>"
+    write(f"nurse-{slug}.html", head(f"{nm}، {n.get('role')} | مركز أفنان الفائقة", f"{nm}، {n.get('role')} {n.get('nationality')} بخبرة +{n.get('experience_years')} سنوات في مركز أفنان الفائقة. " + str(n.get("summary", ""))[:90], req, extra, img(n.get("photo")), f"nurse-{slug}.html") + body + TAIL)
+
 # ------------------------------------------------------------------ contact number everywhere + robots/sitemap
 for f in glob.glob(os.path.join(DIST, "*.html")) + glob.glob(os.path.join(DIST, "*.js")):
     with open(f, encoding="utf8") as fh:
@@ -365,7 +438,7 @@ for f in glob.glob(os.path.join(DIST, "*.html")) + glob.glob(os.path.join(DIST, 
         with open(f, "w", encoding="utf8") as fh:
             fh.write(t2)
 
-pages = ["index.html", "services.html"] + [s["_slug"] + ".html" for s in SERVICES] + ["privacy.html", "terms.html"]
+pages = ["index.html", "services.html"] + [s["_slug"] + ".html" for s in SERVICES] + (["nurses.html"] + [f"nurse-{n['_slug']}.html" for n in NURSES] if NURSES else []) + ["privacy.html", "terms.html"]
 if PREVIEW or not SITE_URL:
     write("robots.txt", "User-agent: *\nDisallow: /\n" if PREVIEW else "User-agent: *\nAllow: /\n")
 else:

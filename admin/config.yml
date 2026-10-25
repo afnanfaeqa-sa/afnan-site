@@ -99,10 +99,10 @@ collections:
         options:
           - { label: "الخدمات الطبية", value: med }
           - { label: "التمريض المنزلي", value: nurse }
-          - { label: "كبار السن وذوو الهمم", value: elder }
-          - { label: "الأم والطفل", value: kids }
+          - { label: "كبار السن", value: elder }
+          - { label: "الأم والمولود", value: kids }
           - { label: "العلاج الطبيعي والتأهيل", value: rehab }
-          - { label: "التحاليل المنزلية", value: lab }
+          - { label: "التحاليل والأشعة", value: lab }
           - { label: "التغذية العلاجية", value: food }
           - { label: "النقل الطبي", value: car }
       - { name: minutes, label: "مدة القراءة (دقائق)", widget: number, default: 3 }
@@ -134,10 +134,10 @@ collections:
         options:
           - { label: "الخدمات الطبية", value: med }
           - { label: "التمريض المنزلي", value: nurse }
-          - { label: "كبار السن وذوو الهمم", value: elder }
-          - { label: "الأم والطفل", value: kids }
+          - { label: "كبار السن", value: elder }
+          - { label: "الأم والمولود", value: kids }
           - { label: "العلاج الطبيعي والتأهيل", value: rehab }
-          - { label: "التحاليل المنزلية", value: lab }
+          - { label: "التحاليل والأشعة", value: lab }
           - { label: "التغذية العلاجية", value: food }
           - { label: "النقل الطبي", value: car }
       - { name: image, label: "صورة الخدمة", widget: image }
@@ -145,6 +145,42 @@ collections:
       - { name: includes, label: "ماذا تشمل الخدمة", label_singular: "بند", widget: list, field: { name: item, label: "بند", widget: string } }
       - { name: suitable_for, label: "لمن تناسب", label_singular: "فئة", widget: list, field: { name: item, label: "فئة", widget: string } }
       - { name: hidden, label: "إخفاء الخدمة", widget: boolean, default: false, required: false }
+
+  # ---------------------------------------------------------------- nurses
+  - name: nurses
+    label: "الممرضات"
+    label_singular: "ممرضة"
+    folder: content/nurses
+    extension: json
+    format: json
+    create: true
+    slug: "{{url}}"
+    identifier_field: title
+    summary: "{{title}} · {{nationality}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: "الاسم الأول", widget: string, hint: "الاسم الأول فقط، حفاظًا على خصوصيتها" }
+      - { name: url, label: "رابط الصفحة (بالإنجليزي)", widget: string, hint: "حروف إنجليزية صغيرة وشرطات فقط، مثال: esther" }
+      - { name: order, label: "الترتيب", widget: number, default: 50 }
+      - { name: role, label: "المسمّى", widget: string, default: "مقدّمة رعاية منزلية", hint: "اكتب (ممرضة) فقط لو معاها ترخيص الهيئة السعودية للتخصصات الصحية" }
+      - { name: nationality, label: "الجنسية", widget: string }
+      - { name: experience_years, label: "سنوات الخبرة", widget: number }
+      - { name: languages, label: "اللغات", label_singular: "لغة", widget: list, field: { name: item, label: "لغة", widget: string } }
+      - { name: photo, label: "الصورة الكاملة", widget: image }
+      - { name: card_photo, label: "صورة الكارت (نص علوي)", widget: image, required: false }
+      - { name: available, label: "متاحة الآن", widget: boolean, default: false, required: false }
+      - { name: summary, label: "نبذة", widget: text }
+      - { name: skills, label: "المهارات", label_singular: "مهارة", widget: list, field: { name: item, label: "مهارة", widget: string } }
+      - name: experience
+        label: "الخبرات"
+        label_singular: "خبرة"
+        widget: list
+        fields:
+          - { name: role, label: "الدور", widget: string }
+          - { name: place, label: "المكان", widget: string }
+          - { name: points, label: "التفاصيل", label_singular: "نقطة", widget: list, field: { name: item, label: "نقطة", widget: string } }
+      - { name: qualifications, label: "الشهادات", label_singular: "شهادة", widget: list, field: { name: item, label: "شهادة", widget: string } }
+      - { name: hidden, label: "إخفاء من الموقع", widget: boolean, default: false, required: false }
 
   # ---------------------------------------------------------------- settings
   - name: settings
