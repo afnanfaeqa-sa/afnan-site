@@ -660,3 +660,16 @@ body.chat-open .afab{display:none}
 .xp ul{margin:0;padding-inline-start:18px;display:grid;gap:6px;color:var(--muted);font-size:15px}
 .n-note{margin-top:12px;color:var(--muted);font-size:13.5px}
 @media (max-width:900px){.nurse-hero .wrap{grid-template-columns:1fr}.nurse-photo{max-width:300px;order:-1}.ncard{max-width:none}}
+
+/* nurse mobile-first profile */
+.nurse-hero .wrap{grid-template-columns:1fr}
+.nurse-id{display:flex;flex-direction:column;align-items:center;gap:12px;order:-1}
+.nurse-av{width:132px;height:132px;border-radius:50%;overflow:hidden;border:4px solid #fff;box-shadow:0 0 0 2px var(--gold),0 18px 36px -16px rgba(20,38,110,.55);background:#f4f6f8}
+.nurse-av img{width:100%;height:100%;object-fit:cover;display:block}
+.xp b{display:block}.xp small{display:block}
+.dip{display:block;position:relative;margin-top:14px;max-width:340px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff;text-decoration:none}
+.dip img{display:block;width:100%;height:auto}
+.dip span{position:absolute;inset-inline:0;bottom:0;padding:8px;text-align:center;font-size:13px;color:#fff;background:linear-gradient(transparent,rgba(10,22,80,.8))}
+@media (min-width:901px){.nurse-hero .wrap{grid-template-columns:1.25fr .75fr}.nurse-id{order:0}.nurse-av{width:200px;height:200px}}
+.nurse-hero h1{text-align:start}
+.nurse-id .live{align-self:center;margin:0}

@@ -390,6 +390,7 @@ for n in NURSES:
     langs = "، ".join(esc(x) for x in n.get("languages", []))
     exp = "".join(f'<div class="xp"><b>{esc(e.get("role"))}</b><small>{esc(e.get("place"))}</small><ul>' + "".join(f"<li>{esc(p)}</li>" for p in e.get("points", [])) + "</ul></div>" for e in n.get("experience", []))
     quals = "".join(f'<div class="inc"><span class="ck">{TICK}</span><span>{esc(q)}</span></div>' for q in n.get("qualifications", []))
+    dip = (f'<a class="dip" href="{esc(img(n["diploma"]))}" target="_blank" rel="noopener"><img src="{esc(img(n["diploma"]))}" alt="شهادة دبلوم {esc(nm)}" width="900" height="1395" loading="lazy"><span>اضغط لتكبير الشهادة</span></a>' if n.get("diploma") else "")
     avail = '<span class="live" style="display:inline-flex"><i></i>متاحة الآن</span>' if n.get("available") else '<span class="live off" style="display:inline-flex">اسألونا عن موعد التوفّر</span>'
     req = f"رعاية مقيمة مع {nm}"
     rest = [x for x in NURSES if x is not n][:3]
@@ -404,14 +405,14 @@ for n in NURSES:
     <div class="facts"><span>{TICK}{esc(n.get("nationality"))}</span><span>{TICK}+{esc(n.get("experience_years"))} سنوات خبرة</span><span>{TICK}{langs}</span><span>{TICK}شهادات موثّقة لدى المركز</span></div>
     <div class="btns"><a class="btn btn-green" href="#book" data-svc="{esc(req)}">اطلب {esc(nm)}</a><a class="btn btn-outline" id="heroWa" href="#" target="_blank" rel="noopener">اسأل عنها على واتساب</a></div>
   </div>
-  <div class="nurse-photo"><img src="{esc(img(n.get("photo")))}" alt="{esc(nm)}، {esc(n.get("role"))} من مركز أفنان الفائقة" width="600" height="1067" fetchpriority="high"><div class="float">{avail}</div></div>
+  <div class="nurse-id"><span class="nurse-av"><img src="{esc(img(n.get("avatar") or n.get("photo")))}" alt="{esc(nm)}، {esc(n.get("role"))} من مركز أفنان الفائقة" width="360" height="360" fetchpriority="high"></span>{avail}</div>
 </div></section>
 
 <section class="sec" style="padding-top:40px"><div class="wrap svc-layout">
   <div class="svc-main">
     <div class="block rv"><h2>المهارات</h2><div class="who">{skills}</div></div>
     <div class="block rv"><h2>الخبرات</h2><div class="xps">{exp}</div></div>
-    <div class="block rv"><h2>الشهادات</h2><div class="inc-grid">{quals}</div><p class="n-note">الشهادات الأصلية موثّقة ومحفوظة لدى المركز.</p></div>
+    <div class="block rv"><h2>الشهادات</h2><div class="inc-grid">{quals}</div>{dip}</div>
   </div>
   <aside class="side-book assist" id="book">
     <div style="display:flex;gap:12px;align-items:center"><span class="chat-av"><img src="img/mark.png" alt="" width="34" height="30"></span><div style="display:grid;gap:2px"><h3>اطلب {esc(nm)}</h3><span class="online"><i></i>مساعد الحجز · متصل الآن</span></div></div>
@@ -428,6 +429,17 @@ for n in NURSES:
     ld = {"@context": "https://schema.org", "@type": "Person", "name": nm, "jobTitle": n.get("role"), "worksFor": {"@type": "MedicalBusiness", "name": "مركز أفنان الفائقة للخدمات الطبية", "telephone": "+" + WA}, "knowsLanguage": n.get("languages", [])}
     extra = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>"
     write(f"nurse-{slug}.html", head(f"{nm}، {n.get('role')} | مركز أفنان الفائقة", f"{nm}، {n.get('role')} {n.get('nationality')} بخبرة +{n.get('experience_years')} سنوات في مركز أفنان الفائقة. " + str(n.get("summary", ""))[:90], req, extra, img(n.get("photo")), f"nurse-{slug}.html") + body + TAIL)
+
+import hashlib
+def _v(name):
+    p = os.path.join(DIST, name)
+    return hashlib.md5(open(p, "rb").read()).hexdigest()[:8] if os.path.exists(p) else "0"
+_vers = {n: _v(n) for n in ("styles.css", "site.js", "chat.js", "stories.js", "afnan-popup.js")}
+for f in glob.glob(os.path.join(DIST, "*.html")):
+    t = open(f, encoding="utf8").read()
+    for n, v in _vers.items():
+        t = t.replace(f'"{n}"', f'"{n}?v={v}"')
+    open(f, "w", encoding="utf8").write(t)
 
 # ------------------------------------------------------------------ contact number everywhere + robots/sitemap
 for f in glob.glob(os.path.join(DIST, "*.html")) + glob.glob(os.path.join(DIST, "*.js")):
