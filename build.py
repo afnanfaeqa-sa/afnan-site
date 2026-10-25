@@ -209,6 +209,8 @@ if os.path.exists(DIST):
     shutil.rmtree(DIST)
 shutil.copytree(P("static"), DIST)
 shutil.copytree(P("admin"), os.path.join(DIST, "admin"))
+if not settings.get("show_nurses"):  # keep nurse photos off the public server while the section is hidden
+    shutil.rmtree(os.path.join(DIST, "img", "nurses"), ignore_errors=True)
 def write(name, text):
     with open(os.path.join(DIST, name), "w", encoding="utf8") as f:
         f.write(text)
@@ -306,7 +308,7 @@ for s in SERVICES:
 </div></section>
 
 <section class="sec mist"><div class="wrap">
-  <div class="sec-head"><div><span class="kicker">خدمات قد تهمك</span><h2>خدمات مرتبطة</h2></div><a class="more-link" href="services.html">كل الخدمات ←</a></div>
+  <div class="sec-head"><div><h2>خدمات مرتبطة</h2></div><a class="more-link" href="services.html">كل الخدمات ←</a></div>
   <div class="svc-cards">{"".join(scard(x) for x in rel)}</div>
 </div></section>
 
@@ -399,7 +401,7 @@ for n in NURSES:
     avail = '<span class="live" style="display:inline-flex"><i></i>متاحة الآن</span>' if n.get("available") else '<span class="live off" style="display:inline-flex">اسألونا عن موعد التوفّر</span>'
     req = f"رعاية مقيمة مع {nm}"
     rest = [x for x in NURSES if x is not n][:3]
-    others = ('<section class="sec mist"><div class="wrap"><div class="sec-head"><div><span class="kicker">فريقنا</span><h2>تعرّفوا على باقي الفريق</h2></div><a class="more-link" href="nurses.html">كل الممرضات ←</a></div><div class="nurse-grid">' + "".join(ncard(x) for x in rest) + '</div></div></section>') if rest else ""
+    others = ('<section class="sec mist"><div class="wrap"><div class="sec-head"><div><h2>تعرّفوا على باقي الفريق</h2></div><a class="more-link" href="nurses.html">كل الممرضات ←</a></div><div class="nurse-grid">' + "".join(ncard(x) for x in rest) + '</div></div></section>') if rest else ""
     body = f"""<main class="page-top">
 <section class="svc-hero nurse-hero"><div class="wrap">
   <div class="txt">
