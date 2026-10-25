@@ -1,0 +1,202 @@
+# Dashboard settings. Every save here edits a file in content/ on GitHub,
+# and Cloudflare Pages rebuilds the site automatically (about one minute).
+backend:
+  name: github
+  repo: afnanfaeqa-sa/afnan-site
+  branch: main
+
+media_folder: static/img/uploads
+public_folder: /img/uploads
+
+collections:
+  # ---------------------------------------------------------------- home page
+  - name: home
+    label: "الصفحة الرئيسية"
+    files:
+      - name: slides
+        label: "السلايدر (الصور الكبيرة أعلى الصفحة)"
+        file: content/slides.json
+        format: json
+        fields:
+          - name: slides
+            label: "الشرائح"
+            label_singular: "شريحة"
+            widget: list
+            fields:
+              - { name: image, label: "الصورة (أفقية 1600×900 تقريبًا)", widget: image }
+              - { name: alt, label: "وصف الصورة (لجوجل وضعاف البصر)", widget: string }
+              - { name: tag, label: "الوسم الصغير فوق العنوان", widget: string }
+              - { name: title_before, label: "العنوان (الجزء الكحلي)", widget: string }
+              - { name: highlight, label: "العنوان (الجزء الأخضر)", widget: string, required: false }
+              - { name: title_after, label: "تكملة العنوان (اختياري)", widget: string, required: false }
+              - { name: text, label: "النص تحت العنوان", widget: text }
+              - { name: button_text, label: "نص زر الحجز", widget: string, default: "احجز زيارة الآن" }
+              - { name: button2_text, label: "نص الزر الثاني (اختياري)", widget: string, required: false }
+              - { name: button2_link, label: "رابط الزر الثاني", widget: string, required: false, hint: "مثال: services.html أو #faq" }
+
+      - name: featured
+        label: "خدماتنا المتميزة (الكروت الثلاثة)"
+        file: content/home.json
+        format: json
+        fields:
+          - name: featured
+            label: "الكروت"
+            label_singular: "كارت"
+            widget: list
+            fields:
+              - { name: title, label: "العنوان", widget: string }
+              - { name: text, label: "الوصف", widget: text }
+              - { name: image, label: "الصورة", widget: image }
+              - { name: alt, label: "وصف الصورة", widget: string }
+              - { name: link, label: "رابط صفحة الخدمة", widget: string, hint: "اسم صفحة الخدمة، مثال: home-nursing.html" }
+
+      - name: reviews
+        label: "آراء العملاء"
+        file: content/reviews.json
+        format: json
+        fields:
+          - name: reviews
+            label: "الآراء"
+            label_singular: "رأي"
+            widget: list
+            fields:
+              - { name: text, label: "نص الرأي", widget: text }
+              - { name: name, label: "الاسم والمدينة", widget: string, hint: "مثال: أم عبدالله — الرياض" }
+
+      - name: faq
+        label: "الأسئلة الشائعة"
+        file: content/faq.json
+        format: json
+        fields:
+          - name: faq
+            label: "الأسئلة"
+            label_singular: "سؤال"
+            widget: list
+            fields:
+              - { name: q, label: "السؤال", widget: string }
+              - { name: a, label: "الإجابة", widget: text }
+
+  # ---------------------------------------------------------------- articles
+  - name: articles
+    label: "دليلك الصحي (المقالات)"
+    label_singular: "مقال"
+    folder: content/articles
+    extension: json
+    format: json
+    create: true
+    slug: "{{url}}"
+    identifier_field: title
+    summary: "{{title}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: "عنوان المقال", widget: string }
+      - { name: url, label: "رابط المقال (بالإنجليزي)", widget: string, hint: "حروف إنجليزية صغيرة وشرطات فقط، مثال: blood-pressure-tips" }
+      - { name: order, label: "الترتيب", widget: number, default: 10, hint: "الأصغر يظهر أولًا" }
+      - { name: label, label: "التصنيف الظاهر على المقال", widget: string, hint: "مثال: كبار السن" }
+      - name: related_section
+        label: "قسم الخدمات المرتبط"
+        widget: select
+        options:
+          - { label: "الخدمات الطبية", value: med }
+          - { label: "التمريض المنزلي", value: nurse }
+          - { label: "كبار السن", value: elder }
+          - { label: "الأم والمولود", value: kids }
+          - { label: "العلاج الطبيعي والتأهيل", value: rehab }
+          - { label: "التحاليل والأشعة", value: lab }
+          - { label: "التغذية العلاجية", value: food }
+          - { label: "النقل الطبي", value: car }
+      - { name: minutes, label: "مدة القراءة (دقائق)", widget: number, default: 3 }
+      - { name: image, label: "صورة المقال", widget: image }
+      - { name: excerpt, label: "ملخص قصير يظهر على الكارت", widget: text }
+      - { name: service, label: "الخدمة اللي يحجزها القارئ من المقال", widget: relation, collection: services, value_field: title, search_fields: [title], display_fields: [title] }
+      - { name: body, label: "نص المقال", widget: markdown, hint: "استخدم العناوين والقوائم من شريط الأدوات" }
+      - { name: hidden, label: "إخفاء المقال", widget: boolean, default: false, required: false }
+
+  # ---------------------------------------------------------------- services
+  - name: services
+    label: "الخدمات"
+    label_singular: "خدمة"
+    folder: content/services
+    extension: json
+    format: json
+    create: true
+    slug: "{{url}}"
+    identifier_field: title
+    summary: "{{title}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: "اسم الخدمة", widget: string }
+      - { name: url, label: "رابط الصفحة (بالإنجليزي)", widget: string, hint: "حروف إنجليزية صغيرة وشرطات فقط، مثال: home-nursing" }
+      - { name: order, label: "الترتيب", widget: number, default: 50 }
+      - name: section
+        label: "القسم"
+        widget: select
+        options:
+          - { label: "الخدمات الطبية", value: med }
+          - { label: "التمريض المنزلي", value: nurse }
+          - { label: "كبار السن", value: elder }
+          - { label: "الأم والمولود", value: kids }
+          - { label: "العلاج الطبيعي والتأهيل", value: rehab }
+          - { label: "التحاليل والأشعة", value: lab }
+          - { label: "التغذية العلاجية", value: food }
+          - { label: "النقل الطبي", value: car }
+      - { name: image, label: "صورة الخدمة", widget: image }
+      - { name: description, label: "وصف قصير", widget: text }
+      - { name: includes, label: "ماذا تشمل الخدمة", label_singular: "بند", widget: list, field: { name: item, label: "بند", widget: string } }
+      - { name: suitable_for, label: "لمن تناسب", label_singular: "فئة", widget: list, field: { name: item, label: "فئة", widget: string } }
+      - { name: hidden, label: "إخفاء الخدمة", widget: boolean, default: false, required: false }
+
+  # ---------------------------------------------------------------- nurses
+  - name: nurses
+    label: "الممرضات"
+    label_singular: "ممرضة"
+    folder: content/nurses
+    extension: json
+    format: json
+    create: true
+    slug: "{{url}}"
+    identifier_field: title
+    summary: "{{title}} · {{nationality}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: "الاسم الأول", widget: string, hint: "الاسم الأول فقط، حفاظًا على خصوصيتها" }
+      - { name: url, label: "رابط الصفحة (بالإنجليزي)", widget: string, hint: "حروف إنجليزية صغيرة وشرطات فقط، مثال: esther" }
+      - { name: order, label: "الترتيب", widget: number, default: 50 }
+      - { name: role, label: "المسمّى", widget: string, default: "مقدّمة رعاية منزلية", hint: "اكتب (ممرضة) فقط لو معاها ترخيص الهيئة السعودية للتخصصات الصحية" }
+      - { name: nationality, label: "الجنسية", widget: string }
+      - { name: experience_years, label: "سنوات الخبرة", widget: number, required: false }
+      - { name: languages, label: "اللغات", label_singular: "لغة", widget: list, field: { name: item, label: "لغة", widget: string } }
+      - { name: photo, label: "الصورة الكاملة", widget: image }
+      - { name: avatar, label: "الصورة الدايرية (وش فقط، مربعة)", widget: image, required: false }
+      - { name: card_photo, label: "صورة الكارت (قديمة، اختياري)", widget: image, required: false }
+      - { name: diploma, label: "صورة الشهادة (اختياري)", widget: image, required: false }
+      - { name: exp_label, label: "نص الخبرة (مثال: +5 سنوات خبرة)", widget: string, required: false }
+      - { name: available, label: "متاحة الآن", widget: boolean, default: false, required: false }
+      - { name: summary, label: "نبذة", widget: text }
+      - { name: skills, label: "المهارات", label_singular: "مهارة", widget: list, field: { name: item, label: "مهارة", widget: string } }
+      - name: experience
+        label: "الخبرات"
+        label_singular: "خبرة"
+        widget: list
+        fields:
+          - { name: role, label: "الدور", widget: string }
+          - { name: place, label: "المكان", widget: string }
+          - { name: points, label: "التفاصيل", label_singular: "نقطة", widget: list, field: { name: item, label: "نقطة", widget: string } }
+      - { name: qualifications, label: "الشهادات", label_singular: "شهادة", widget: list, field: { name: item, label: "شهادة", widget: string } }
+      - { name: hidden, label: "إخفاء من الموقع", widget: boolean, default: false, required: false }
+
+  # ---------------------------------------------------------------- settings
+  - name: settings
+    label: "الإعدادات"
+    files:
+      - name: general
+        label: "أرقام التواصل والإعدادات العامة"
+        file: content/settings.json
+        format: json
+        fields:
+          - { name: whatsapp, label: "رقم الواتساب والاتصال (دولي بدون +)", widget: string, hint: "مثال: 966555185244" }
+          - { name: phone_display, label: "الرقم كما يظهر في الموقع", widget: string, hint: "مثال: +966 55 518 5244" }
+          - { name: staff_count, label: "عدد الكوادر (في العدّاد)", widget: number }
+          - { name: site_url, label: "رابط الموقع النهائي", widget: string, required: false, hint: "يُكتب عند الإطلاق، مثال: https://afnancare.sa" }
+          - { name: preview_mode, label: "وضع المعاينة (إخفاء الموقع عن جوجل)", widget: boolean, hint: "اقفله يوم الإطلاق على الدومين" }
+          - { name: gtm_id, label: "كود Google Tag Manager", widget: string, required: false, hint: "مثال: GTM-T4TQG35C" }
