@@ -358,11 +358,16 @@ for f in sorted(glob.glob(P("templates", "legal", "*.html"))):
 ''' + TAIL)
 
 # ------------------------------------------------------------------ nurses
+def exp_txt(n):
+    if n.get("exp_label"): return n["exp_label"]
+    y = n.get("experience_years")
+    return f"+{y} سنوات خبرة" if y else ""
+
 def ncard(n):
     tag = '<span class="n-av on">متاحة الآن</span>' if n.get("available") else ""
-    return (f'<a class="ncard rv" href="nurse-{n["_slug"]}.html"><div class="im"><img src="{esc(img(n.get("card_photo") or n.get("photo")))}" alt="{esc(n["title"])}، {esc(n.get("role"))} من مركز أفنان الفائقة" width="600" height="800" loading="lazy">{tag}</div>'
-            f'<div class="bd"><h3>{esc(n["title"])}</h3><span class="n-role">{esc(n.get("role"))}</span>'
-            f'<div class="n-meta"><span>{esc(n.get("nationality"))}</span><span>+{esc(n.get("experience_years"))} سنوات خبرة</span></div>'
+    return (f'<a class="ncard rv" href="nurse-{n["_slug"]}.html"><span class="nc-av"><img src="{esc(img(n.get("avatar") or n.get("card_photo") or n.get("photo")))}" alt="{esc(n["title"])}، {esc(n.get("role"))} من مركز أفنان الفائقة" width="360" height="360" loading="lazy"></span>'
+            f'<div class="bd"><h3>{esc(n["title"])}</h3><span class="n-role">{esc(n.get("role"))}</span>{tag}'
+            f'<div class="n-meta"><span>{esc(n.get("nationality"))}</span>{("<span>" + esc(exp_txt(n)) + "</span>") if exp_txt(n) else ""}</div>'
             f'<span class="go">الملف الكامل ←</span></div></a>')
 
 if NURSES:
@@ -402,7 +407,7 @@ for n in NURSES:
     <span class="tag">{esc(n.get("role"))}</span>
     <h1>{esc(nm)}</h1>
     <p class="lead">{esc(n.get("summary"))}</p>
-    <div class="facts"><span>{TICK}{esc(n.get("nationality"))}</span><span>{TICK}+{esc(n.get("experience_years"))} سنوات خبرة</span><span>{TICK}{langs}</span><span>{TICK}شهادات موثّقة لدى المركز</span></div>
+    <div class="facts"><span>{TICK}{esc(n.get("nationality"))}</span>{("<span>" + TICK + esc(exp_txt(n)) + "</span>") if exp_txt(n) else ""}{("<span>" + TICK + langs + "</span>") if langs else ""}<span>{TICK}شهادات موثّقة لدى المركز</span></div>
     <div class="btns"><a class="btn btn-green" href="#book" data-svc="{esc(req)}">اطلب {esc(nm)}</a><a class="btn btn-outline" id="heroWa" href="#" target="_blank" rel="noopener">اسأل عنها على واتساب</a></div>
   </div>
   <div class="nurse-id"><span class="nurse-av"><img src="{esc(img(n.get("avatar") or n.get("photo")))}" alt="{esc(nm)}، {esc(n.get("role"))} من مركز أفنان الفائقة" width="360" height="360" fetchpriority="high"></span>{avail}</div>
@@ -411,7 +416,7 @@ for n in NURSES:
 <section class="sec" style="padding-top:40px"><div class="wrap svc-layout">
   <div class="svc-main">
     <div class="block rv"><h2>المهارات</h2><div class="who">{skills}</div></div>
-    <div class="block rv"><h2>الخبرات</h2><div class="xps">{exp}</div></div>
+    {("<div class=\"block rv\"><h2>الخبرات</h2><div class=\"xps\">" + exp + "</div></div>") if exp else ""}
     <div class="block rv"><h2>الشهادات</h2><div class="inc-grid">{quals}</div>{dip}</div>
   </div>
   <aside class="side-book assist" id="book">
@@ -419,7 +424,7 @@ for n in NURSES:
     <div class="starter-q"><span class="bubble">نرتّب لك رعاية مقيمة مع {esc(nm)}؟</span></div>
     <button class="btn btn-green" type="button" data-book data-svc="{esc(req)}">ابدأ الحجز</button>
     <a class="btn btn-outline" id="sideWa" href="#" target="_blank" rel="noopener">أو راسلنا مباشرة على واتساب</a>
-    <div class="mini"><div><span>الجنسية</span><b>{esc(n.get("nationality"))}</b></div><div><span>الخبرة</span><b>+{esc(n.get("experience_years"))} سنوات</b></div><div><span>المدة</span><b>من شهر حتى سنة</b></div></div>
+    <div class="mini"><div><span>الجنسية</span><b>{esc(n.get("nationality"))}</b></div>{("<div><span>الخبرة</span><b>" + esc(exp_txt(n).replace(" خبرة","")) + "</b></div>") if exp_txt(n) else ""}<div><span>المدة</span><b>من شهر حتى سنة</b></div></div>
   </aside>
 </div></section>
 
@@ -428,7 +433,7 @@ for n in NURSES:
 """
     ld = {"@context": "https://schema.org", "@type": "Person", "name": nm, "jobTitle": n.get("role"), "worksFor": {"@type": "MedicalBusiness", "name": "مركز أفنان الفائقة للخدمات الطبية", "telephone": "+" + WA}, "knowsLanguage": n.get("languages", [])}
     extra = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>"
-    write(f"nurse-{slug}.html", head(f"{nm}، {n.get('role')} | مركز أفنان الفائقة", f"{nm}، {n.get('role')} {n.get('nationality')} بخبرة +{n.get('experience_years')} سنوات في مركز أفنان الفائقة. " + str(n.get("summary", ""))[:90], req, extra, img(n.get("photo")), f"nurse-{slug}.html") + body + TAIL)
+    write(f"nurse-{slug}.html", head(f"{nm}، {n.get('role')} | مركز أفنان الفائقة", f"{nm}، {n.get('role')} {n.get('nationality')} {(' ' + exp_txt(n)) if exp_txt(n) else ''} في مركز أفنان الفائقة. " + str(n.get("summary", ""))[:90], req, extra, img(n.get("photo")), f"nurse-{slug}.html") + body + TAIL)
 
 import hashlib
 def _v(name):

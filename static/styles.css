@@ -673,3 +673,14 @@ body.chat-open .afab{display:none}
 @media (min-width:901px){.nurse-hero .wrap{grid-template-columns:1.25fr .75fr}.nurse-id{order:0}.nurse-av{width:200px;height:200px}}
 .nurse-hero h1{text-align:start}
 .nurse-id .live{align-self:center;margin:0}
+
+/* nurse cards: small round photo */
+.nurse-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.ncard{grid-template-rows:auto 1fr;justify-items:center;text-align:center;padding:22px 14px 0;max-width:none}
+.nc-av{width:108px;height:108px;border-radius:50%;overflow:hidden;border:3px solid #fff;box-shadow:0 0 0 2px var(--gold),0 14px 28px -14px rgba(20,38,110,.5);background:#f4f6f8}
+.nc-av img{width:100%;height:100%;object-fit:cover;display:block}
+.ncard .bd{justify-items:center;padding:14px 12px 20px}
+.ncard .n-meta{justify-content:center}
+.ncard .n-av{position:static;display:inline-block;box-shadow:none;background:#e8f6ee}
+@media (max-width:520px){.nurse-grid{grid-template-columns:repeat(2,1fr);gap:12px}.nc-av{width:92px;height:92px}.ncard h3{font-size:17px}}
+.ncard .n-meta{gap:5px}.ncard .n-meta span{font-size:12px;padding:3px 8px}

@@ -164,10 +164,13 @@ collections:
       - { name: order, label: "الترتيب", widget: number, default: 50 }
       - { name: role, label: "المسمّى", widget: string, default: "مقدّمة رعاية منزلية", hint: "اكتب (ممرضة) فقط لو معاها ترخيص الهيئة السعودية للتخصصات الصحية" }
       - { name: nationality, label: "الجنسية", widget: string }
-      - { name: experience_years, label: "سنوات الخبرة", widget: number }
+      - { name: experience_years, label: "سنوات الخبرة", widget: number, required: false }
       - { name: languages, label: "اللغات", label_singular: "لغة", widget: list, field: { name: item, label: "لغة", widget: string } }
       - { name: photo, label: "الصورة الكاملة", widget: image }
-      - { name: card_photo, label: "صورة الكارت (نص علوي)", widget: image, required: false }
+      - { name: avatar, label: "الصورة الدايرية (وش فقط، مربعة)", widget: image, required: false }
+      - { name: card_photo, label: "صورة الكارت (قديمة، اختياري)", widget: image, required: false }
+      - { name: diploma, label: "صورة الشهادة (اختياري)", widget: image, required: false }
+      - { name: exp_label, label: "نص الخبرة (مثال: +5 سنوات خبرة)", widget: string, required: false }
       - { name: available, label: "متاحة الآن", widget: boolean, default: false, required: false }
       - { name: summary, label: "نبذة", widget: text }
       - { name: skills, label: "المهارات", label_singular: "مهارة", widget: list, field: { name: item, label: "مهارة", widget: string } }
