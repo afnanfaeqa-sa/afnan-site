@@ -66,7 +66,7 @@ def folder(name):
 
 SERVICES = [s for s in folder("services") if s.get("section") in SECNAME]
 ARTICLES = folder("articles")
-NURSES = folder("nurses")
+NURSES = folder("nurses") if settings.get("show_nurses") else []  # الممرضات مخفيّة؛ لإظهارها اجعل show_nurses=true في settings.json
 CATS = [[k, n, d, [s["title"] for s in SERVICES if s["section"] == k]] for k, n, d in SECTIONS]
 CATS = [c for c in CATS if c[3]]
 SLUG = {s["title"]: s["_slug"] for s in SERVICES}
