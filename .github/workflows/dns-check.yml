@@ -7,9 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          for h in afnanfaeqasa.sa ftp.afnanfaeqasa.sa www.afnanfaeqasa.sa; do echo "== $h"; dig +short A $h; done
-          echo "== NS"; dig +short NS afnanfaeqasa.sa
-          echo "== NS via 8.8.8.8"; dig +short NS afnanfaeqasa.sa @8.8.8.8
-          echo "== whois-ish SOA"; dig +short SOA afnanfaeqasa.sa @8.8.8.8
-          echo "== ftp via 8.8.8.8"; dig +short A ftp.afnanfaeqasa.sa @8.8.8.8
-          echo "== parent sa delegation"; dig +short NS afnanfaeqasa.sa @$(dig +short NS sa. | head -1)
+          out=""
+          for h in afnanfaeqasa.sa ftp.afnanfaeqasa.sa; do out="$out | $h A(local)=$(dig +short A $h | tr '\n' ' ') A(8.8.8.8)=$(dig +short A $h @8.8.8.8 | tr '\n' ' ')"; done
+          out="$out | NS(8.8.8.8)=$(dig +short NS afnanfaeqasa.sa @8.8.8.8 | tr '\n' ' ')"
+          P=$(dig +short NS sa. | head -1)
+          out="$out | delegation=$(dig NS afnanfaeqasa.sa @$P +norec | grep -E 'IN\s+NS' | awk '{print $5}' | tr '\n' ' ')"
+          for n in ns1.rmoztec.com ns2.rmoztec.com; do out="$out | $n=$(dig +short A $n @8.8.8.8 | tr '\n' ' ') ans=$(dig +short A ftp.afnanfaeqasa.sa @$n +time=3 +tries=1 2>&1 | tr '\n' ' ')"; done
+          echo "::notice title=dns::$out"
