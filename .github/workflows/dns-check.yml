@@ -1,0 +1,15 @@
+name: DNS check
+on:
+  push:
+    branches: [claude/dns-check]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          for h in afnanfaeqasa.sa ftp.afnanfaeqasa.sa www.afnanfaeqasa.sa; do echo "== $h"; dig +short A $h; done
+          echo "== NS"; dig +short NS afnanfaeqasa.sa
+          echo "== NS via 8.8.8.8"; dig +short NS afnanfaeqasa.sa @8.8.8.8
+          echo "== whois-ish SOA"; dig +short SOA afnanfaeqasa.sa @8.8.8.8
+          echo "== ftp via 8.8.8.8"; dig +short A ftp.afnanfaeqasa.sa @8.8.8.8
+          echo "== parent sa delegation"; dig +short NS afnanfaeqasa.sa @$(dig +short NS sa. | head -1)
