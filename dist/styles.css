@@ -731,3 +731,8 @@ p,li,blockquote{text-wrap:pretty}
 .chair-band{padding-block:28px 0}
 .chair-band .wrap{display:flex;justify-content:center}
 .chair-band .chair{max-width:520px;margin:0}
+
+.story-img.fit-contain{object-fit:contain;object-position:center;background:#06301c}
+.ring-img img[src$="chairman.jpg"]{object-position:center 20%}
+/* chairman card: desktop only (phones get it as a story) */
+@media (max-width:820px){.chair-band{display:none}}

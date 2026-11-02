@@ -2,6 +2,8 @@
 (function(){
   const row=document.getElementById("stories"); if(!row) return;
   const S=[
+    {label:"رئيس المجلس",cover:"chairman",frames:[
+      ["chairman-poster","","","","",{fit:"contain",dur:12000}]]},
     {label:"خدماتنا",cover:"home-nursing",frames:[
       ["home-nursing","تمريض منزلي","ممرضون وممرضات مرخّصون، على مدار الساعة","تفاصيل الخدمة","home-nursing.html"],
       ["physio","علاج طبيعي في بيتك","جلسات تأهيل بعد العمليات والإصابات","تفاصيل الخدمة","home-physiotherapy.html"],
@@ -32,16 +34,16 @@
     <div class="story-txt"><h3 id="stT"></h3><p id="stS"></p><a class="btn btn-green" id="stCta" href="#"></a></div>
   </div>`);
   const v=document.getElementById("story"),bars=document.getElementById("stBars"),img=document.getElementById("stImg");
-  let si=0,fi=0,t0=0,elapsed=0,paused=false,raf=0,downAt=0,lastFocus=null;
+  let frameDur=DUR,si=0,fi=0,t0=0,elapsed=0,paused=false,raf=0,downAt=0,lastFocus=null;
 
   function render(){
     const s=S[si],f=s.frames[fi];
     bars.innerHTML=s.frames.map((_,k)=>`<span><i style="transform:scaleX(${k<fi?1:0})"></i></span>`).join("");
-    img.src=`img/${f[0]}.jpg`;img.alt=f[1];
+    img.src=`img/${f[0]}.jpg`;img.alt=f[1]||s.label;const o=f[5]||{};img.classList.toggle("fit-contain",o.fit==="contain");frameDur=o.dur||DUR;
     img.classList.remove("in");void img.offsetWidth;img.classList.add("in");
     document.getElementById("stLabel").textContent=s.label;
     document.getElementById("stT").textContent=f[1];document.getElementById("stS").textContent=f[2];
-    const c=document.getElementById("stCta");c.textContent=f[3];c.setAttribute("href",f[4]);
+    const c=document.getElementById("stCta");c.textContent=f[3];c.setAttribute("href",f[4]||"#");c.hidden=!f[3];v.querySelector(".story-txt").hidden=!(f[1]||f[2]||f[3]);
     elapsed=0;t0=performance.now();
     seen.add(si);try{sessionStorage.setItem("afnanSeen",JSON.stringify([...seen]))}catch(_){}
     row.querySelector(`[data-s="${si}"]`).classList.add("seen");
@@ -49,7 +51,7 @@
   function tick(now){
     if(!paused){elapsed+=now-t0}
     t0=now;
-    const p=Math.min(elapsed/DUR,1),bar=bars.children[fi]&&bars.children[fi].firstChild;
+    const p=Math.min(elapsed/frameDur,1),bar=bars.children[fi]&&bars.children[fi].firstChild;
     if(bar)bar.style.transform=`scaleX(${p})`;
     if(p>=1&&!reduce){next();}
     raf=requestAnimationFrame(tick);
