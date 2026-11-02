@@ -727,3 +727,7 @@ p,li,blockquote{text-wrap:pretty}
 .chair-dlg::backdrop{background:rgba(5,12,30,.75)}
 .chair-dlg img{display:block;width:100%;height:auto;max-height:90vh;object-fit:contain;border-radius:14px}
 .chair-dlg .x{position:absolute;top:-12px;inset-inline-start:-12px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:var(--navy);font:700 22px/40px Arial,sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+
+.chair-band{padding-block:28px 0}
+.chair-band .wrap{display:flex;justify-content:center}
+.chair-band .chair{max-width:520px;margin:0}
