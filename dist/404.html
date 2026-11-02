@@ -10,7 +10,7 @@
 (function(){
   var p = location.pathname.replace(/\/+$/, "").toLowerCase();
   var map = { "/services": "/services.html", "/contact": "/#book", "/profile": "/profile/" };
-  location.replace((map[p] || "/") + (map[p] ? "" : "") );
+  location.replace(map[p] || "/");
 })();
 </script>
 </head>

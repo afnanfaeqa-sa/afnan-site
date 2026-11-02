@@ -2,8 +2,7 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
+  # paused while the site stays on cPanel; run manually when moving to GitHub Pages
   workflow_dispatch:
 
 permissions:

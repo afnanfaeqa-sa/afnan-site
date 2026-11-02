@@ -80,7 +80,16 @@
       <li><svg viewBox="0 0 24 24"><path d="m5 12.5 4.2 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>اشتراك من شهر حتى سنة</li>
     </ul>
     <div><a class="btn btn-navy" href="#services">تعرّف على خدماتنا</a></div>
+    <button type="button" class="chair" id="chairBtn" aria-haspopup="dialog">
+      <img src="img/chairman.jpg" alt="" width="64" height="64" loading="lazy">
+      <span><b>الأستاذ قتيبة محمد خير الخالد</b><small>رئيس مجلس الإدارة</small></span>
+      <span class="go">كلمة رئيس المجلس ←</span>
+    </button>
   </div>
+  <dialog class="chair-dlg" id="chairDlg" aria-label="كلمة رئيس مجلس الإدارة">
+    <button type="button" class="x" id="chairClose" aria-label="إغلاق">×</button>
+    <img src="img/chairman-poster.jpg" alt="قسم الولاء والريادة – الأستاذ قتيبة، رئيس مجلس الإدارة" width="900" height="1600" loading="lazy">
+  </dialog>
   <div class="photo rv">
     <img src="img/team.jpg" alt="صورة توضيحية لكوادر صحية بزي أفنان الفائقة" width="1600" height="900" loading="lazy">
     <div class="photo-badge"><img src="img/mark.png" alt="" width="44" height="38"><div><b>رعايتهم في راحة بيتهم</b><small>مركز أفنان الفائقة</small></div></div>
@@ -357,6 +366,12 @@ if("IntersectionObserver" in window && !reduceM){
   if(reduceM||!("IntersectionObserver" in window)){done=true;build();return}
   const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){io.disconnect();setTimeout(run,250)}},{threshold:.45});io.observe(band);
 })();
+
+/* chairman card -> poster dialog */
+(()=>{const d=document.getElementById("chairDlg"),b=document.getElementById("chairBtn");if(!d||!b)return;
+  if(typeof d.showModal!=="function"){b.onclick=()=>window.open("img/chairman-poster.jpg","_blank");return}
+  b.onclick=()=>d.showModal();document.getElementById("chairClose").onclick=()=>d.close();
+  d.addEventListener("click",e=>{if(e.target===d)d.close()});})();
 
 /* hero slider */
 const hero=document.querySelector(".hero"),slides=[...document.querySelectorAll(".slide")],dots=document.querySelector(".dots");

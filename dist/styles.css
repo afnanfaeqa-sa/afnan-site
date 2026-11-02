@@ -712,3 +712,18 @@ p,li,blockquote{text-wrap:pretty}
   .guide::-webkit-scrollbar{display:none}
   .guide .art{scroll-snap-align:start}
 }
+
+/* chairman card in "about" */
+.chair{display:flex;align-items:center;gap:14px;width:100%;max-width:460px;margin-top:6px;padding:12px 14px;border:1px solid var(--line);border-radius:18px;background:#fff;font:inherit;color:inherit;text-align:start;cursor:pointer;box-shadow:0 10px 24px -18px rgba(20,38,110,.45);transition:box-shadow .2s,transform .2s,scale .12s}
+.chair:hover{box-shadow:0 16px 30px -18px rgba(20,38,110,.55);transform:translateY(-2px)}
+.chair:active{scale:.98}
+.chair img{width:64px;height:64px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 2px #fff,0 0 0 4px var(--gold)}
+.chair span{display:grid;gap:2px;min-width:0}
+.chair b{font-family:var(--display);color:var(--navy);font-size:15.5px;line-height:1.5}
+.chair small{color:var(--muted);font-size:13px}
+.chair .go{margin-inline-start:auto;color:var(--green);font-weight:600;font-size:13.5px;white-space:nowrap}
+@media (max-width:420px){.chair .go{display:none}}
+.chair-dlg{border:0;padding:0;background:transparent;max-width:min(440px,92vw);max-height:92vh;overflow:visible}
+.chair-dlg::backdrop{background:rgba(5,12,30,.75)}
+.chair-dlg img{display:block;width:100%;height:auto;max-height:90vh;object-fit:contain;border-radius:14px}
+.chair-dlg .x{position:absolute;top:-12px;inset-inline-start:-12px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:var(--navy);font:700 22px/40px Arial,sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.35)}
