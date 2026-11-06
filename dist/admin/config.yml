@@ -1,9 +1,12 @@
 # Dashboard settings. Every save here edits a file in content/ on GitHub,
-# and Cloudflare Pages rebuilds the site automatically (about one minute).
+# and the site rebuilds and uploads itself to cPanel automatically (about one minute).
 backend:
   name: github
   repo: afnanfaeqa-sa/afnan-site
   branch: main
+  # email + password login (admin/auth.php) instead of a GitHub account
+  base_url: https://afnanfaeqasa.sa
+  auth_endpoint: admin/auth.php
 
 media_folder: static/img/uploads
 public_folder: /img/uploads
