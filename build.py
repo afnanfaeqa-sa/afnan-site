@@ -219,6 +219,20 @@ write("data.js", "window.SITE_CATS=" + json.dumps(CATS, ensure_ascii=False) + ";
 
 # home page: the template has no document wrapper, add it here
 i = home.index("<header")
+_org = {"@context": "https://schema.org", "@type": "MedicalBusiness", "@id": f"{SITE_URL}/#org",
+        "name": "مركز أفنان الفائقة للخدمات الطبية المنزلية",
+        "alternateName": ["مركز همّة أفنان الفائقة للخدمات الطبية", "أفنان الفائقة", "Afnan Home Medical Care"],
+        "url": f"{SITE_URL}/", "logo": f"{SITE_URL}/img/logo.png", "image": f"{SITE_URL}/img/elderly-walk.jpg",
+        "description": "تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية ورعاية الأم والمولود باشتراك من شهر حتى سنة، على مدار الساعة في جميع مناطق المملكة.",
+        "telephone": "+" + WA,
+        "address": {"@type": "PostalAddress", "addressLocality": "الرياض", "addressCountry": "SA"},
+        "areaServed": {"@type": "Country", "name": "المملكة العربية السعودية"},
+        "openingHoursSpecification": {"@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "00:00", "closes": "23:59"},
+        "sameAs": settings.get("same_as") or ["https://www.instagram.com/afnan_alfaeqa/", "https://x.com/Afnan_alfaeqa"],
+        "hasOfferCatalog": {"@type": "OfferCatalog", "name": "خدمات الرعاية المنزلية", "itemListElement": [
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": s["title"], "url": f"{SITE_URL}/{s['_slug']}.html"}} for s in SERVICES]}}
+ORG_LD = ('<script type="application/ld+json">' + json.dumps(_org, ensure_ascii=False) + "</script>\n") if SITE_URL and not PREVIEW else ""
 write("index.html", f'''<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -227,9 +241,10 @@ write("index.html", f'''<!doctype html>
 {GTM_HEAD}{ROBOTS}{canon("index.html")}<meta name="description" content="مركز أفنان الفائقة للخدمات الطبية المنزلية: تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية، ورعاية الأم والمولود. باشتراك من شهر حتى سنة، على مدار الساعة في جميع مناطق المملكة.">
 <meta property="og:title" content="مركز أفنان الفائقة | رعاية طبية متكاملة في راحة بيتك">
 <meta property="og:description" content="تمريض منزلي، رعاية كبار السن، علاج طبيعي وتحاليل منزلية، على مدار الساعة في جميع مناطق المملكة.">
-<meta property="og:image" content="img/elderly-walk.jpg">
+<meta property="og:image" content="{SITE_URL}/img/elderly-walk.jpg">
+<meta property="og:type" content="website">
 <meta property="og:locale" content="ar_SA">
-{home[:i].strip()}
+{ORG_LD}{home[:i].strip()}
 <style>body{{margin:0}} img{{max-width:100%}}</style>
 </head>
 <body>
