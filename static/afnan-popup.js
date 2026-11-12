@@ -1,6 +1,6 @@
 /* Afnan opening popup: shows /afnan-popup.jpg on every page load. */
 (function () {
-  var IMG = '/afnan-popup.jpg';
+  var IMG = '/afnan-popup.jpg?v=2030';
   function show() {
     var css = document.createElement('style');
     css.textContent =
@@ -17,10 +17,10 @@
     wrap.id = 'afp';
     wrap.setAttribute('role', 'dialog');
     wrap.setAttribute('aria-modal', 'true');
-    wrap.setAttribute('aria-label', 'إمكاناتنا في خدمة الوطن');
+    wrap.setAttribute('aria-label', 'نتماشى مع رؤية المملكة 2030');
     wrap.innerHTML =
       '<div class="box"><button class="x" type="button" aria-label="إغلاق">×</button>' +
-      '<img src="' + IMG + '" alt="إمكاناتنا في خدمة الوطن - مركز أفنان الفائقة للخدمات الطبية"></div>';
+      '<img src="' + IMG + '" alt="مركز أفنان الفائقة يتماشى مع رؤية المملكة 2030 ومستهدفاتها: رعاية صحية منزلية ترتقي بجودة الحياة"></div>';
 
     function close() {
       wrap.classList.remove('on');
