@@ -1,6 +1,6 @@
 /* Afnan opening popup: shows /afnan-popup.jpg on every page load. */
 (function () {
-  var IMG = '/afnan-popup.jpg?v=2030';
+  var IMG = '/afnan-popup.jpg?v=2030b';
   function show() {
     var css = document.createElement('style');
     css.textContent =
