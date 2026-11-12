@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Aref+Ruqaa:wght@700&display=swap">
-<link rel="stylesheet" href="styles.css?v=4f249420">
+<link rel="stylesheet" href="styles.css?v=68611783">
 <style>body{margin:0} img{max-width:100%}</style>
 </head>
 <body>
@@ -104,13 +104,6 @@
   </div>
 </div></div>
 
-<section class="chair-band"><div class="wrap">
-  <button type="button" class="chair" id="chairBtn" aria-haspopup="dialog">
-    <img src="img/chairman.jpg" alt="" width="64" height="64">
-    <span><b>الأستاذ قتيبة محمد خير الخالد</b><small>رئيس مجلس الإدارة</small></span>
-    <span class="go">اعرض ←</span>
-  </button>
-</div></section>
 <dialog class="chair-dlg" id="chairDlg" aria-label="كلمة رئيس مجلس الإدارة">
   <button type="button" class="x" id="chairClose" aria-label="إغلاق">×</button>
   <img src="img/chairman-poster.jpg" alt="قسم الولاء والريادة – الأستاذ قتيبة، رئيس مجلس الإدارة" width="900" height="1600" loading="lazy">
@@ -134,6 +127,11 @@
     <span class="v-rule" aria-hidden="true"></span>
     <p>نؤمن بأن جودة الحياة تبدأ من البيت... فنقدّم رعاية متكاملة لأهلنا في راحة بيوتهم، في جميع مناطق المملكة.</p>
     <span class="v-script">رعايتهم في راحة بيتهم</span>
+    <button type="button" class="chair" id="chairBtn" aria-haspopup="dialog">
+    <img src="img/chairman.jpg" alt="" width="64" height="64">
+    <span><b>الأستاذ قتيبة محمد خير الخالد</b><small>رئيس مجلس الإدارة</small></span>
+    <span class="go">اعرض ←</span>
+  </button>
   </div>
   <span class="v-2030" aria-hidden="true">2030</span>
 </div>
@@ -251,6 +249,7 @@
       <div class="btns"><a class="btn btn-white" href="#book">اطلب الرعاية</a><a class="btn btn-navy" id="ctaWa" href="#" target="_blank" rel="noopener">راسلنا على واتساب</a></div></div>
   </div>
 </div></section>
+<script>(function(){var b=document.getElementById("book");if(!b||!("IntersectionObserver" in window))return;new IntersectionObserver(function(e){document.body.classList.toggle("book-in-view",e[0].isIntersecting)},{rootMargin:"0px 0px -10% 0px"}).observe(b)})();</script>
 </main>
 
 <footer class="foot"><div class="wrap">
