@@ -803,3 +803,20 @@ p,li,blockquote{text-wrap:pretty}
 
 /* footer: warm cream instead of cool grey */
 .foot{background:linear-gradient(180deg,#faf7ef,#f3eddd)}
+
+/* vision band, second row: the Vision 2030 mark on a light plate + three goals the center serves */
+.v-pillars{position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) repeat(3,minmax(0,1fr));gap:18px;margin-top:56px;padding-top:40px;border-top:1px solid rgba(201,162,78,.3)}
+.v-badge{margin:0;display:grid;gap:12px;align-content:center;justify-items:center;background:#fff;border-radius:22px;padding:22px 20px;box-shadow:0 24px 50px -28px rgba(0,0,0,.6);text-align:center}
+.v-badge img{width:min(100%,210px);height:auto}
+.v-badge figcaption{text-wrap:balance;color:var(--navy);font-weight:600;font-size:14.5px;line-height:1.6}
+.v-pt{display:grid;gap:8px;align-content:start;padding:22px 20px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.v-pt svg{width:30px;height:30px;color:var(--gold-lt)}
+.v-pt b{color:#fff;font-family:var(--display);font-size:18px}
+.v-pt span{color:rgba(255,255,255,.8);font-size:15px;line-height:1.8}
+@media (max-width:1000px){.v-pillars{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.v-pillars{grid-template-columns:1fr;margin-top:40px}}
+
+/* footer: Vision 2030 mark beside the copyright */
+.foot-vision{display:flex;align-items:center;gap:14px;margin-top:22px}
+.foot-vision img{width:118px;height:auto}
+.foot-vision small{color:var(--muted);font-size:13.5px;line-height:1.6;max-width:22ch}
