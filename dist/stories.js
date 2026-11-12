@@ -4,6 +4,9 @@
   const S=[
     {label:"رئيس المجلس",cover:"chairman",frames:[
       ["chairman-poster","","","","",{fit:"contain",dur:12000}]]},
+    {label:"رؤية 2030",cover:"vision-cover",frames:[
+      ["vision-story-1","","","","",{fit:"contain",dur:9000}],
+      ["vision-story-2","","","","",{fit:"contain",dur:9000}]]},
     {label:"خدماتنا",cover:"home-nursing",frames:[
       ["home-nursing","تمريض منزلي","ممرضون وممرضات مرخّصون، على مدار الساعة","تفاصيل الخدمة","home-nursing.html"],
       ["physio","علاج طبيعي في بيتك","جلسات تأهيل بعد العمليات والإصابات","تفاصيل الخدمة","home-physiotherapy.html"],

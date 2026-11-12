@@ -820,3 +820,5 @@ p,li,blockquote{text-wrap:pretty}
 .foot-vision{display:flex;align-items:center;gap:14px;margin-top:22px}
 .foot-vision img{width:118px;height:auto}
 .foot-vision small{color:var(--muted);font-size:13.5px;line-height:1.6;max-width:22ch}
+/* designed story frames (posters) carry their own text: no darkening gradient over them */
+.story:has(.story-img.fit-contain)::after{display:none}
