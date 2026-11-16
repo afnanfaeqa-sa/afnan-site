@@ -843,3 +843,16 @@ p,li,blockquote{text-wrap:pretty}
 /* floating assistant waits until the inline booking card is off screen */
 .afab{transition:opacity .3s,transform .3s}
 body.book-in-view .afab{opacity:0;transform:translateY(14px);pointer-events:none}
+
+/* footer: every Afnan contact number, unified + landline first, mobiles in a tidy grid */
+.foot-phones{margin-top:34px;padding:26px 0 4px;border-top:1px solid var(--line)}
+.fp-main{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.fp-main a{display:grid;gap:2px;padding:12px 20px;border-radius:16px;background:var(--navy);color:#fff;transition:background .2s}
+.fp-main a:hover{background:var(--blue)}
+.fp-main small{color:var(--gold-lt);font-size:12.5px}
+.fp-main b{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.fp-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+@media (max-width:1000px){.fp-list{grid-template-columns:repeat(3,1fr)}}
+.fp-list a{display:block;text-align:center;padding:9px 6px;border-radius:12px;background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;transition:border-color .2s,color .2s}
+.fp-list a:hover{border-color:var(--gold);color:var(--green-dk)}
+@media (max-width:560px){.fp-list a{font-size:13.5px;padding:9px 2px}.fp-main a{flex:1 1 140px}}
