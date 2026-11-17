@@ -33,7 +33,7 @@ def img(path):
 settings = load("settings.json")
 WA = re.sub(r"\D", "", str(settings.get("whatsapp", "966555185244"))) or "966555185244"
 PHONE = settings.get("phone_display") or "+" + WA
-STAFF = settings.get("staff_count", 150)
+STAFF = settings.get("staff_count", 250)
 PREVIEW = bool(settings.get("preview_mode", True))
 SITE_URL = (settings.get("site_url") or "").rstrip("/")
 
@@ -221,7 +221,10 @@ write("data.js", "window.SITE_CATS=" + json.dumps(CATS, ensure_ascii=False) + ";
 i = home.index("<header")
 _org = {"@context": "https://schema.org", "@type": "MedicalBusiness", "@id": f"{SITE_URL}/#org",
         "name": "مركز أفنان الفائقة للخدمات الطبية المنزلية",
-        "alternateName": ["مركز همّة أفنان الفائقة للخدمات الطبية", "أفنان الفائقة", "Afnan Home Medical Care"],
+        "legalName": "شركة همة أفنان الفائقة للرعاية الطبية",
+        "alternateName": ["مركز أفنان الفائقة", "مركز همّة أفنان الفائقة للخدمات الطبية", "Afnan Home Medical Care"],
+        "employee": {"@type": "Person", "name": "قتيبة محمد خير الخالد", "jobTitle": "رئيس مجلس الإدارة"},
+        "numberOfEmployees": {"@type": "QuantitativeValue", "minValue": 250},
         "url": f"{SITE_URL}/", "logo": f"{SITE_URL}/img/logo.png", "image": f"{SITE_URL}/img/elderly-walk.jpg",
         "description": "تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية ورعاية الأم والمولود باشتراك من شهر حتى سنة، على مدار الساعة في جميع مناطق المملكة.",
         "telephone": "+" + WA,
@@ -229,7 +232,7 @@ _org = {"@context": "https://schema.org", "@type": "MedicalBusiness", "@id": f"{
         "areaServed": {"@type": "Country", "name": "المملكة العربية السعودية"},
         "openingHoursSpecification": {"@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "00:00", "closes": "23:59"},
-        "sameAs": settings.get("same_as") or ["https://www.instagram.com/afnan_alfaeqa/", "https://x.com/Afnan_alfaeqa"],
+        "sameAs": settings.get("same_as") or ["https://www.wikidata.org/wiki/Q142198346", "https://www.instagram.com/afnan_alfaeqa/", "https://x.com/Afnan_alfaeqa"],
         "hasOfferCatalog": {"@type": "OfferCatalog", "name": "خدمات الرعاية المنزلية", "itemListElement": [
             {"@type": "Offer", "itemOffered": {"@type": "Service", "name": s["title"], "url": f"{SITE_URL}/{s['_slug']}.html"}} for s in SERVICES]}}
 ORG_LD = ('<script type="application/ld+json">' + json.dumps(_org, ensure_ascii=False) + "</script>\n") if SITE_URL and not PREVIEW else ""
@@ -374,6 +377,42 @@ for f in sorted(glob.glob(P("templates", "legal", "*.html"))):
 </main>
 ''' + TAIL)
 
+# ------------------------------------------------------------------ about (reference page: factual, neutral wording)
+ABOUT_UPDATED = "2026-11-17"
+ABOUT_UPDATED_AR = "17 نوفمبر 2026"
+_about_desc = "معلومات أساسية عن مركز أفنان الفائقة للخدمات الطبية المنزلية: الاسم الرسمي، قصة الاسم، الإدارة، الكادر والتغطية، والخدمات."
+write("about.html", head("من نحن | مركز أفنان الفائقة للخدمات الطبية المنزلية", _about_desc, path="about.html", extra=ORG_LD) + f"""<main class="page-top">
+<section class="sec" style="padding-top:20px"><div class="wrap legal about-page">
+  <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><span>من نحن</span></nav>
+  <h1>من نحن</h1>
+  <p class="updated">آخر تحديث: <time datetime="{ABOUT_UPDATED}">{ABOUT_UPDATED_AR}</time></p>
+  <div class="legal-body">
+    <h2>نبذة عن المركز</h2>
+    <p>مركز أفنان الفائقة للخدمات الطبية المنزلية هو مقدّم خاص لخدمات الرعاية الصحية المنزلية في المملكة العربية السعودية، ومقرّه مدينة الرياض.</p>
+    <h2>الاسم الرسمي</h2>
+    <p>الاسم المسجّل للمركز هو «شركة همة أفنان الفائقة للرعاية الطبية»، ويُعرف تجاريًا باسم «مركز أفنان الفائقة»، ويستخدم كذلك اسم «مركز همّة أفنان الفائقة للخدمات الطبية». الاسم الإنجليزي: <span lang="en" dir="ltr" style="white-space:nowrap">Afnan Home Medical Care</span>.</p>
+    <h2>قصة الاسم</h2>
+    <p>كلمة «همّة» في اسم المركز مستوحاة من عبارة صاحب السمو الملكي الأمير محمد بن سلمان، ولي العهد، «همة السعوديين مثل جبل طويق»، التي قالها في مؤتمر مبادرة مستقبل الاستثمار بالرياض عام 2018. واختير الاسم تعبيرًا عن الالتزام بخدمة المرضى في بيوتهم بعزيمة ثابتة.</p>
+    <h2>الإدارة</h2>
+    <p>رئيس مجلس الإدارة: الأستاذ قتيبة محمد خير الخالد.</p>
+    <h2>الكادر والتغطية</h2>
+    <p>يضم المركز أكثر من {esc(STAFF)} من الكوادر الصحية المرخّصة، ويقدّم خدماته في مختلف مناطق المملكة على مدار الساعة.</p>
+    <h2>الخدمات</h2>
+    <p>يقدّم المركز خدماته ضمن الأقسام التالية:</p>
+    <ul>
+      <li>الطب المنزلي</li>
+      <li>التمريض المنزلي</li>
+      <li>رعاية كبار السن</li>
+      <li>رعاية الأم والمولود</li>
+      <li>العلاج الطبيعي وإعادة التأهيل</li>
+      <li>التحاليل والأشعة المنزلية</li>
+    </ul>
+    <p>تفاصيل كل خدمة في <a href="services.html">صفحة الخدمات</a>.</p>
+  </div>
+</div></section>
+</main>
+""" + TAIL)
+
 # ------------------------------------------------------------------ nurses
 def exp_txt(n):
     if n.get("exp_label"): return n["exp_label"]
@@ -472,12 +511,12 @@ for f in glob.glob(os.path.join(DIST, "*.html")) + glob.glob(os.path.join(DIST, 
         with open(f, "w", encoding="utf8") as fh:
             fh.write(t2)
 
-pages = ["index.html", "services.html"] + [s["_slug"] + ".html" for s in SERVICES] + (["nurses.html"] + [f"nurse-{n['_slug']}.html" for n in NURSES] if NURSES else []) + ["privacy.html", "terms.html"]
+pages = ["index.html", "services.html"] + [s["_slug"] + ".html" for s in SERVICES] + (["nurses.html"] + [f"nurse-{n['_slug']}.html" for n in NURSES] if NURSES else []) + ["about.html", "privacy.html", "terms.html"]
 if PREVIEW or not SITE_URL:
     write("robots.txt", "User-agent: *\nDisallow: /\n" if PREVIEW else "User-agent: *\nAllow: /\n")
 else:
     write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: {SITE_URL}/sitemap.xml\n")
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-          "".join(f"  <url><loc>{SITE_URL}/{'' if p == 'index.html' else p}</loc></url>\n" for p in pages) + "</urlset>\n")
+          "".join(f"  <url><loc>{SITE_URL}/{'' if p == 'index.html' else p}</loc>" + (f"<lastmod>{ABOUT_UPDATED}</lastmod>" if p == "about.html" else "") + "</url>\n" for p in pages) + "</urlset>\n")
 
 print(f"Built {len(pages)} pages, {len(SERVICES)} services, {len(ARTICLES)} articles -> dist/")
