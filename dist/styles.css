@@ -856,3 +856,9 @@ body.book-in-view .afab{opacity:0;transform:translateY(14px);pointer-events:none
 .fp-list a{display:block;text-align:center;padding:9px 6px;border-radius:12px;background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;transition:border-color .2s,color .2s}
 .fp-list a:hover{border-color:var(--gold);color:var(--green-dk)}
 @media (max-width:560px){.fp-list a{font-size:13.5px;padding:9px 2px}.fp-main a{flex:1 1 140px}}
+
+/* about page: official portrait beside the management text */
+.about-person{display:grid;grid-template-columns:150px minmax(0,1fr);gap:24px;align-items:start}
+.about-person img{width:150px;height:150px;border-radius:20px;object-fit:cover;box-shadow:0 0 0 4px #fff,0 0 0 5px var(--gold),var(--shadow)}
+.about-person p{margin:0}
+@media (max-width:560px){.about-person{grid-template-columns:1fr;gap:18px}.about-person img{width:130px;height:130px}}
