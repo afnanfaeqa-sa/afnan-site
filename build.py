@@ -10,7 +10,7 @@ Cloudflare Pages settings:  build command  ->  python3 build.py
                             output folder  ->  dist
 Uses only the Python standard library.
 """
-import glob, html, json, os, re, shutil
+import glob, hashlib, html, json, os, re, shutil
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 P = lambda *a: os.path.join(ROOT, *a)
@@ -496,148 +496,29 @@ for n in NURSES:
     write(f"nurse-{slug}.html", head(f"{nm}، {n.get('role')} | مركز أفنان الفائقة", f"{nm}، {n.get('role')} {n.get('nationality')} {(' ' + exp_txt(n)) if exp_txt(n) else ''} في مركز أفنان الفائقة. " + str(n.get("summary", ""))[:90], req, extra, img(n.get("photo")), f"nurse-{slug}.html") + body + TAIL)
 
 # ------------------------------------------------------------------ authorised reps (content/reps.json)
-# One self-contained page per rep at /<slug>/ (noindex, not in sitemap, linked from nowhere),
-# and rep.js on every page swaps the center's numbers for the rep who brought the visitor.
+# reps/ is a small PHP site served as the document root of every rep subdomain (mahmoud.afnanfaeqasa.sa …).
+# The build only refreshes its data; adding a rep = a subdomain pointed at public_html/reps + one entry in reps.json.
 REPS = json.load(open(P("content", "reps.json"), encoding="utf8")).get("reps", [])
 with open(P("templates", "rep.js"), encoding="utf8") as fh:
     write("rep.js", fh.read().replace("__REPS__", json.dumps([{k: r[k] for k in ("code", "name", "phone")} for r in REPS], ensure_ascii=False)))
-REP_SECTIONS = [("med", "الطب المنزلي"), ("nurse", "التمريض المنزلي"), ("elder", "رعاية كبار السن"),
-                ("kids", "الأم والمولود"), ("rehab", "العلاج الطبيعي والتأهيل"), ("lab", "التحاليل والأشعة")]
-WA_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2a9.7 9.7 0 0 0-8.3 14.8L2.4 21.8l4.9-1.3A9.7 9.7 0 1 0 12 2.2Zm4.4 11.7c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.3-.2-.5-.3Z"/></svg>'
-PHONE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg>'
-CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-REP_CSS = """
-:root{--g:#0b3a27;--g2:#0f5a3c;--btn:#1f9d55;--gold:#c9a24e;--gold-lt:#e9cd8a;--cream:#f7f4ec;--ink:#10281d;--muted:#59685f;--line:#e5e7df;
-  --display:"Alexandria","Segoe UI",Tahoma,sans-serif;--body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;color-scheme:light;
-  --stars:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23c9a24e' stroke-opacity='.16' stroke-width='1'%3E%3Cpath d='M48 22l7.6 18.4L74 48l-18.4 7.6L48 74l-7.6-18.4L22 48l18.4-7.6z'/%3E%3Cpath d='M29.6 29.6h36.8v36.8H29.6z' transform='rotate(45 48 48)'/%3E%3C/g%3E%3C/svg%3E")}
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.75 var(--body);padding-bottom:env(safe-area-inset-bottom,0px)}
-a{color:inherit}
-.w{max-width:560px;margin:0 auto;padding:0 max(18px,env(safe-area-inset-left,0px)) 0 max(18px,env(safe-area-inset-right,0px))}
-.top{background:var(--stars),radial-gradient(500px 340px at 80% 0%,rgba(15,122,70,.55),transparent 65%),linear-gradient(170deg,#0e4b32,#0a3424 70%);color:#fff;padding:calc(18px + env(safe-area-inset-top,0px)) 0 34px;border-radius:0 0 30px 30px}
-.logo{display:inline-grid;place-items:center;background:#fff;border-radius:16px;padding:6px 12px;box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
-.logo img{height:52px;width:auto;display:block}
-.who{display:grid;justify-items:center;text-align:center;gap:10px;margin-top:26px}
-.ini{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:var(--cream);color:var(--g);font:800 42px/1 var(--display);box-shadow:0 0 0 5px var(--gold),0 0 0 14px rgba(201,162,78,.15)}
-h1{margin:12px 0 0;font:800 30px/1.3 var(--display)}
-.badge{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(201,162,78,.75);color:var(--gold-lt);border-radius:999px;padding:5px 14px;font-weight:600;font-size:14.5px}
-.badge svg{width:16px;height:16px}
-.perks{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.perks li{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 12px;font-size:14px;color:#e8f2ec}
-.perks svg{width:15px;height:15px;color:var(--gold-lt)}
-.acts{display:grid;gap:10px;margin-top:24px}
-.btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;border-radius:16px;font:700 18px var(--display);text-decoration:none;transition:transform .15s,filter .2s}
-.btn:active{transform:scale(.98)}
-.btn svg{width:24px;height:24px}
-.btn-wa{background:var(--btn);color:#fff;box-shadow:0 14px 28px -14px rgba(31,157,85,.95)}
-.btn-wa:hover{filter:brightness(1.07)}
-.btn-call{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4);font-size:16.5px;min-height:50px}
-.btn-call .n{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;color:var(--gold-lt)}
-section{padding:34px 0 0}
-h2{font:800 22px/1.4 var(--display);color:var(--g);margin:0 0 14px;display:flex;align-items:center;gap:10px}
-h2::before{content:"";width:22px;height:3px;border-radius:3px;background:var(--gold)}
-.acc{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
-.acc+.acc{margin-top:10px}
-.acc>button{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;cursor:pointer;font:700 17px var(--display);color:var(--ink)}
-.acc>button:focus-visible{outline:3px solid var(--gold);outline-offset:-3px;border-radius:18px}
-.acc .cnt{font:600 13px var(--body);color:var(--muted);margin-inline-start:auto}
-.chev{width:20px;height:20px;flex:none;color:var(--g2);transition:transform .25s}
-.acc[open]>button .chev,.acc.open>button .chev{transform:rotate(180deg)}
-.panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
-.acc.open .panel{grid-template-rows:1fr}
-.panel>div{overflow:hidden}
-.panel ul{list-style:none;margin:0;padding:0 18px 14px}
-.panel li{padding:10px 0;border-top:1px solid var(--line)}
-.panel li b{display:block;font-weight:600;color:var(--g)}
-.panel li span{display:block;color:var(--muted);font-size:15px;line-height:1.7}
-.panel p{margin:0;padding:0 18px 16px;color:var(--muted)}
-.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
-.steps li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px;counter-increment:s}
-.steps li::before{content:counter(s);width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--g);color:var(--gold-lt);font:800 18px var(--display)}
-.pay{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 16px}
-.pay img{height:26px;width:auto;background:#fff;border:1px solid var(--line);border-radius:7px;padding:3px 6px}
-.trust{margin:36px 0 0;background:var(--g);color:#e8f2ec;text-align:center;padding:20px 18px calc(96px + env(safe-area-inset-bottom,0px));font:600 14.5px/1.9 var(--body)}
-.trust b{color:var(--gold-lt);font-weight:600}
-.fwa{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(0,0,0,.45)}
-.fwa svg{width:32px;height:32px}
-@media (prefers-reduced-motion:reduce){.panel,.chev,.btn{transition:none}}
-"""
-CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.2 4L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-SHIELD = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6l7-3z" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>'
-def rep_page(r):
-    local = "0" + r["phone"][3:]
-    shown = f"{local[:3]} {local[3:6]} {local[6:]}"
-    first = r["name"].split()[0]
-    wa_link = f"https://wa.me/{r['phone']}?text=" + urllib.parse.quote(f"السلام عليكم، وصلتكم من صفحة {first}")
-    def acc(i, title, inner, count=""):
-        return (f'<div class="acc"><button type="button" aria-expanded="false" aria-controls="p{i}" id="b{i}">{esc(title)}'
-                f'{f"<span class=cnt>{count}</span>" if count else ""}{CHEV}</button>'
-                f'<div class="panel" id="p{i}" role="region" aria-labelledby="b{i}"><div>{inner}</div></div></div>')
-    svc_html = ""
-    for i, (k, nm) in enumerate(REP_SECTIONS):
-        items = [s for s in SERVICES if s["section"] == k]
-        if not items:
-            continue
-        lis = "".join(f'<li><b>{esc(s["title"])}</b><span>{esc(s.get("description", ""))}</span></li>' for s in items)
-        svc_html += acc(f"s{i}", nm, f"<ul>{lis}</ul>", f"{len(items)} خدمات" if len(items) > 2 else f"{len(items)} خدمة" if len(items) == 1 else "خدمتان")
-    pays = "".join(f'<img src="/img/pay/{p}.png" alt="{a}" loading="lazy">' for p, a in
-                   [("mada", "مدى"), ("visa", "فيزا"), ("applepay", "Apple Pay"), ("stcpay", "STC Pay"), ("tabby", "تابي"), ("tamara", "تمارا")])
-    faqs = [("مدة الاشتراك؟", "<p>من شهر لين سنة حسب الحالة، وما فيه زيارات منفردة.</p>"),
-            ("أقدر أختار ممرض أو ممرضة؟", "<p>نعم.</p>"),
-            ("وين تخدمون؟", "<p>جميع مناطق المملكة، على مدار ٢٤ ساعة.</p>"),
-            ("طرق الدفع؟", f"<p>خلال ٢٤ ساعة من تقديم الخدمة: مدى، فيزا، Apple Pay، STC Pay، تابي، تمارا.</p><div class=\"pay\">{pays}</div>")]
-    faq_html = "".join(acc(f"f{i}", q, a) for i, (q, a) in enumerate(faqs))
-    title = f"{r['name']} · ممثل معتمد لمركز أفنان الفائقة"
-    return f"""<!doctype html>
-<html lang="ar" dir="rtl" data-rep="{esc(r['code'])}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="robots" content="noindex, follow">
-<title>{esc(title)}</title>
-<meta name="description" content="{esc(r['name'])}، ممثل معتمد لمركز أفنان الفائقة للخدمات الطبية المنزلية. تواصل معه مباشرة على واتساب.">
-<meta name="theme-color" content="#0b3a27">
-<link rel="icon" href="/img/mark.png">
-{FONTS}
-<script src="/rep.js"></script>
-<style>{REP_CSS}</style>
-</head>
-<body>
-<header class="top"><div class="w">
-  <span class="logo"><img src="/img/logo.png" alt="مركز أفنان الفائقة للخدمات الطبية" width="350" height="360"></span>
-  <div class="who">
-    <span class="ini" aria-hidden="true">{esc(r['initial'])}</span>
-    <h1>{esc(r['name'])}</h1>
-    <span class="badge">{SHIELD}ممثل معتمد · مركز أفنان الفائقة</span>
-    <ul class="perks"><li>{CHECK}نفس أسعار المركز</li><li>{CHECK}متابعة شخصية</li><li>{CHECK}رد خلال دقائق</li></ul>
-  </div>
-  <div class="acts">
-    <a class="btn btn-wa" href="{wa_link}" target="_blank" rel="noopener">{WA_ICON}تواصل معي على واتساب</a>
-    <a class="btn btn-call" href="tel:+{r['phone']}">{PHONE_ICON}اتصل بي <span class="n">{shown}</span></a>
-  </div>
-</div></header>
-<main class="w">
-  <section aria-labelledby="h-svc"><h2 id="h-svc">خدماتنا</h2>{svc_html}</section>
-  <section aria-labelledby="h-how"><h2 id="h-how">كيف تبدأ الخدمة؟</h2>
-    <ol class="steps"><li>تتواصل معي وتعطيني تفاصيل الحالة</li><li>الفريق الطبي يقيّم الحالة ويعرض الاشتراك المناسب</li><li>الكادر يبدأ الرعاية في بيتك</li></ol>
-  </section>
-  <section aria-labelledby="h-faq"><h2 id="h-faq">أسئلة شائعة</h2>{faq_html}</section>
-</main>
-<p class="trust">مركز مرخّص · أكثر من <b>{esc(STAFF)}</b> كادرًا صحيًا · على مدار الساعة</p>
-<a class="fwa" href="{wa_link}" target="_blank" rel="noopener" aria-label="واتساب {esc(r['name'])}">{WA_ICON}</a>
-<script>
-document.querySelectorAll(".acc>button").forEach(function(b){{b.addEventListener("click",function(){{var a=b.parentNode,o=!a.classList.contains("open");a.classList.toggle("open",o);b.setAttribute("aria-expanded",o)}})}});
-</script>
-</body>
-</html>
-"""
-import urllib.parse
-for r in REPS:
-    os.makedirs(os.path.join(DIST, r["slug"]), exist_ok=True)
-    write(os.path.join(r["slug"], "index.html"), rep_page(r))
+shutil.copytree(P("reps"), os.path.join(DIST, "reps"))
+shutil.copy(P("content", "reps.json"), os.path.join(DIST, "reps", "reps.json"))
+REP_SECTIONS = [("med", "home-doctor", "الطب المنزلي"), ("nurse", "nursing", "التمريض المنزلي"), ("elder", "elderly-care", "رعاية كبار السن"),
+                ("kids", "mother-baby", "الأم والمولود"), ("rehab", "physiotherapy", "العلاج الطبيعي والتأهيل"), ("lab", "lab-radiology", "التحاليل والأشعة")]
+_ab = open(os.path.join(DIST, "about.html"), encoding="utf8").read()
+_ab = _ab[_ab.index('<div class="legal-body">') + len('<div class="legal-body">'):_ab.index("<h2>الخدمات</h2>")]
+_ab = _ab.replace('src="img/qutaiba-alkhaled.jpg"', 'src="/assets/chairman.webp"')
+assert "afnanfaeqasa" not in _ab and "href=" not in _ab
+_rep_data = {
+    "v": hashlib.md5(open(P("reps", "assets", "rep.css"), "rb").read()).hexdigest()[:8],
+    "staff": STAFF,
+    "about": _ab.strip(),
+    "sections": [{"slug": sl, "name": nm, "items": [{"title": s["title"], "description": s.get("description", "")} for s in SERVICES if s["section"] == k]}
+                 for k, sl, nm in REP_SECTIONS],
+}
+write(os.path.join("reps", "data.json"), json.dumps(_rep_data, ensure_ascii=False))
+# WebP copies of the logo and chairman photo live in reps/assets (made by tools/make_rep_assets.py)
 
-import hashlib
 def _v(name):
     p = os.path.join(DIST, name)
     return hashlib.md5(open(p, "rb").read()).hexdigest()[:8] if os.path.exists(p) else "0"

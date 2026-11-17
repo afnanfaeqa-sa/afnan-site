@@ -18,12 +18,13 @@
   function save(code) {
     var exp = Date.now() + DAYS * 864e5;
     try { localStorage.setItem(KEY, JSON.stringify({ code: code, exp: exp })); } catch (e) {}
-    document.cookie = KEY + "=" + code + "; max-age=" + DAYS * 86400 + "; path=/; SameSite=Lax" + (location.protocol === "https:" ? "; Secure" : "");
+    var dom = /(^|\.)afnanfaeqasa\.sa$/.test(location.hostname) ? "; domain=.afnanfaeqasa.sa" : "";
+    document.cookie = KEY + "=" + code + "; max-age=" + DAYS * 86400 + "; path=/" + dom + "; SameSite=Lax" + (location.protocol === "https:" ? "; Secure" : "");
   }
 
   // a rep page or a ?ref= link can set the rep, but never replaces one already saved
   var saved = byCode(readCookie()) || byCode(readStore());
-  var incoming = byCode(document.documentElement.getAttribute("data-rep")) || byCode(new URLSearchParams(location.search).get("ref"));
+  var incoming = byCode(new URLSearchParams(location.search).get("ref"));
   if (!saved && incoming) { save(incoming.code); saved = incoming; }
   else if (saved) save(saved.code); // keep cookie and storage in step
   if (!saved) return;
