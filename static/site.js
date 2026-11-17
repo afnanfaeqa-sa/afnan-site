@@ -1,5 +1,5 @@
 /* shared behaviour for inner pages: header, call card, mobile tab bar + services sheet, booking card, reveal */
-const WA="966555185244";
+const WA=(window.AFN_REP&&window.AFN_REP.phone)||"966555185244";
 const wa=t=>`https://wa.me/${WA}?text=${encodeURIComponent(t)}`;
 const I={
   med:'<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
@@ -36,7 +36,7 @@ sheet.addEventListener("click",e=>{if(e.target.closest("[data-close]"))closeMenu
 const callBtn=document.getElementById("callBtn"),callPop=document.getElementById("callPop");
 callBtn.onclick=e=>{e.stopPropagation();const o=callPop.hidden;callPop.hidden=!o;callBtn.setAttribute("aria-expanded",o)};
 document.addEventListener("click",e=>{if(!callPop.hidden&&!e.target.closest("#callPop")&&!e.target.closest("#callBtn")){callPop.hidden=true;callBtn.setAttribute("aria-expanded","false")}});
-document.getElementById("copyNum").onclick=async function(){const t=this;try{await navigator.clipboard.writeText("+966555185244");t.textContent="تم النسخ"}catch(_){const r=document.createRange();r.selectNodeContents(callPop.querySelector(".num"));const sl=getSelection();sl.removeAllRanges();sl.addRange(r);t.textContent="الرقم محدد، انسخه"}setTimeout(()=>t.textContent="نسخ الرقم",2200)};
+document.getElementById("copyNum").onclick=async function(){const t=this;try{await navigator.clipboard.writeText("+"+WA);t.textContent="تم النسخ"}catch(_){const r=document.createRange();r.selectNodeContents(callPop.querySelector(".num"));const sl=getSelection();sl.removeAllRanges();sl.addRange(r);t.textContent="الرقم محدد، انسخه"}setTimeout(()=>t.textContent="نسخ الرقم",2200)};
 
 /* whatsapp links */
 const svcName=document.body.dataset.svc||"";

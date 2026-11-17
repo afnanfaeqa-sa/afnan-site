@@ -42,7 +42,7 @@
   }
 
   /* fix the site's broken WhatsApp button (wa.me/undefined) */
-  var WA = '966555185244';
+  var WA = (window.AFN_REP && window.AFN_REP.phone) || '966555185244';
   function fixWa() {
     var links = document.querySelectorAll('a[href*="wa.me/undefined"]');
     for (var i = 0; i < links.length; i++) links[i].href = links[i].href.replace('wa.me/undefined', 'wa.me/' + WA);
