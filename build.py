@@ -182,7 +182,6 @@ def head(title, desc, svc="", extra="", image="img/elderly-walk.jpg", path=""):
 <link rel="icon" href="img/mark.png">
 {FONTS}
 <link rel="stylesheet" href="styles.css">
-<script src="rep.js"></script>
 <style>:root{{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}} body{{margin:0}}</style>
 {extra}
 </head>
@@ -499,8 +498,6 @@ for n in NURSES:
 # reps/ is a small PHP site served as the document root of every rep subdomain (mahmoud.afnanfaeqasa.sa …).
 # The build only refreshes its data; adding a rep = a subdomain pointed at public_html/reps + one entry in reps.json.
 REPS = json.load(open(P("content", "reps.json"), encoding="utf8")).get("reps", [])
-with open(P("templates", "rep.js"), encoding="utf8") as fh:
-    write("rep.js", fh.read().replace("__REPS__", json.dumps([{k: r[k] for k in ("code", "name", "phone")} for r in REPS], ensure_ascii=False)))
 shutil.copytree(P("reps"), os.path.join(DIST, "reps"))
 shutil.copy(P("content", "reps.json"), os.path.join(DIST, "reps", "reps.json"))
 REP_SECTIONS = [("med", "home-doctor", "الطب المنزلي"), ("nurse", "nursing", "التمريض المنزلي"), ("elder", "elderly-care", "رعاية كبار السن"),
@@ -522,7 +519,7 @@ write(os.path.join("reps", "data.json"), json.dumps(_rep_data, ensure_ascii=Fals
 def _v(name):
     p = os.path.join(DIST, name)
     return hashlib.md5(open(p, "rb").read()).hexdigest()[:8] if os.path.exists(p) else "0"
-_vers = {n: _v(n) for n in ("styles.css", "site.js", "chat.js", "stories.js", "afnan-popup.js", "rep.js")}
+_vers = {n: _v(n) for n in ("styles.css", "site.js", "chat.js", "stories.js", "afnan-popup.js")}
 for f in glob.glob(os.path.join(DIST, "*.html")):
     t = open(f, encoding="utf8").read()
     for n, v in _vers.items():

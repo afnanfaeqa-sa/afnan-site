@@ -11,8 +11,6 @@ declare(strict_types=1);
 if (PHP_SAPI === 'cli-server' && is_file(__DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))) { return false; }
 
 const ROOT_DOMAIN = 'afnanfaeqasa.sa';
-const COOKIE = 'afn_rep';
-const COOKIE_DAYS = 90;
 
 $reps = json_decode((string) file_get_contents(__DIR__ . '/reps.json'), true)['reps'] ?? [];
 $data = json_decode((string) file_get_contents(__DIR__ . '/data.json'), true);
@@ -33,12 +31,6 @@ foreach ($reps as $r) { if (($r['slug'] ?? '') === $slug) { $rep = $r; break; } 
 header('X-Robots-Tag: noindex');
 header('Content-Type: text/html; charset=utf-8');
 if (!$rep) { http_response_code(404); echo '<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>غير موجود</title><p style="font-family:sans-serif;text-align:center;margin-top:20vh">الصفحة غير موجودة</p>'; exit; }
-
-/* ---------- remember the rep across *.afnanfaeqasa.sa (first rep wins) ---------- */
-if (empty($_COOKIE[COOKIE]) && str_ends_with($host, ROOT_DOMAIN)) {
-    setcookie(COOKIE, $rep['code'], ['expires' => time() + COOKIE_DAYS * 86400, 'path' => '/', 'domain' => '.' . ROOT_DOMAIN,
-        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off', 'samesite' => 'Lax']);
-}
 
 /* ---------- routes ---------- */
 $path = '/' . trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
