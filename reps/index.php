@@ -4,7 +4,8 @@
  * Served from public_html/reps/ as the document root of each subdomain.
  *
  * Which rep: the subdomain's first label is matched against each entry in reps.json —
- *   "subdomains": ["care1", "mahmoud"]   (any neutral code works: care1.afnanfaeqasa.sa)
+ *   "subdomains": ["care", …]   (any neutral code works: care.afnanfaeqasa.sa; the first one is the main address,
+ *   the others — and the slug/code — 301 to it)
  *   falling back to "slug" and the lowercase "code".
  * Adding a rep = a subdomain whose document root is public_html/reps + one entry in reps.json.
  *
@@ -36,6 +37,11 @@ $rep = null;
 foreach ($reps as $r) {
     $names = array_map('strtolower', array_merge($r['subdomains'] ?? [], [$r['slug'] ?? '', $r['code'] ?? '']));
     if ($label !== '' && in_array($label, $names, true)) { $rep = $r; break; }
+}
+// the first entry in "subdomains" is the rep's address; any other name (old subdomain, slug, code) redirects to it
+if ($rep && !$local && !empty($rep['subdomains'][0]) && $label !== strtolower($rep['subdomains'][0])) {
+    header('Location: https://' . strtolower($rep['subdomains'][0]) . '.' . ROOT_DOMAIN . ($_SERVER['REQUEST_URI'] ?? '/'), true, 301);
+    exit;
 }
 
 header('X-Robots-Tag: noindex, nofollow');
