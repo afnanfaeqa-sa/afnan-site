@@ -11,8 +11,8 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{margin:0;background:#fff;color:var(--ink);font:400 17px/1.8 var(--body)}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;overflow-x:clip;background:#fff;color:var(--ink);font:400 17px/1.8 var(--body)}
 img{max-width:100%;height:auto;display:block}
 a{color:inherit}
 h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.25;margin:0;color:var(--navy);text-wrap:balance}
@@ -78,6 +78,7 @@ em{font-style:normal;color:var(--green)}
 .m-stats-in div:nth-child(odd){border-inline-end:1px solid var(--line)}
 .m-stats-in b{font:700 30px/1.1 var(--display);color:var(--navy)}
 .m-stats-in span{font-size:14px;color:var(--muted)}
+.m-stats-in b span{font:inherit;color:inherit}
 .m-stats-flat{margin-top:0;padding:0 0 64px}
 
 /* sections */
@@ -269,3 +270,77 @@ em{font-style:normal;color:var(--green)}
   .m-phead{padding:170px 0 60px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ---------- mobile hero: photo on top (crisp, no upscaling), text on navy below ---------- */
+@media (max-width:979px){
+  .m-hero{display:block;min-height:0}
+  .m-hero-bg{position:relative;inset:auto;height:auto;aspect-ratio:4/3;object-position:86% 50%}
+  .m-hero::before{bottom:auto;height:calc(100vw * .75 + 2px);background:linear-gradient(180deg,rgba(1,26,85,0) 45%,rgba(1,26,85,.75) 85%,var(--navy-2) 100%)}
+  .m-hero-in{position:relative;margin-top:-56px;padding:0 0 92px}
+  .m-hero h1{font-size:clamp(36px,10.5vw,52px)}
+}
+
+/* ---------- motion ---------- */
+.m-ln{display:block;overflow:hidden;padding-bottom:.08em}
+.m-ln>span{display:inline-block}
+.js .m-ln>span{transform:translateY(105%)}
+.js .m-hero .m-eyebrow,.js .m-lead,.js .m-hero-btns{opacity:0;transform:translateY(18px)}
+.js .m-hero-bg{transform:scale(1.12)}
+.ready .m-ln>span{transform:none;transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+.ready .m-ln:nth-child(2)>span{transition-delay:.12s}
+.ready .m-hero .m-eyebrow,.ready .m-lead,.ready .m-hero-btns{opacity:1;transform:none;transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+.ready .m-hero .m-eyebrow{transition-delay:.05s}.ready .m-lead{transition-delay:.35s}.ready .m-hero-btns{transition-delay:.5s}
+.ready .m-hero-bg{transform:scale(1);transition:transform 2.6s cubic-bezier(.2,.7,.2,1);animation:m-drift 22s 2.6s ease-in-out infinite alternate}
+@keyframes m-drift{to{transform:scale(1.06) translate(-1%,-1%)}}
+
+.js .rv{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+.js .m-row.rv figure img{transform:scale(1.15);transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
+.js .m-row.rv.in figure img{transform:scale(1)}
+.js .m-row.rv.in:hover figure img{transform:scale(1.05);transition-duration:.6s}
+.js .m-row.rv li{opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+.js .m-row.rv.in li{opacity:1;transform:none}
+.js .m-row.rv.in li:nth-child(1){transition-delay:.35s}.js .m-row.rv.in li:nth-child(2){transition-delay:.45s}.js .m-row.rv.in li:nth-child(3){transition-delay:.55s}
+.js .m-story-art.rv{clip-path:inset(0 0 100% 0);opacity:1;transform:none;transition:clip-path 1.2s cubic-bezier(.7,0,.2,1)}
+.js .m-story-art.rv.in{clip-path:inset(0 0 0 0)}
+.js .m-band figure.rv{clip-path:inset(0 100% 0 0 round 24px);opacity:1;transform:none;transition:clip-path 1.3s cubic-bezier(.7,0,.2,1)}
+.js .m-band figure.rv.in{clip-path:inset(0 0 0 0 round 24px)}
+.js .m-steps li.rv::before{transform:scale(0);transition:transform .6s .25s cubic-bezier(.3,1.6,.5,1)}
+.js .m-steps li.rv.in::before{transform:scale(1)}
+.m-steps li{transition:background .3s,border-color .3s}
+.m-steps li:hover{background:rgba(255,255,255,.1);border-color:rgba(134,224,174,.45)}
+.m-ticks li{transition:border-color .25s,transform .25s}
+.m-ticks li:hover{border-color:var(--green);transform:translateX(-4px)}
+
+/* moving services strip */
+.m-marquee{overflow:hidden;background:var(--navy);color:#fff;padding:16px 0;margin-top:48px;transform:rotate(-1.2deg) scale(1.02)}
+.m-marquee-track{display:flex;width:max-content;animation:m-marq 38s linear infinite}
+.m-marquee span{display:flex}
+.m-marquee i{font:600 17px var(--display);font-style:normal;white-space:nowrap;padding:0 22px;display:flex;align-items:center;gap:22px}
+.m-marquee i::after{content:"";width:9px;height:9px;transform:rotate(45deg);background:#86e0ae;margin-inline-start:22px}
+@keyframes m-marq{to{transform:translateX(50%)}}
+.m-marquee:hover .m-marquee-track{animation-play-state:paused}
+
+/* header on scroll */
+.m-top{transition:box-shadow .3s}
+.m-top.scrolled{box-shadow:0 10px 30px -16px rgba(1,36,111,.45)}
+.m-brand img{transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+.m-brand:hover img{transform:rotate(-8deg) scale(1.06)}
+
+/* buttons: shine */
+.m-wa,.m-cta .m-btn{position:relative;overflow:hidden}
+.m-wa::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-120%);animation:m-shine 4.5s 2s ease-in-out infinite}
+@keyframes m-shine{0%,70%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+
+/* floating whatsapp pulse */
+.m-float::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--wa);animation:m-pulse 2.4s ease-out infinite}
+@keyframes m-pulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.6);opacity:0}}
+
+/* cta mark slow spin */
+.m-cta::after{animation:m-spin 60s linear infinite}
+@keyframes m-spin{to{transform:rotate(360deg)}}
+
+@media (prefers-reduced-motion:reduce){
+  .js .rv,.js .m-ln>span,.js .m-hero .m-eyebrow,.js .m-lead,.js .m-hero-btns,.js .m-hero-bg,.js .m-row.rv figure img,.js .m-row.rv li{opacity:1!important;transform:none!important;clip-path:none!important}
+  .m-marquee-track,.m-wa::after,.m-float::before,.m-cta::after,.ready .m-hero-bg{animation:none!important}
+}

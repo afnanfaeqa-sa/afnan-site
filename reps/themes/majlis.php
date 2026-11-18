@@ -37,6 +37,7 @@ ob_start();
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<script>document.documentElement.className+=" js"</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title><?= e($docTitle) ?></title>
@@ -68,17 +69,18 @@ ob_start();
   <?= $pic('majlis', 'ممرضة من مركز أفنان تتابع نبض جدّ في مجلس بيته', 'm-hero-bg', false) ?>
   <div class="m-wrap m-hero-in">
     <p class="m-eyebrow m-on-dark">رعاية طبية منزلية باشتراك</p>
-    <h1>نرعى أهلك<br>في <em>مجلسهم</em></h1>
+    <h1><span class="m-ln"><span>نرعى أهلك</span></span><span class="m-ln"><span>في <em>مجلسهم</em></span></span></h1>
     <p class="m-lead">ممرضون وممرضات وأطباء مرخّصون يتابعون الحالة في البيت، باشتراك من شهر حتى سنة، في جميع مناطق المملكة.</p>
     <div class="m-hero-btns"><?= $wa1('اطلب الرعاية على واتساب', 'm-btn m-wa m-lg') ?><?= $tel1('m-btn m-out-light m-lg') ?></div>
   </div>
 </section>
 <section class="m-stats" aria-label="أرقام المركز"><div class="m-wrap m-stats-in">
-  <div><b><?= $staff ?>+</b><span>كادر صحي مرخّص</span></div>
+  <div><b><span data-count="<?= $staff ?>"><?= $staff ?></span>+</b><span>كادر صحي مرخّص</span></div>
   <div><b>24/7</b><span>على مدار الساعة</span></div>
-  <div><b>6</b><span>أقسام رعاية</span></div>
+  <div><b><span data-count="6">6</span></b><span>أقسام رعاية</span></div>
   <div><b>1–12</b><span>شهرًا مدة الاشتراك</span></div>
 </div></section>
+<div class="m-marquee" aria-hidden="true"><div class="m-marquee-track"><?php for ($k = 0; $k < 2; $k++): ?><span><?php foreach ($sections as $s): ?><i><?= e($s['name']) ?></i><?php endforeach; ?><i>ممرضة مقيمة</i><i>متابعة على مدار الساعة</i><i>جميع مناطق المملكة</i></span><?php endfor; ?></div></div>
 
 <section class="m-sec"><div class="m-wrap">
   <div class="m-h"><p class="m-eyebrow">خدماتنا</p><h2>كل ما يحتاجه المريض، <em>في بيته</em></h2><p>ستة أقسام، وفريق واحد يتابع الحالة من أول يوم حتى آخر يوم في الاشتراك.</p></div>
@@ -219,6 +221,18 @@ ob_start();
 <a class="m-float" href="<?= e($wa) ?>" target="_blank" rel="noopener" aria-label="راسلنا على واتساب"><?= $I['wa'] ?></a>
 
 <script>
+(function(){
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,de=document.documentElement;
+requestAnimationFrame(function(){de.classList.add('ready')});
+var top=document.querySelector('.m-top');addEventListener('scroll',function(){top&&top.classList.toggle('scrolled',scrollY>30)},{passive:true});
+var sel='.m-h,.m-row,.m-steps li,.m-story-art,.m-story-in>div,.m-sub>div,.m-ticks li,.qa,.m-band figure,.m-band blockquote,.m-stats-in>div,.m-svc,.m-cbox,.m-cinfo li,.m-mosaic img,.m-prose,.m-cta-in>*,.m-chips a,.m-svc-btns,.m-foot-top>*';
+var els=[].slice.call(document.querySelectorAll(sel));
+els.forEach(function(el){el.classList.add('rv');var sib=[].slice.call(el.parentNode.children).filter(function(x){return x.matches&&x.matches(sel)});var i=sib.indexOf(el);if(i>0)el.style.transitionDelay=Math.min(i*90,450)+'ms'});
+function count(el){var n=+el.getAttribute('data-count'),t0=null,d=1400;if(reduce||!n){el.textContent=n;return}function f(t){t0=t0||t;var p=Math.min((t-t0)/d,1);el.textContent=Math.round(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)}el.textContent='0';requestAnimationFrame(f)}
+if(!('IntersectionObserver' in window)||reduce){els.forEach(function(e){e.classList.add('in')});return}
+var io=new IntersectionObserver(function(es){es.forEach(function(x){if(!x.isIntersecting)return;x.target.classList.add('in');[].forEach.call(x.target.querySelectorAll('[data-count]'),count);io.unobserve(x.target)})},{rootMargin:'0px 0px -8% 0px',threshold:.12});
+els.forEach(function(e){io.observe(e)});
+})();
 (function(){var b=document.querySelector('.m-menu'),d=document.getElementById('m-drawer');if(!b||!d)return;
 b.addEventListener('click',function(){var o=d.hidden;d.hidden=!o;b.setAttribute('aria-expanded',String(o));b.innerHTML=o?<?= json_encode($I['close']) ?>:<?= json_encode($I['menu']) ?>;});})();
 </script>
