@@ -529,56 +529,34 @@ else:
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
           "".join(f"  <url><loc>{SITE_URL}/{'' if p == 'index.html' else p}</loc>" + (f"<lastmod>{ABOUT_UPDATED}</lastmod>" if p == "about.html" else "") + "</url>\n" for p in pages) + "</urlset>\n")
 
-# ------------------------------------------------------------------ rep copy of the full site (dist/reps/site)
-# Same pages as the main site, minus: every center number, links to the main domain, social accounts,
-# structured data, and any person's name. The numbers become placeholders that reps/index.php fills per rep.
+# ------------------------------------------------------------------ rep sites data (dist/reps/data.json)
+# The rep design is its own PHP template (reps/index.php); it only takes content from here.
+# Nothing from the main site's pages, scripts or tracking codes is copied.
 REP_DIR = os.path.join(DIST, "reps")
-os.makedirs(os.path.join(REP_DIR, "site"), exist_ok=True)
-# reps/img already holds the two vision stories cropped above their contact strip (center numbers + domain)
-shutil.copytree(os.path.join(DIST, "img"), os.path.join(REP_DIR, "img"), dirs_exist_ok=True,
-                ignore=shutil.ignore_patterns("qutaiba-*", "chairman*", "vision-story-*"))
-for n in ("styles.css", "data.js"):
-    shutil.copy(os.path.join(DIST, n), os.path.join(REP_DIR, n))
-_st = open(os.path.join(DIST, "stories.js"), encoding="utf8").read()
-_st, _k = re.subn(r'\s*\{label:"رئيس المجلس".*?\]\]\},', "", _st, flags=re.S)   # no person's story on rep sites
-assert _k == 1 and "chairman" not in _st, "rep site: chairman story"
-open(os.path.join(REP_DIR, "stories.js"), "w", encoding="utf8").write(_st)
-
-def _cut(t, pat, name, flags=re.S):
-    t2, k = re.subn(pat, "", t, flags=flags)
-    assert k, f"rep site: '{name}' not found"
-    return t2
-
-REP_FOOT_PHONES = ('<div class="foot-phones" aria-labelledby="fpT">\n    <h4 id="fpT">أرقام التواصل</h4>\n'
-                   '    <div class="fp-main"><a href="tel:+{{WA}}"><small>واتساب واتصال</small><b dir="ltr">{{LOCAL}}</b></a></div>\n  </div>')
-for f in sorted(glob.glob(os.path.join(DIST, "*.html"))):
-    name = os.path.basename(f)
-    if name.startswith("google") or name == "404.html":
+REP_SECTIONS = {"med": "home-doctor", "nurse": "nursing", "elder": "elderly-care", "kids": "mother-baby", "rehab": "physiotherapy", "lab": "lab-radiology"}
+_rep_imgs = {"img/logo.png", "img/mark.png", "img/elderly-walk.jpg", "img/team.jpg", "img/home-nursing.jpg", "img/vision-2030.png"}
+_rep_sections = []
+for k, nm, short in SECTIONS:
+    items = [s for s in SERVICES if s["section"] == k]
+    if not items:
         continue
-    t = open(f, encoding="utf8").read()
-    t = re.sub(r'<script type="application/ld\+json">.*?</script>\s*', "", t, flags=re.S)
-    t = re.sub(r'<link rel="canonical"[^>]*>\s*|<meta property="og:url"[^>]*>\s*', "", t)
-    t = t.replace("https://afnanfaeqasa.sa/", "/")
-    t = _cut(t, r'<div class="foot-phones".*?</ul>\s*</div>', "foot-phones")
-    t = t.replace('<div class="pay-row">', REP_FOOT_PHONES + '\n  <div class="pay-row">', 1)
-    t = _cut(t, r'\s*<div class="socials">.*?</svg></a></div>', "socials")
-    if name == "index.html":
-        t = _cut(t, r'\s*<button type="button" class="chair" id="chairBtn".*?</button>', "chairBtn")
-        t = _cut(t, r'\s*<dialog class="chair-dlg".*?</dialog>', "chairDlg")
-    if name == "about.html":
-        t = _cut(t, r'\s*<h2>قصة الاسم</h2>\s*<p>.*?</p>', "about name story")
-        t = _cut(t, r'\s*<h2>الإدارة</h2>\s*<div class="about-person">.*?</div>', "about management")
-    t = t.replace("+966 55 518 5244", "{{DISPLAY}}").replace("966555185244", "{{WA}}").replace("0555185244", "{{LOCAL}}")
-    t = t.replace("<head>", '<head>\n<meta name="robots" content="noindex, nofollow">', 1).replace("</head>", "<!--REP_HEAD-->\n</head>", 1).replace("</body>", "<!--REP_BODY-->\n</body>", 1)
-    left = set(re.findall(r"9665\d{8}|05\d{8}|920005284|0112988883|afnanfaeqasa|قتيبة|الخالد|سلمان|instagram|x\.com", t))
-    assert not left, f"rep site: {name} still has {left}"
-    open(os.path.join(REP_DIR, "site", name), "w", encoding="utf8").write(t)
-for n in ("site.js", "chat.js", "afnan-popup.js"):
-    t = open(os.path.join(DIST, n), encoding="utf8").read().replace("+966555185244", "+{{WA}}").replace("966555185244", "{{WA}}")
-    t = t.replace("encodeURIComponent(t)", "encodeURIComponent(t+'\\n\\n({{CODE}})')").replace("encodeURIComponent(msg)", "encodeURIComponent(msg+'\\n\\n({{CODE}})')")
-    if n == "afnan-popup.js":   # the popup image carries the center's number and domain: keep only the WhatsApp fix
-        t = t.replace("setTimeout(show, 600)", "0")
-    assert not re.search(r"9665\d{8}", t) and "show, 600" not in t, n
-    open(os.path.join(REP_DIR, "site", n), "w", encoding="utf8").write(t)
+    im = next((s["image"] for s in items if s.get("image")), "img/home-nursing.jpg")
+    _rep_imgs.add(im)
+    _rep_sections.append({"key": k, "slug": REP_SECTIONS[k], "name": nm, "short": short, "image": "/" + im,
+                          "items": [{"title": s["title"], "description": s.get("description", ""), "includes": s.get("includes", []),
+                                     "suitable_for": s.get("suitable_for", [])} for s in items]})
+for im in sorted(_rep_imgs):
+    os.makedirs(os.path.dirname(os.path.join(REP_DIR, im)), exist_ok=True)
+    shutil.copy(os.path.join(DIST, im), os.path.join(REP_DIR, im))
+shutil.copytree(os.path.join(DIST, "img", "pay"), os.path.join(REP_DIR, "img", "pay"), dirs_exist_ok=True)
+_rep_data = {"staff": STAFF, "sections": _rep_sections, "faq": [dict(f, a="راسلنا على واتساب أو اتصل بنا، ويتواصل معك فريقنا لتأكيد التفاصيل ومدة الاشتراك.") if "نموذج الحجز" in f["a"] else f for f in load("faq.json").get("faq", [])],
+             "v": hashlib.md5(open(P("reps", "rep.css"), "rb").read()).hexdigest()[:8]}
+_dump = json.dumps(_rep_data, ensure_ascii=False)
+# no person's name, center number or center tracking code may reach a rep site
+_bad = re.compile(r"9665\d{8}|05\d{8}|920005284|0112988883|https?://(?:www\.)?afnanfaeqasa|قتيبة|الخالد|مخلص|سلمان|GTM-|AW-\d|G-[A-Z0-9]{6}|fbq|1096435373095195|gtag")
+for _t, _n in ((_dump, "data.json"), (open(P("reps", "index.php"), encoding="utf8").read(), "index.php"), (open(P("reps", "rep.css"), encoding="utf8").read(), "rep.css")):
+    _hits = set(_bad.findall(re.sub(r"/\* ---------- pixels.*?/\* ---------- end pixels ---------- \*/", "", _t, flags=re.S)))
+    assert not _hits, f"rep site: {_n} has {_hits}"
+open(os.path.join(REP_DIR, "data.json"), "w", encoding="utf8").write(_dump)
 
 print(f"Built {len(pages)} pages, {len(SERVICES)} services, {len(ARTICLES)} articles -> dist/")
