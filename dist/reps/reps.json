@@ -12,6 +12,19 @@
       "tiktok_pixel": "",
       "snap_pixel": "",
       "google_tag": ""
+    },
+    {
+      "code": "CARE1",
+      "name": "حسان الخالد",
+      "slug": "care1",
+      "subdomains": [
+        "care1"
+      ],
+      "phone": "966598880125",
+      "meta_pixel": "",
+      "tiktok_pixel": "",
+      "snap_pixel": "",
+      "google_tag": ""
     }
   ]
 }

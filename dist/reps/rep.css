@@ -239,3 +239,17 @@ bdi{font-family:var(--body);font-weight:600;letter-spacing:.3px}
   .sec{padding:72px 0}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Saudi identity — Sadu weave, Tuwaiq, Riyadh skyline (no flag / emblem / official logos) */
+.sadu{height:28px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28' viewBox='0 0 56 28'%3E%3Cpath d='M0 14 14 0l14 14-14 14z' fill='%230b3a27'/%3E%3Cpath d='M28 14 42 0l14 14-14 14z' fill='%23c9a24e'/%3E%3Cpath d='M14 8l6 6-6 6-6-6z' fill='%23c9a24e'/%3E%3Cpath d='M42 8l6 6-6 6-6-6z' fill='%230b3a27'/%3E%3Cpath d='M0 0h56M0 28h56' stroke='%238a2b23' stroke-width='3'/%3E%3C/svg%3E") repeat-x center/56px 28px}
+.hemma-in{display:grid;gap:22px;align-items:center}
+.hemma-art{margin:0;border-radius:var(--r);overflow:hidden;box-shadow:0 18px 40px -26px rgba(11,58,39,.55);border:4px solid #fff}
+.tuwaiq-art{width:100%;height:auto;display:block;aspect-ratio:16/9}
+.hemma h2{font-size:clamp(26px,6vw,38px);margin:6px 0 12px}
+.hemma h2 em{font-style:normal;color:var(--leaf);background:linear-gradient(transparent 68%,var(--gold-lt) 68% 92%,transparent 92%)}
+.hemma p{color:var(--muted)}
+.vision-line{display:flex;gap:12px;align-items:center;margin-top:16px;background:#fff;border:1px solid var(--line);border-inline-start:4px solid var(--gold);border-radius:14px;padding:12px 14px;color:var(--ink)!important;font-size:15px}
+.vision-line span{font:700 18px var(--display);color:var(--green-2);background:var(--tint);border-radius:10px;padding:6px 8px;flex:none}
+.foot{position:relative;padding-top:0}
+.skyline{display:block;width:100%;height:80px;color:rgba(255,255,255,.16);margin-bottom:28px}
+@media (min-width:720px){.hemma-in{grid-template-columns:1fr 1.1fr;gap:40px}.skyline{height:110px}}

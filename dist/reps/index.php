@@ -83,6 +83,10 @@ $I = [
   'cal'   => '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10h16M9 3v4M15 3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
 ];
 
+/* ---------- Saudi identity (no flag, emblem, leaders' images/names or official logos) ---------- */
+$tuwaiq = '<svg class="tuwaiq-art" viewBox="0 0 640 360" role="img" aria-label="رسم لجروف جبل طويق عند الغروب" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="tqs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e2b3"/><stop offset=".55" stop-color="#e9b979"/><stop offset="1" stop-color="#d8955a"/></linearGradient></defs><rect width="640" height="360" fill="url(#tqs)"/><circle cx="470" cy="150" r="46" fill="#fff4d6" opacity=".9"/><path d="M0 210 L60 196 L95 204 L150 182 L210 190 L260 168 L330 176 L380 160 L450 172 L520 150 L580 162 L640 148 V360 H0Z" fill="#c78a55"/><path d="M0 246 L40 236 L70 214 L120 220 L170 200 L230 208 L270 192 L340 202 L400 186 L470 198 L530 180 L600 192 L640 184 V360 H0Z" fill="#a8683d"/><path d="M0 252 L70 246 L110 238 L112 232 L170 226 L230 230 L232 222 L300 218 L360 224 L362 214 L440 210 L520 216 L522 206 L600 204 L640 208 V360 H0Z" fill="#7d4a2b"/><path d="M0 300 L120 292 L240 298 L380 288 L520 296 L640 290 V360 H0Z" fill="#5c341f"/><g fill="#0b3a27" opacity=".85"><path d="M64 300c0-14 2-30 3-40m0 0c-8-6-18-6-24-2m24 2c6-8 16-10 24-6m-24 6c-4-10-2-18 4-24m-4 24c10-4 18-2 22 4" stroke="#0b3a27" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M578 296c0-12 2-26 3-36m0 0c-7-5-16-5-21-2m21 2c5-7 14-9 21-5m-21 5c-3-9-1-16 4-21" stroke="#0b3a27" stroke-width="3" fill="none" stroke-linecap="round"/></g></svg>';
+$skyline = '<svg class="skyline" viewBox="0 0 1200 120" aria-hidden="true" preserveAspectRatio="xMidYMax slice"><g fill="currentColor"><rect x="0" y="96" width="1200" height="24"/><rect x="40" y="70" width="38" height="50"/><rect x="88" y="58" width="26" height="62"/><rect x="124" y="78" width="44" height="42"/><path d="M190 120V62h14v-8h10v8h14v58z"/><rect x="250" y="80" width="40" height="40"/><path d="M330 120 L352 14 L374 120 Z"/><circle cx="352" cy="58" r="11" fill="var(--green)"/><circle cx="352" cy="58" r="8"/><rect x="392" y="74" width="30" height="46"/><rect x="430" y="88" width="56" height="32"/><path d="M520 120 V22 Q556 70 592 22 V120 Z"/><path d="M533 120 V46 Q556 84 579 46 V120 Z" fill="var(--green)"/><rect x="612" y="66" width="28" height="54"/><rect x="648" y="82" width="46" height="38"/><rect x="704" y="54" width="24" height="66"/><path d="M748 120V70l20-14 20 14v50z"/><rect x="806" y="84" width="40" height="36"/><rect x="856" y="62" width="30" height="58"/><rect x="896" y="76" width="50" height="44"/><rect x="956" y="90" width="38" height="30"/><rect x="1004" y="68" width="28" height="52"/><rect x="1042" y="80" width="46" height="40"/><rect x="1098" y="72" width="30" height="48"/><rect x="1138" y="86" width="44" height="34"/></g><g stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"><path d="M462 96c0-12 1-22 2-30m0 0c-6-5-13-5-18-2m18 2c4-6 11-8 17-4m-17 4c-3-7-1-13 3-17"/><path d="M972 96c0-12 1-22 2-30m0 0c-6-5-13-5-18-2m18 2c4-6 11-8 17-4m-17 4c-3-7-1-13 3-17"/></g></svg>';
+
 /* ---------- page titles ---------- */
 $titles = ['home' => 'رعاية طبية منزلية باشتراك', 'services' => 'خدماتنا', 'about' => 'من نحن', 'faq' => 'الأسئلة الشائعة', 'contact' => 'تواصل معنا', 'notfound' => 'الصفحة غير موجودة'];
 $pageTitle = $sec ? $sec['name'] : $titles[$page];
@@ -208,6 +212,15 @@ ob_start();
   </div>
 </div></section>
 
+<section class="sec hemma"><div class="wrap hemma-in">
+  <figure class="hemma-art"><?= $tuwaiq ?></figure>
+  <div>
+    <p class="eyebrow">قصة الاسم</p><h2>همّة مثل <em>طويق</em></h2>
+    <p>من همّة السعوديين التي تشبه جبل طويق في ثباتها استلهمنا اسمنا، ونحمل هذه الهمّة إلى كل بيت نخدمه: رعاية ثابتة، ومتابعة لا تنقطع، وكادر يعرف أهلك ويعرفونه.</p>
+    <p class="vision-line"><span aria-hidden="true">2030</span>نساهم في تحقيق مستهدفات رؤية المملكة 2030 في القطاع الصحي، بنقل الرعاية إلى بيت المريض.</p>
+  </div>
+</div></section>
+
 <section class="sec"><div class="wrap">
   <div class="sub">
     <div class="sub-txt"><p class="eyebrow">الاشتراك</p><h2>خطة رعاية، لا زيارة عابرة</h2>
@@ -311,7 +324,8 @@ ob_start();
 <?php endif; ?>
 </main>
 
-<footer class="foot"><div class="wrap">
+<div class="sadu" aria-hidden="true"></div>
+<footer class="foot"><?= $skyline ?><div class="wrap">
   <div class="foot-top">
     <div class="foot-brand"><img src="/img/logo.png" alt="<?= e(BRAND) ?>" width="120" height="123" loading="lazy"><p>رعاية صحية منزلية بكوادر مرخّصة، في جميع مناطق المملكة العربية السعودية.</p></div>
     <nav aria-label="روابط"><h3>الموقع</h3><?php foreach ($nav as [$h, $t]): ?><a href="<?= e($u($h)) ?>"><?= e($t) ?></a><?php endforeach; ?></nav>
