@@ -289,6 +289,9 @@ var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){retu
 var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var PHONE=<?= json_encode((string) $rep['phone']) ?>,CODE=<?= json_encode($code) ?>,BASE='السلام عليكم، أبي أستفسر عن خدمات الرعاية المنزلية';
 
+/* floating WhatsApp: on the home page it waits until the hero (with its own button) is scrolled past */
+var fl=$('.b-float');if(fl&&document.body.classList.contains('p-home')){var chk=function(){fl.classList.toggle('show',scrollY>innerHeight*.55)};addEventListener('scroll',chk,{passive:true});chk()}
+
 /* ticker */
 var tk=$('.b-tick-t');if(tk&&!RM){var tx=0;(function loop(){var w=tk.scrollWidth/2;tx=(tx+.45)%w;tk.style.transform='translate3d('+tx.toFixed(1)+'px,0,0)';requestAnimationFrame(loop)})()}
 
