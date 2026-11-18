@@ -223,7 +223,7 @@ ob_start();
 <script>
 (function(){
 var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,de=document.documentElement;
-requestAnimationFrame(function(){de.classList.add('ready')});
+var go=function(){de.classList.add('ready')};requestAnimationFrame(go);setTimeout(go,120);
 var top=document.querySelector('.m-top');addEventListener('scroll',function(){top&&top.classList.toggle('scrolled',scrollY>30)},{passive:true});
 var sel='.m-h,.m-row,.m-steps li,.m-story-art,.m-story-in>div,.m-sub>div,.m-ticks li,.qa,.m-band figure,.m-band blockquote,.m-stats-in>div,.m-svc,.m-cbox,.m-cinfo li,.m-mosaic img,.m-prose,.m-cta-in>*,.m-chips a,.m-svc-btns,.m-foot-top>*';
 var els=[].slice.call(document.querySelectorAll(sel));
