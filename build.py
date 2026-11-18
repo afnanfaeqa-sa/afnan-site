@@ -500,7 +500,7 @@ for n in NURSES:
 # full main site (built at the end of this file into dist/reps/site) with the rep's number in place of the center's.
 # Adding a rep = a subdomain pointed at public_html/reps + one entry in reps.json.
 REPS = json.load(open(P("content", "reps.json"), encoding="utf8")).get("reps", [])
-shutil.copytree(P("reps"), os.path.join(DIST, "reps"))
+shutil.copytree(P("reps"), os.path.join(DIST, "reps"), ignore=shutil.ignore_patterns(".data"))
 shutil.copy(P("content", "reps.json"), os.path.join(DIST, "reps", "reps.json"))
 
 def _v(name):

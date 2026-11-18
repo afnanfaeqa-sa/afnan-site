@@ -20,6 +20,7 @@ if (PHP_SAPI === 'cli-server' && is_file(__DIR__ . parse_url($_SERVER['REQUEST_U
 const ROOT_DOMAIN = 'afnanfaeqasa.sa';
 const BRAND = 'مركز أفنان الفائقة';
 
+require __DIR__ . '/lib.php';
 $reps = json_decode((string) file_get_contents(__DIR__ . '/reps.json'), true)['reps'] ?? [];
 $data = json_decode((string) file_get_contents(__DIR__ . '/data.json'), true);
 
@@ -48,25 +49,46 @@ header('X-Robots-Tag: noindex, nofollow');
 header('Content-Type: text/html; charset=utf-8');
 if (!$rep) { http_response_code(404); echo '<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>غير موجود</title><p style="font-family:sans-serif;text-align:center;margin-top:20vh">الصفحة غير موجودة</p>'; exit; }
 
+/* ---------- what the rep changed from his dashboard ---------- */
+$rep = rep_effective($rep);
+$content = rep_read((string) $rep['code'], 'content.json');
+if (!empty($content['faq']) && is_array($content['faq'])) { $data['faq'] = $content['faq']; }
+
 /* ---------- routes ---------- */
 $path = '/' . trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+// click beacon from the site's own pages (WhatsApp / call / quiz)
+if ($path === '/e') {
+    if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) < 600) {
+        $ev = (string) ($_POST['e'] ?? '');
+        if (in_array($ev, ['whatsapp', 'call', 'quiz'], true)) rep_log((string) $rep['code'], $ev, (string) ($_POST['p'] ?? ''), (string) ($_POST['s'] ?? ''));
+    }
+    http_response_code(204); exit;
+}
+$isDash = $path === '/dashboard' || str_starts_with($path, '/dashboard/');
 $sections = $data['sections'];
 $bySlug = [];
 foreach ($sections as $s) { $bySlug['/services/' . $s['slug']] = $s; }
 $pages = ['/' => 'home', '/services' => 'services', '/about' => 'about', '/faq' => 'faq', '/contact' => 'contact'];
 $page = $pages[$path] ?? (isset($bySlug[$path]) ? 'section' : null);
-if ($page === null) { http_response_code(404); $page = 'notfound'; }
+if ($page === null && !$isDash) { http_response_code(404); $page = 'notfound'; }
 $sec = $page === 'section' ? $bySlug[$path] : null;
+if ($page !== null && $page !== 'notfound' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+    $ref = (string) ($_SERVER['HTTP_REFERER'] ?? '');
+    $own = $ref !== '' && strtolower((string) parse_url($ref, PHP_URL_HOST)) === $host;
+    rep_log((string) $rep['code'], 'view', $path, $sec['name'] ?? '', $own ? '' : rep_source($ref, (string) ($_SERVER['QUERY_STRING'] ?? '')));
+}
 
 /* ---------- helpers ---------- */
 function e($s): string { return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8'); }
 $q = $local ? '?rep=' . rawurlencode($label) : '';          // keep the rep on local preview links
 $u = fn(string $p): string => $p . $q;
-$waText = 'السلام عليكم، أبي أستفسر عن خدمات الرعاية المنزلية (' . $rep['code'] . ')';
+$waBase = trim((string) ($rep['wa_text'] ?? '')) ?: 'السلام عليكم، أبي أستفسر عن خدمات الرعاية المنزلية';
+$waText = $waBase . ' (' . $rep['code'] . ')';                 // the code always closes the message
 $wa = 'https://wa.me/' . $rep['phone'] . '?text=' . rawurlencode($waText);
 $tel = 'tel:+' . $rep['phone'];
 $shown = '0' . substr((string) $rep['phone'], 3, 2) . ' ' . substr((string) $rep['phone'], 5, 3) . ' ' . substr((string) $rep['phone'], 8);
 $staff = (int) $data['staff'];
+if ($isDash) { require __DIR__ . '/dashboard.php'; exit; }
 $v = e($data['v']);
 
 $I = [
@@ -117,7 +139,9 @@ $track = "<script>document.addEventListener('click',function(ev){var a=ev.target
        . "try{if(window.snaptr){snaptr('track','CUSTOM_EVENT_1',{description:'Contact '+k});}}catch(_){}"
        . "try{if(window.gtag){gtag('event','contact',{method:k});}}catch(_){}"
        . "},true);</script>";
-if ($px === '') { $track = ''; }   // no pixels set → no tracking script at all
+if ($px === '') { $track = ''; }   // no pixels set → no pixel events
+// the site's own count of WhatsApp / call clicks for the rep's dashboard (first-party, no cookies)
+$track .= "<script>document.addEventListener('click',function(ev){var a=ev.target.closest&&ev.target.closest('a[href]');if(!a||a.hasAttribute('data-quiz'))return;var h=a.getAttribute('href')||'';var k=a.hasAttribute('data-quiz-send')?'quiz':(h.indexOf('wa.me')>-1?'whatsapp':(h.indexOf('tel:')===0?'call':''));if(!k||!navigator.sendBeacon)return;var f=new FormData();f.append('e',k);f.append('p',location.pathname);f.append('s',a.getAttribute('data-svc-name')||'');navigator.sendBeacon('/e',f)},true);</script>";
 /* ---------- end pixels ---------- */
 
 /* ---------- shared pieces ---------- */

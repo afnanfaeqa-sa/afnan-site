@@ -8,6 +8,17 @@
  */
 if (!isset($rep, $data, $I)) { http_response_code(404); exit; }
 
+/* texts the rep can change from his dashboard (content.json); empty → these defaults */
+$C = [
+    'promo' => 'رعاية منزلية باشتراك من شهر حتى سنة.',
+    'hh' => 'رعايتكم علينا',
+    'tall' => 'التمريض المنزلي وممرضة مقيمة',
+    'plan_m' => 'للتعافي بعد العمليات والإصابات، والحالات اللي تحتاج متابعة لفترة محددة.',
+    'plan_y' => 'لكبار السن والأمراض المزمنة، بخطة رعاية تُراجع كل فترة ونفس الفريق طول السنة.',
+    'close_t' => 'رعاية أهلكم تبدأ برسالة',
+    'close_p' => 'جاوب على ثلاثة أسئلة سريعة، ويتواصل معك الفريق الطبي على واتساب بالخطة المناسبة.',
+];
+foreach ($C as $k => $d) { if (!empty($content[$k]) && is_string($content[$k])) $C[$k] = $content[$k]; }
 $img = '/img/care1/';
 $secImg = ['med' => 'doctor', 'nurse' => 'wound', 'elder' => 'walk', 'kids' => 'baby', 'rehab' => 'physio', 'lab' => 'lab'];
 $pic = fn(string $name, string $alt, string $cls = '', bool $lazy = true): string =>
@@ -24,7 +35,7 @@ $vision = '<img class="b-v2030" src="/img/vision-2030.png" alt="شعار رؤي�
 $head = function (string $title, string $lead, array $trail, string $photo) use ($crumbs, $pic): string {
     return '<header class="b-wrap b-phead"><div class="b-phead-t">' . $pic($photo, '', 'b-bg', false) . '<div class="b-pad">' . $crumbs($trail) . '<h1>' . e($title) . '</h1><p>' . e($lead) . '</p></div></div></header>';
 };
-$close = '<section class="b-sec b-wrap"><div class="b-close">' . $ecg . '<div><h2>رعاية أهلكم تبدأ برسالة</h2><p>جاوب على ثلاثة أسئلة سريعة، ويتواصل معك الفريق الطبي على واتساب بالخطة المناسبة.</p></div><div class="b-acts">' . $quizBtn('ابدأ الآن', '', '', 'b-cap b-cap-light') . '<a class="b-ph" href="' . e($tel) . '"><bdi dir="ltr">' . e($shown) . '</bdi></a></div></div></section>';
+$close = '<section class="b-sec b-wrap"><div class="b-close">' . $ecg . '<div><h2>' . e($C['close_t']) . '</h2><p>' . e($C['close_p']) . '</p></div><div class="b-acts">' . $quizBtn('ابدأ الآن', '', '', 'b-cap b-cap-light') . '<a class="b-ph" href="' . e($tel) . '"><bdi dir="ltr">' . e($shown) . '</bdi></a></div></div></section>';
 $secTiles = function () use ($sections, $u, $pic, $secImg, $circ): string {
     $h = '<div class="b-tiles">';
     foreach ($sections as $s) {
@@ -38,12 +49,17 @@ $faq = function (array $items): string {
     foreach ($items as $f) { $h .= '<details><summary>' . e($f['q']) . '<i aria-hidden="true"></i></summary><p>' . e($f['a']) . '</p></details>'; }
     return $h . '</div>';
 };
-$slides = [
+$slidesDefault = [
     ['walk',   'رعاية كبار السن في البيت', 'اشتراك سنوي',   'نفس الفريق طول السنة'],
     ['physio', 'علاج طبيعي بعد العمليات',   'اشتراك شهري',   'جلسات في بيتك'],
     ['wound',  'تمريض منزلي منتظم',          'شهري أو سنوي',  'ممرضون مرخّصون'],
     ['baby',   'رعاية الأم والمولود',         'اشتراك شهري',   'بعد الولادة مباشرة'],
 ];
+$slides = $slidesDefault;
+foreach ($slides as $i => $sl) {
+    $o = $content['slides'][$i] ?? [];
+    foreach ([1 => 'title', 2 => 'pill', 3 => 'sub'] as $n => $k) { if (!empty($o[$k]) && is_string($o[$k])) $slides[$i][$n] = $o[$k]; }
+}
 
 ob_start();
 ?><!doctype html>
@@ -64,7 +80,7 @@ ob_start();
 <?= $px ?>
 </head>
 <body class="b p-<?= e($page) ?>">
-<div class="b-promo"><span class="b-promo-v">2030</span>رعاية منزلية باشتراك من شهر حتى سنة. <a href="<?= e($wa) ?>" target="_blank" rel="noopener" data-quiz>اعرف الخطة المناسبة</a></div>
+<div class="b-promo"><span class="b-promo-v">2030</span><?= e($C['promo']) ?> <a href="<?= e($wa) ?>" target="_blank" rel="noopener" data-quiz>اعرف الخطة المناسبة</a></div>
 
 <header class="b-hdr">
   <div class="b-hbar"><div class="b-wrap b-hbar-in">
@@ -92,7 +108,7 @@ ob_start();
 <div class="b-tick" aria-hidden="true"><div class="b-tick-t"><?php for ($k = 0; $k < 2; $k++): foreach (["أكثر من $staff كادر صحي مرخّص", 'متابعة على مدار الساعة', 'جميع مناطق المملكة', 'اشتراك من شهر حتى سنة', 'ممرضة مقيمة حسب الحالة'] as $t): ?><span><?= $I['check'] ?><?= e($t) ?></span><?php endforeach; endfor; ?></div></div>
 
 <div class="b-wrap">
-  <h1 class="b-hh rv">رعايتكم علينا <svg viewBox="0 0 120 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18h34l6-12 8 22 7-16 4 6h57"/></svg></h1>
+  <h1 class="b-hh rv"><?= e($C['hh']) ?> <svg viewBox="0 0 120 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18h34l6-12 8 22 7-16 4 6h57"/></svg></h1>
 
   <div class="b-bento">
     <div class="b-t b-hero rv" id="b-hero">
@@ -108,7 +124,7 @@ ob_start();
 
     <a class="b-t b-tall b-dark rv" href="<?= e($u('/services/nursing')) ?>">
       <?= $pic('wound', 'ممرض من مركز أفنان يعتني بجرح مريض في بيته', 'b-bg') ?>
-      <div class="b-pad"><h3>التمريض المنزلي وممرضة مقيمة</h3></div>
+      <div class="b-pad"><h3><?= e($C['tall']) ?></h3></div>
       <span class="b-cap b-cap-full"><span>تفاصيل التمريض</span><?= $arrow ?></span>
     </a>
 
@@ -134,8 +150,8 @@ ob_start();
 <section class="b-sec b-wrap b-sec0">
   <h2 class="b-sh rv">شهري أو سنوي</h2>
   <div class="b-plans">
-    <div class="b-pl b-pl-m rv"><span class="b-lbl">اشتراك شهري</span><span class="b-big"><bdi>1–3</bdi> أشهر</span><p>للتعافي بعد العمليات والإصابات، والحالات اللي تحتاج متابعة لفترة محددة.</p><?= $quizBtn('ابدأ شهري', '', 'شهري') ?></div>
-    <div class="b-pl b-pl-y rv"><span class="b-tag">رعاية مستمرة</span><span class="b-lbl">اشتراك سنوي</span><span class="b-big"><bdi>12</bdi> شهر</span><p>لكبار السن والأمراض المزمنة، بخطة رعاية تُراجع كل فترة ونفس الفريق طول السنة.</p><?= $quizBtn('ابدأ سنوي', '', 'سنوي', 'b-cap b-cap-light') ?></div>
+    <div class="b-pl b-pl-m rv"><span class="b-lbl">اشتراك شهري</span><span class="b-big"><bdi>1–3</bdi> أشهر</span><p><?= e($C['plan_m']) ?></p><?= $quizBtn('ابدأ شهري', '', 'شهري') ?></div>
+    <div class="b-pl b-pl-y rv"><span class="b-tag">رعاية مستمرة</span><span class="b-lbl">اشتراك سنوي</span><span class="b-big"><bdi>12</bdi> شهر</span><p><?= e($C['plan_y']) ?></p><?= $quizBtn('ابدأ سنوي', '', 'سنوي', 'b-cap b-cap-light') ?></div>
   </div>
 </section>
 
@@ -278,7 +294,7 @@ ob_start();
   <div class="b-q" data-q="3"><h4>آخر خطوة</h4>
     <div class="b-fld"><label for="b-qCity">المدينة</label><select id="b-qCity"><?php foreach (['الرياض', 'جدة', 'مكة المكرمة', 'المدينة المنورة', 'الدمام', 'الخبر', 'القصيم', 'أبها', 'تبوك', 'حائل', 'جازان', 'نجران', 'الباحة', 'الجوف', 'عرعر', 'مدينة أخرى'] as $c): ?><option><?= e($c) ?></option><?php endforeach; ?></select></div>
     <div class="b-sum" id="b-qSum"></div>
-    <a class="b-cap b-cap-full" id="b-qSend" href="<?= e($wa) ?>" target="_blank" rel="noopener"><span>أرسل الطلب على واتساب</span><?= $arrow ?></a>
+    <a class="b-cap b-cap-full" id="b-qSend" data-quiz-send href="<?= e($wa) ?>" target="_blank" rel="noopener"><span>أرسل الطلب على واتساب</span><?= $arrow ?></a>
     <p class="b-note">يفتح واتساب برسالة جاهزة فيها اختياراتك، ويرد عليك الفريق الطبي.</p>
   </div>
 </div></div>
@@ -287,7 +303,7 @@ ob_start();
 (function(){
 var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
 var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-var PHONE=<?= json_encode((string) $rep['phone']) ?>,CODE=<?= json_encode($code) ?>,BASE='السلام عليكم، أبي أستفسر عن خدمات الرعاية المنزلية';
+var PHONE=<?= json_encode((string) $rep['phone']) ?>,CODE=<?= json_encode($code) ?>,BASE=<?= json_encode($waBase, JSON_UNESCAPED_UNICODE) ?>;
 
 /* floating WhatsApp: on the home page it waits until the hero (with its own button) is scrolled past */
 var fl=$('.b-float');if(fl&&document.body.classList.contains('p-home')){var chk=function(){fl.classList.toggle('show',scrollY>innerHeight*.55)};addEventListener('scroll',chk,{passive:true});chk()}
@@ -318,7 +334,7 @@ $('.b-menu').addEventListener('click',function(){openSh($('#b-sheet'))});
 /* quiz → WhatsApp message with the rep code at the end */
 var quiz=$('#b-quiz'),qs=$$('.b-q',quiz),ans={svc:'',who:'',dur:''},step=0;
 function msg(){var l=[BASE];if(ans.svc)l.push('الخدمة: '+ans.svc);if(ans.who)l.push('الرعاية: '+ans.who);if(ans.dur)l.push('المدة: '+ans.dur);l.push('المدينة: '+$('#b-qCity').value);return l.join('\n')+'\n('+CODE+')'}
-function upd(){$('#b-qSend').href='https://wa.me/'+PHONE+'?text='+encodeURIComponent(msg())}
+function upd(){$('#b-qSend').setAttribute('data-svc-name',ans.svc||'');$('#b-qSend').href='https://wa.me/'+PHONE+'?text='+encodeURIComponent(msg())}
 function go(n){step=Math.max(0,Math.min(3,n));qs.forEach(function(q,i){q.classList.toggle('on',i===step)});$('#b-qBar').style.transform='scaleX('+((step+1)/4)+')';$('#b-qBack').style.visibility=step?'visible':'hidden';
   if(step===3){var esc=function(s){return String(s).replace(/[<>&]/g,'')};$('#b-qSum').innerHTML='<span>الخدمة: <b>'+esc(ans.svc||'—')+'</b></span><span>الرعاية: <b>'+esc(ans.who||'—')+'</b></span><span>المدة: <b>'+esc(ans.dur||'—')+'</b></span>';upd()}}
 $$('.b-ans[data-k]',quiz).forEach(function(g){$$('.b-an',g).forEach(function(b){b.addEventListener('click',function(){$$('.b-an',g).forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});ans[g.dataset.k]=b.dataset.v||b.textContent.trim();
