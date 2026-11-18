@@ -58,6 +58,9 @@ if ($sub === 'invite') {
     $secretFile = PHP_SAPI === 'cli-server' ? __DIR__ . '/.data/admin-secret.php' : dirname(__DIR__, 2) . '/afnan-admin-secret.php';
     $secret = is_file($secretFile) ? require $secretFile : [];
     $admins = array_change_key_case((array) ($secret['users'] ?? []), CASE_LOWER);
+    // marketing admins for the rep sites (set once through /dashboard/admin-setup), on top of the main site's admins
+    foreach ((array) (json_decode((string) @file_get_contents(rep_data_root() . '/admins.json'), true) ?: []) as $em => $h) $admins[strtolower((string) $em)] = (string) $h;
+    $noAdmins = !$admins;
     $link = '';
     if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && !$locked && $csrfOk()) {
         $em = strtolower(trim((string) ($_POST['email'] ?? '')));
@@ -74,6 +77,30 @@ if ($sub === 'invite') {
     }
 }
 /* ---------- rep: set email + password from the one-time link ---------- */
+/* ---------- first marketing admin: one-time token file placed in afnan-reps-data/ from cPanel ---------- */
+elseif ($sub === 'admin-setup') {
+    $page = 'adminsetup';
+    $tf = rep_data_root() . '/admin-setup.json';
+    $ts = is_file($tf) ? (json_decode((string) file_get_contents($tf), true) ?: []) : [];
+    $tok = (string) ($_GET['t'] ?? $_POST['t'] ?? '');
+    $valid = $tok !== '' && !empty($ts['h']) && hash_equals((string) $ts['h'], hash('sha256', $tok)) && ($ts['exp'] ?? 0) > time();
+    if (!$valid) { $err = 'الرابط غير صالح أو انتهت صلاحيته.'; }
+    elseif ($posted && $err === '') {
+        $em = strtolower(trim((string) ($_POST['email'] ?? '')));
+        $p1 = (string) ($_POST['p1'] ?? ''); $p2 = (string) ($_POST['p2'] ?? '');
+        if (!filter_var($em, FILTER_VALIDATE_EMAIL)) $err = 'اكتب بريدًا إلكترونيًا صحيحًا.';
+        elseif (mb_strlen($p1) < 10) $err = 'كلمة المرور لازم تكون 10 حروف أو أرقام على الأقل.';
+        elseif ($p1 !== $p2) $err = 'كلمتا المرور غير متطابقتين.';
+        else {
+            $af = rep_data_root() . '/admins.json';
+            $list = json_decode((string) @file_get_contents($af), true) ?: [];
+            $list[$em] = password_hash($p1, PASSWORD_DEFAULT);
+            @file_put_contents($af, json_encode($list), LOCK_EX);
+            @unlink($tf);
+            header('Location: ' . $D('invite')); exit;
+        }
+    }
+}
 elseif ($sub === 'setup') {
     $page = 'setup';
     $inv = rep_read($code, 'invite.json');
@@ -299,7 +326,7 @@ legend{font:600 14px var(--h);padding:0 6px;color:var(--gold)}
 </style>
 </head>
 <body>
-<?php if (in_array($page, ['login', 'setup', 'invite'], true)): ?>
+<?php if (in_array($page, ['login', 'setup', 'invite', 'adminsetup'], true)): ?>
 <div class="auth"><form class="card" method="post" autocomplete="on">
   <?= $csrf ?>
   <div class="brand"><img src="/img/mark.png" alt=""><div><b>لوحة تحكم الموقع</b><small><?= e($host) ?></small></div></div>
@@ -311,6 +338,15 @@ legend{font:600 14px var(--h);padding:0 6px;color:var(--gold)}
       <label><span>كلمة المرور</span><input type="password" name="password" required autocomplete="current-password" <?= $locked ? 'disabled' : '' ?>></label>
       <button class="btn" type="submit" <?= $locked ? 'disabled' : '' ?>>دخول</button>
       <p class="hint" style="margin-top:12px">نسيت كلمة المرور؟ اطلب رابط تفعيل جديد من إدارة التسويق.</p>
+    <?php endif; ?>
+  <?php elseif ($page === 'adminsetup'): ?>
+    <?php if (!empty($valid)): ?>
+      <p class="mut">حساب الإدارة لمواقع المسوّقين. بيه بتعمل روابط التفعيل للمسوّقين من صفحة /dashboard/invite في أي موقع منهم.</p>
+      <input type="hidden" name="t" value="<?= e($tok) ?>">
+      <label><span>البريد الإلكتروني</span><input type="email" name="email" dir="ltr" required autocomplete="username"></label>
+      <label><span>كلمة المرور (10 على الأقل)</span><input type="password" name="p1" minlength="10" required autocomplete="new-password"></label>
+      <label><span>أعد كتابة كلمة المرور</span><input type="password" name="p2" minlength="10" required autocomplete="new-password"></label>
+      <button class="btn" type="submit">إنشاء حساب الإدارة</button>
     <?php endif; ?>
   <?php elseif ($page === 'setup'): ?>
     <?php if ($err === '' || !empty($valid)): ?>
@@ -328,7 +364,8 @@ legend{font:600 14px var(--h);padding:0 6px;color:var(--gold)}
       <button class="btn gold" type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('lnk').textContent).then(function(){this.textContent='اتنسخ ✓'}.bind(this))">انسخ الرابط</button>
       <p class="hint" style="margin-top:12px">لو المسوّق نسي كلمة المرور، اعمل رابط جديد من نفس الصفحة.</p>
     <?php else: ?>
-      <p class="mut">للإدارة فقط: ادخل بنفس بيانات لوحة تحكم الموقع الرئيسي، علشان تعمل رابط تفعيل لصاحب الموقع ده.</p>
+      <p class="mut">للإدارة فقط: ادخل ببيانات حساب الإدارة، علشان تعمل رابط تفعيل لصاحب الموقع ده.</p>
+      <?php if ($noAdmins): ?><div class="note bad">مفيش حساب إدارة لسه. لازم يتعمل الأول من رابط إعداد الإدارة.</div><?php endif; ?>
       <label><span>البريد الإلكتروني</span><input type="email" name="email" dir="ltr" required autocomplete="username" <?= $locked ? 'disabled' : '' ?>></label>
       <label><span>كلمة المرور</span><input type="password" name="password" required autocomplete="current-password" <?= $locked ? 'disabled' : '' ?>></label>
       <button class="btn" type="submit" <?= $locked ? 'disabled' : '' ?>>اعمل رابط التفعيل</button>
