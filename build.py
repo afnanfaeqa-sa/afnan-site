@@ -505,7 +505,7 @@ shutil.copy(P("content", "reps.json"), os.path.join(DIST, "reps", "reps.json"))
 
 def _v(name):
     p = os.path.join(DIST, name)
-    return hashlib.md5(open(p, "rb").read()).hexdigest()[:8] if os.path.exists(p) else "0"
+    return hashlib.md5(open(p, "rb").read() + WA.encode()).hexdigest()[:8] if os.path.exists(p) else "0"  # WA: the number is swapped in after this, so it must bust the cache too
 _vers = {n: _v(n) for n in ("styles.css", "site.js", "chat.js", "stories.js", "afnan-popup.js")}
 for f in glob.glob(os.path.join(DIST, "*.html")):
     t = open(f, encoding="utf8").read()
