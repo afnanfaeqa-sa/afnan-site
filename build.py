@@ -554,7 +554,8 @@ _rep_data = {"staff": STAFF, "sections": _rep_sections, "faq": [dict(f, a="را�
 _dump = json.dumps(_rep_data, ensure_ascii=False)
 # no person's name, center number or center tracking code may reach a rep site
 _bad = re.compile(r"9665\d{8}|05\d{8}|920005284|0112988883|https?://(?:www\.)?afnanfaeqasa|قتيبة|الخالد|مخلص|سلمان|GTM-|AW-\d|G-[A-Z0-9]{6}|fbq|1096435373095195|gtag")
-for _t, _n in ((_dump, "data.json"), (open(P("reps", "index.php"), encoding="utf8").read(), "index.php"), (open(P("reps", "rep.css"), encoding="utf8").read(), "rep.css")):
+_theme_files = [(open(f, encoding="utf8").read(), os.path.relpath(f, P("reps"))) for f in sorted(glob.glob(P("reps", "themes", "*.*")))]
+for _t, _n in [(_dump, "data.json"), (open(P("reps", "index.php"), encoding="utf8").read(), "index.php"), (open(P("reps", "rep.css"), encoding="utf8").read(), "rep.css")] + _theme_files:
     _hits = set(_bad.findall(re.sub(r"/\* ---------- pixels.*?/\* ---------- end pixels ---------- \*/", "", _t, flags=re.S)))
     assert not _hits, f"rep site: {_n} has {_hits}"
 open(os.path.join(REP_DIR, "data.json"), "w", encoding="utf8").write(_dump)

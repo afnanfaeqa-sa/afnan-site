@@ -148,6 +148,10 @@ $secCards = function () use ($sections, $u, $I): string {
     return $h . '</div>';
 };
 
+/* ---------- per-rep theme: a completely different design for one rep ("theme" in reps.json → reps/themes/<theme>.php) ---------- */
+$theme = preg_replace('/[^a-z0-9_-]/', '', strtolower((string) ($rep['theme'] ?? '')));
+if ($theme !== '' && is_file(__DIR__ . '/themes/' . $theme . '.php')) { require __DIR__ . '/themes/' . $theme . '.php'; exit; }
+
 ob_start();
 ?><!doctype html>
 <html lang="ar" dir="rtl">
