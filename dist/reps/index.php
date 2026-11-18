@@ -133,7 +133,7 @@ $secCards = function () use ($sections, $u, $I): string {
     $h = '<div class="cards">';
     foreach ($sections as $s) {
         $h .= '<a class="card" href="' . e($u('/services/' . $s['slug'])) . '"><img src="' . e($s['image']) . '" alt="" width="640" height="420" loading="lazy">'
-            . '<span class="card-b"><b>' . e($s['name']) . '</b><small>' . e($s['short']) . ' · ' . count($s['items']) . ' خدمات</small><i>' . $I['arrow'] . '</i></span></a>';
+            . '<span class="card-b"><b>' . e($s['name']) . '</b><small>' . e($s['short']) . '</small><i>' . $I['arrow'] . '</i></span></a>';
     }
     return $h . '</div>';
 };
