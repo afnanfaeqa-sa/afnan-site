@@ -33,6 +33,7 @@ def img(path):
 settings = load("settings.json")
 WA = re.sub(r"\D", "", str(settings.get("whatsapp", "966555185244"))) or "966555185244"
 PHONE = settings.get("phone_display") or "+" + WA
+CALL_NUM = "+" + re.sub(r"\D", "", PHONE)  # the call line (schema "telephone"); WhatsApp may point elsewhere
 STAFF = settings.get("staff_count", 250)
 PREVIEW = bool(settings.get("preview_mode", True))
 SITE_URL = (settings.get("site_url") or "").rstrip("/")
@@ -227,7 +228,7 @@ _org = {"@context": "https://schema.org", "@type": "MedicalBusiness", "@id": f"{
         "numberOfEmployees": {"@type": "QuantitativeValue", "minValue": 250},
         "url": f"{SITE_URL}/", "logo": f"{SITE_URL}/img/logo.png", "image": f"{SITE_URL}/img/elderly-walk.jpg",
         "description": "تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية ورعاية الأم والمولود باشتراك من شهر حتى سنة، على مدار الساعة في جميع مناطق المملكة.",
-        "telephone": "+" + WA,
+        "telephone": CALL_NUM,
         "address": {"@type": "PostalAddress", "addressLocality": "الرياض", "addressCountry": "SA"},
         "areaServed": {"@type": "Country", "name": "المملكة العربية السعودية"},
         "openingHoursSpecification": {"@type": "OpeningHoursSpecification",
@@ -271,7 +272,7 @@ for s in SERVICES:
     desc = f"{tt} من مركز أفنان الفائقة: {d} خدمة على مدار الساعة في جميع مناطق المملكة. احجز عبر واتساب."
     ld = {"@context": "https://schema.org", "@type": "Service", "name": t, "serviceType": t, "description": d,
           "areaServed": {"@type": "Country", "name": "المملكة العربية السعودية"},
-          "provider": {"@type": "MedicalBusiness", "name": "مركز أفنان الفائقة للخدمات الطبية", "telephone": "+" + WA}}
+          "provider": {"@type": "MedicalBusiness", "name": "مركز أفنان الفائقة للخدمات الطبية", "telephone": CALL_NUM}}
     extra = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>"
     rel = [x for x in SERVICES if x["section"] == cat and x["_slug"] != slug]
     rel = (rel + [x for x in SERVICES if x["section"] != cat])[:3]
@@ -490,7 +491,7 @@ for n in NURSES:
 {others}
 </main>
 """
-    ld = {"@context": "https://schema.org", "@type": "Person", "name": nm, "jobTitle": n.get("role"), "worksFor": {"@type": "MedicalBusiness", "name": "مركز أفنان الفائقة للخدمات الطبية", "telephone": "+" + WA}, "knowsLanguage": n.get("languages", [])}
+    ld = {"@context": "https://schema.org", "@type": "Person", "name": nm, "jobTitle": n.get("role"), "worksFor": {"@type": "MedicalBusiness", "name": "مركز أفنان الفائقة للخدمات الطبية", "telephone": CALL_NUM}, "knowsLanguage": n.get("languages", [])}
     extra = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>"
     write(f"nurse-{slug}.html", head(f"{nm}، {n.get('role')} | مركز أفنان الفائقة", f"{nm}، {n.get('role')} {n.get('nationality')} {(' ' + exp_txt(n)) if exp_txt(n) else ''} في مركز أفنان الفائقة. " + str(n.get("summary", ""))[:90], req, extra, img(n.get("photo")), f"nurse-{slug}.html") + body + TAIL)
 
@@ -516,7 +517,8 @@ for f in glob.glob(os.path.join(DIST, "*.html")):
 for f in glob.glob(os.path.join(DIST, "*.html")) + glob.glob(os.path.join(DIST, "*.js")):
     with open(f, encoding="utf8") as fh:
         t = fh.read()
-    t2 = t.replace("+966 55 518 5244", PHONE).replace("966555185244", WA)
+    # WhatsApp links follow settings.whatsapp; tel: links and the copied call number stay on the center line
+    t2 = re.sub(r'(?<!tel:\+)(?<!"\+)966555185244', WA, t.replace("+966 55 518 5244", PHONE))
     if t2 != t:
         with open(f, "w", encoding="utf8") as fh:
             fh.write(t2)
