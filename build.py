@@ -495,26 +495,12 @@ for n in NURSES:
     write(f"nurse-{slug}.html", head(f"{nm}، {n.get('role')} | مركز أفنان الفائقة", f"{nm}، {n.get('role')} {n.get('nationality')} {(' ' + exp_txt(n)) if exp_txt(n) else ''} في مركز أفنان الفائقة. " + str(n.get("summary", ""))[:90], req, extra, img(n.get("photo")), f"nurse-{slug}.html") + body + TAIL)
 
 # ------------------------------------------------------------------ authorised reps (content/reps.json)
-# reps/ is a small PHP site served as the document root of every rep subdomain (mahmoud.afnanfaeqasa.sa …).
-# The build only refreshes its data; adding a rep = a subdomain pointed at public_html/reps + one entry in reps.json.
+# reps/ is the document root of every rep subdomain (mahmoud.afnanfaeqasa.sa …): index.php serves a copy of the
+# full main site (built at the end of this file into dist/reps/site) with the rep's number in place of the center's.
+# Adding a rep = a subdomain pointed at public_html/reps + one entry in reps.json.
 REPS = json.load(open(P("content", "reps.json"), encoding="utf8")).get("reps", [])
 shutil.copytree(P("reps"), os.path.join(DIST, "reps"))
 shutil.copy(P("content", "reps.json"), os.path.join(DIST, "reps", "reps.json"))
-REP_SECTIONS = [("med", "home-doctor", "الطب المنزلي"), ("nurse", "nursing", "التمريض المنزلي"), ("elder", "elderly-care", "رعاية كبار السن"),
-                ("kids", "mother-baby", "الأم والمولود"), ("rehab", "physiotherapy", "العلاج الطبيعي والتأهيل"), ("lab", "lab-radiology", "التحاليل والأشعة")]
-_ab = open(os.path.join(DIST, "about.html"), encoding="utf8").read()
-_ab = _ab[_ab.index('<div class="legal-body">') + len('<div class="legal-body">'):_ab.index("<h2>الخدمات</h2>")]
-_ab = _ab.replace('src="img/qutaiba-alkhaled.jpg"', 'src="/assets/chairman.webp"')
-assert "afnanfaeqasa" not in _ab and "href=" not in _ab
-_rep_data = {
-    "v": hashlib.md5(open(P("reps", "assets", "rep.css"), "rb").read()).hexdigest()[:8],
-    "staff": STAFF,
-    "about": _ab.strip(),
-    "sections": [{"slug": sl, "name": nm, "items": [{"title": s["title"], "description": s.get("description", "")} for s in SERVICES if s["section"] == k]}
-                 for k, sl, nm in REP_SECTIONS],
-}
-write(os.path.join("reps", "data.json"), json.dumps(_rep_data, ensure_ascii=False))
-# WebP copies of the logo and chairman photo live in reps/assets (made by tools/make_rep_assets.py)
 
 def _v(name):
     p = os.path.join(DIST, name)
@@ -542,5 +528,57 @@ else:
     write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: {SITE_URL}/sitemap.xml\n")
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
           "".join(f"  <url><loc>{SITE_URL}/{'' if p == 'index.html' else p}</loc>" + (f"<lastmod>{ABOUT_UPDATED}</lastmod>" if p == "about.html" else "") + "</url>\n" for p in pages) + "</urlset>\n")
+
+# ------------------------------------------------------------------ rep copy of the full site (dist/reps/site)
+# Same pages as the main site, minus: every center number, links to the main domain, social accounts,
+# structured data, and any person's name. The numbers become placeholders that reps/index.php fills per rep.
+REP_DIR = os.path.join(DIST, "reps")
+os.makedirs(os.path.join(REP_DIR, "site"), exist_ok=True)
+# reps/img already holds the two vision stories cropped above their contact strip (center numbers + domain)
+shutil.copytree(os.path.join(DIST, "img"), os.path.join(REP_DIR, "img"), dirs_exist_ok=True,
+                ignore=shutil.ignore_patterns("qutaiba-*", "chairman*", "vision-story-*"))
+for n in ("styles.css", "data.js"):
+    shutil.copy(os.path.join(DIST, n), os.path.join(REP_DIR, n))
+_st = open(os.path.join(DIST, "stories.js"), encoding="utf8").read()
+_st, _k = re.subn(r'\s*\{label:"رئيس المجلس".*?\]\]\},', "", _st, flags=re.S)   # no person's story on rep sites
+assert _k == 1 and "chairman" not in _st, "rep site: chairman story"
+open(os.path.join(REP_DIR, "stories.js"), "w", encoding="utf8").write(_st)
+
+def _cut(t, pat, name, flags=re.S):
+    t2, k = re.subn(pat, "", t, flags=flags)
+    assert k, f"rep site: '{name}' not found"
+    return t2
+
+REP_FOOT_PHONES = ('<div class="foot-phones" aria-labelledby="fpT">\n    <h4 id="fpT">أرقام التواصل</h4>\n'
+                   '    <div class="fp-main"><a href="tel:+{{WA}}"><small>واتساب واتصال</small><b dir="ltr">{{LOCAL}}</b></a></div>\n  </div>')
+for f in sorted(glob.glob(os.path.join(DIST, "*.html"))):
+    name = os.path.basename(f)
+    if name.startswith("google") or name == "404.html":
+        continue
+    t = open(f, encoding="utf8").read()
+    t = re.sub(r'<script type="application/ld\+json">.*?</script>\s*', "", t, flags=re.S)
+    t = re.sub(r'<link rel="canonical"[^>]*>\s*|<meta property="og:url"[^>]*>\s*', "", t)
+    t = t.replace("https://afnanfaeqasa.sa/", "/")
+    t = _cut(t, r'<div class="foot-phones".*?</ul>\s*</div>', "foot-phones")
+    t = t.replace('<div class="pay-row">', REP_FOOT_PHONES + '\n  <div class="pay-row">', 1)
+    t = _cut(t, r'\s*<div class="socials">.*?</svg></a></div>', "socials")
+    if name == "index.html":
+        t = _cut(t, r'\s*<button type="button" class="chair" id="chairBtn".*?</button>', "chairBtn")
+        t = _cut(t, r'\s*<dialog class="chair-dlg".*?</dialog>', "chairDlg")
+    if name == "about.html":
+        t = _cut(t, r'\s*<h2>قصة الاسم</h2>\s*<p>.*?</p>', "about name story")
+        t = _cut(t, r'\s*<h2>الإدارة</h2>\s*<div class="about-person">.*?</div>', "about management")
+    t = t.replace("+966 55 518 5244", "{{DISPLAY}}").replace("966555185244", "{{WA}}").replace("0555185244", "{{LOCAL}}")
+    t = t.replace("<head>", '<head>\n<meta name="robots" content="noindex, nofollow">', 1).replace("</head>", "<!--REP_HEAD-->\n</head>", 1).replace("</body>", "<!--REP_BODY-->\n</body>", 1)
+    left = set(re.findall(r"9665\d{8}|05\d{8}|920005284|0112988883|afnanfaeqasa|قتيبة|الخالد|سلمان|instagram|x\.com", t))
+    assert not left, f"rep site: {name} still has {left}"
+    open(os.path.join(REP_DIR, "site", name), "w", encoding="utf8").write(t)
+for n in ("site.js", "chat.js", "afnan-popup.js"):
+    t = open(os.path.join(DIST, n), encoding="utf8").read().replace("+966555185244", "+{{WA}}").replace("966555185244", "{{WA}}")
+    t = t.replace("encodeURIComponent(t)", "encodeURIComponent(t+'\\n\\n({{CODE}})')").replace("encodeURIComponent(msg)", "encodeURIComponent(msg+'\\n\\n({{CODE}})')")
+    if n == "afnan-popup.js":   # the popup image carries the center's number and domain: keep only the WhatsApp fix
+        t = t.replace("setTimeout(show, 600)", "0")
+    assert not re.search(r"9665\d{8}", t) and "show, 600" not in t, n
+    open(os.path.join(REP_DIR, "site", n), "w", encoding="utf8").write(t)
 
 print(f"Built {len(pages)} pages, {len(SERVICES)} services, {len(ARTICLES)} articles -> dist/")
