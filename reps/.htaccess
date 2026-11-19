@@ -4,7 +4,7 @@ DirectoryIndex index.php
 <IfModule mod_headers.c>
   Header always set X-Robots-Tag "noindex, nofollow"
 </IfModule>
-<FilesMatch "^(reps|data)\.json$">
+<FilesMatch "^(reps|data|tokens)\.json$">
   Require all denied
 </FilesMatch>
 # PHP parts only run through index.php

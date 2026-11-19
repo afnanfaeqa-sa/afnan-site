@@ -48,6 +48,17 @@ $fail = function () use ($lockFile, &$lock, &$locked): void {
 };
 
 $msg = ''; $err = '';
+/* one-time links can also ship with a deploy (tokens.json holds only sha256 hashes); a used link never works again */
+$usedFile = rep_data_root() . '/.used-tokens';
+$tokOk = function (string $tok, array $stored) use ($usedFile): bool {
+    if ($tok === '') return false;
+    $h = hash('sha256', $tok);
+    if (str_contains((string) @file_get_contents($usedFile), $h)) return false;
+    foreach ($stored as $x) { if (!empty($x['h']) && hash_equals((string) $x['h'], $h) && ($x['exp'] ?? 0) > time()) return true; }
+    return false;
+};
+$tokUse = function (string $tok) use ($usedFile): void { @file_put_contents($usedFile, hash('sha256', $tok) . "\n", FILE_APPEND | LOCK_EX); };
+$shipped = json_decode((string) @file_get_contents(__DIR__ . '/tokens.json'), true) ?: [];
 $posted = ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST';
 if ($posted && !$csrfOk()) $err = 'انتهت الجلسة، حدّث الصفحة وحاول مرة ثانية.';
 $page = 'login';
@@ -83,7 +94,7 @@ elseif ($sub === 'admin-setup') {
     $tf = rep_data_root() . '/admin-setup.json';
     $ts = is_file($tf) ? (json_decode((string) file_get_contents($tf), true) ?: []) : [];
     $tok = (string) ($_GET['t'] ?? $_POST['t'] ?? '');
-    $valid = $tok !== '' && !empty($ts['h']) && hash_equals((string) $ts['h'], hash('sha256', $tok)) && ($ts['exp'] ?? 0) > time();
+    $valid = $tokOk($tok, [$ts, $shipped['admin'] ?? []]);
     if (!$valid) { $err = 'الرابط غير صالح أو انتهت صلاحيته.'; }
     elseif ($posted && $err === '') {
         $em = strtolower(trim((string) ($_POST['email'] ?? '')));
@@ -96,7 +107,7 @@ elseif ($sub === 'admin-setup') {
             $list = json_decode((string) @file_get_contents($af), true) ?: [];
             $list[$em] = password_hash($p1, PASSWORD_DEFAULT);
             @file_put_contents($af, json_encode($list), LOCK_EX);
-            @unlink($tf);
+            @unlink($tf); $tokUse($tok);
             header('Location: ' . $D('invite')); exit;
         }
     }
@@ -105,7 +116,7 @@ elseif ($sub === 'setup') {
     $page = 'setup';
     $inv = rep_read($code, 'invite.json');
     $tok = (string) ($_GET['t'] ?? $_POST['t'] ?? '');
-    $valid = $tok !== '' && !empty($inv['h']) && hash_equals((string) $inv['h'], hash('sha256', $tok)) && ($inv['exp'] ?? 0) > time();
+    $valid = $tokOk($tok, [$inv, $shipped['invites'][$code] ?? []]);
     if (!$valid) { $err = 'الرابط غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا من إدارة التسويق.'; }
     elseif (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && $csrfOk()) {
         $em = strtolower(trim((string) ($_POST['email'] ?? '')));
@@ -115,7 +126,7 @@ elseif ($sub === 'setup') {
         elseif ($p1 !== $p2) $err = 'كلمتا المرور غير متطابقتين.';
         else {
             rep_write($code, 'user.json', ['email' => $em, 'hash' => password_hash($p1, PASSWORD_DEFAULT), 'set' => time()]);
-            @unlink(rep_dir($code) . '/invite.json');
+            @unlink(rep_dir($code) . '/invite.json'); $tokUse($tok);
             rep_append($code, 'changes.jsonl', ['t' => time(), 'by' => $em, 'what' => 'تفعيل الحساب']);
             session_regenerate_id(true);
             $_SESSION['rep'] = $code; $_SESSION['email'] = $em; $_SESSION['since'] = time();
