@@ -2,7 +2,7 @@
    then hands the visitor a ready-made WhatsApp message. Opened by any "#book" link,
    by [data-book], or by window.openBooking(serviceName). */
 (function(){
-  const WA_NUM="966555288906";
+  const WA_NUM="966555185244";
   const CATS=window.SITE_CATS||[];
   const PROGRAMS=["برنامج رعاية كبار السن","برنامج التأهيل الحركي","برنامج متابعة ما بعد الجراحة","برنامج متابعة الأمراض المزمنة"];
   const CITIES=["الرياض","جدة","مكة المكرمة","المدينة المنورة","الدمام","الخبر","الأحساء","أبها","القصيم","الطائف"];

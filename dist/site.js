@@ -1,5 +1,5 @@
 /* shared behaviour for inner pages: header, call card, mobile tab bar + services sheet, booking card, reveal */
-const WA="966555288906";
+const WA="966555185244";
 const wa=t=>`https://wa.me/${WA}?text=${encodeURIComponent(t)}`;
 const I={
   med:'<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
