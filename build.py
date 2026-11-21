@@ -707,6 +707,18 @@ else:
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
           "".join(f"  <url><loc>{SITE_URL}/{'' if p == 'index.html' else p}</loc>" + (f"<lastmod>{ABOUT_UPDATED}</lastmod>" if p == "about.html" else "") + "</url>\n" for p in pages) + "</urlset>\n")
 
+# ------------------------------------------------------------------ clean URLs (/page instead of /page.html; .htaccess serves and 301s)
+for f in glob.glob(os.path.join(DIST, "*.html")) + [os.path.join(DIST, "sitemap.xml")]:
+    if not os.path.exists(f):
+        continue
+    t = open(f, encoding="utf8").read()
+    t2 = re.sub(r'href="index\.html(#[^"]*)?"', lambda m: f'href="/{m.group(1) or ""}"', t)
+    t2 = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{m.group(1)}{m.group(2) or ""}"', t2)
+    if SITE_URL:
+        t2 = re.sub(re.escape(SITE_URL) + r'/([a-z0-9-]+)\.html', SITE_URL + r'/\1', t2)
+    if t2 != t:
+        open(f, "w", encoding="utf8").write(t2)
+
 # ------------------------------------------------------------------ rep sites data (dist/reps/data.json)
 # The rep design is its own PHP template (reps/index.php); it only takes content from here.
 # Nothing from the main site's pages, scripts or tracking codes is copied.

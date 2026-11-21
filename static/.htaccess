@@ -1,0 +1,49 @@
+# Afnan site 1 on cPanel
+DirectoryIndex index.html
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+# old site URLs -> matching new pages (301)
+RewriteRule ^services/home-nursing/?$ /home-nursing [R=301,L,NC]
+RewriteRule ^services/physiotherapy/?$ /home-physiotherapy [R=301,L,NC]
+RewriteRule ^services/home-rehabilitation/?$ /home-physiotherapy [R=301,L,NC]
+RewriteRule ^services/doctor-home-visit/?$ /family-home-doctor [R=301,L,NC]
+RewriteRule ^services/home-lab-imaging/?$ /home-lab-tests [R=301,L,NC]
+RewriteRule ^services/post-surgery-wound-care/?$ /post-surgery-rehab [R=301,L,NC]
+RewriteRule ^services/.+$ /services [R=301,L,NC]
+# clean URLs: /page.html -> /page (301, query string such as gclid kept); /index.html -> /
+RewriteCond %{THE_REQUEST} \s/index\.html[\s?] [NC]
+RewriteRule ^ / [R=301,L]
+RewriteCond %{THE_REQUEST} \s/([^/?\s]+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+# /page serves page.html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^([^/.]+)/?$ /$1.html [L]
+# any old link that no longer exists redirects (301) to the home page: ad links keep working, Google sees no duplicate pages
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ / [R=301,L]
+</IfModule>
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpeg "access plus 1 month"
+ExpiresByType image/png "access plus 1 month"
+ExpiresByType image/webp "access plus 1 month"
+ExpiresByType text/css "access plus 1 week"
+ExpiresByType application/javascript "access plus 1 week"
+ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml application/xml text/plain
+</IfModule>
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php82” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php82 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit

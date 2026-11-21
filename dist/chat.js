@@ -114,7 +114,7 @@
   box.addEventListener("click",e=>{if(e.target.closest("[data-chat-close]"))close()});
   document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
   document.addEventListener("click",e=>{
-    const a=e.target.closest('a[href="#book"],a[href="index.html#book"],[data-book]');
+    const a=e.target.closest('a[href="#book"],a[href="index.html#book"],a[href="/#book"],[data-book]');
     if(!a||a.closest(".chat"))return;
     e.preventDefault();
     if(typeof window.closeMenus==="function")window.closeMenus();
