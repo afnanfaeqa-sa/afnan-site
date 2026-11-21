@@ -224,7 +224,7 @@ _org = {"@context": "https://schema.org", "@type": "MedicalBusiness", "@id": f"{
         "name": "مركز أفنان الفائقة للخدمات الطبية المنزلية",
         "legalName": "شركة همة أفنان الفائقة للرعاية الطبية",
         "alternateName": ["مركز أفنان الفائقة", "مركز همّة أفنان الفائقة للخدمات الطبية", "Afnan Home Medical Care"],
-        "founder": {"@type": "Person", "name": "قتيبة محمد خير الخالد", "jobTitle": "رئيس مجلس الإدارة والمؤسس", "image": f"{SITE_URL}/img/qutaiba-alkhaled.jpg"},
+        "founder": {"@type": "Person", "name": "قتيبة بن محمد الخالدي", "url": f"{SITE_URL}/qutaiba-al-khalidi.html", "jobTitle": "رئيس مجلس الإدارة والمؤسس", "image": f"{SITE_URL}/img/qutaiba-alkhaled.jpg"},
         "numberOfEmployees": {"@type": "QuantitativeValue", "minValue": 250},
         "url": f"{SITE_URL}/", "logo": f"{SITE_URL}/img/logo.png", "image": f"{SITE_URL}/img/elderly-walk.jpg",
         "description": "تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية ورعاية الأم والمولود باشتراك من شهر حتى سنة، على مدار الساعة في جميع مناطق المملكة.",
@@ -396,8 +396,8 @@ write("about.html", head("من نحن | مركز أفنان الفائقة لل�
     <p>كلمة «همّة» في اسم المركز مستوحاة من عبارة صاحب السمو الملكي الأمير محمد بن سلمان، ولي العهد، «همة السعوديين مثل جبل طويق»، التي قالها في مؤتمر مبادرة مستقبل الاستثمار بالرياض عام 2018. واختير الاسم تعبيرًا عن الالتزام بخدمة المرضى في بيوتهم بعزيمة ثابتة.</p>
     <h2>الإدارة</h2>
     <div class="about-person">
-      <img src="img/qutaiba-alkhaled.jpg" alt="قتيبة محمد خير الخالد، رئيس مجلس إدارة مركز أفنان الفائقة" width="240" height="240" loading="lazy">
-      <p>أسّس المركز الأستاذ قتيبة محمد خير الخالد، ويرأس مجلس إدارة شركة همة أفنان الفائقة للرعاية الطبية. وهو حاصل على بكالوريوس في التجارة وإدارة الأعمال، ويعمل في مجال الاستثمار في قطاع الرعاية الصحية منذ أكثر من 25 عامًا. ويملك عددًا من الشركات العاملة في الخدمات الطبية وتوريد الأجهزة الطبية والخدمات اللوجستية في المملكة العربية السعودية والمملكة المتحدة وسوريا.</p>
+      <img src="img/qutaiba-alkhaled.jpg" alt="قتيبة بن محمد الخالدي، رئيس مجلس إدارة مركز أفنان الفائقة" width="240" height="240" loading="lazy">
+      <p>أسّس المركز الأستاذ قتيبة بن محمد الخالدي، ويرأس مجلس إدارة شركة همة أفنان الفائقة للرعاية الطبية. وهو حاصل على بكالوريوس في التجارة وإدارة الأعمال، ويعمل في مجال الاستثمار في قطاع الرعاية الصحية منذ أكثر من 25 عامًا. ويملك عددًا من الشركات العاملة في الخدمات الطبية وتوريد الأجهزة الطبية والخدمات اللوجستية في المملكة العربية السعودية والمملكة المتحدة وسوريا. <a href="qutaiba-al-khalidi.html">الملف القيادي كاملًا</a></p>
     </div>
     <h2>الكادر والتغطية</h2>
     <p>يضم المركز أكثر من {esc(STAFF)} من الكوادر الصحية المرخّصة، ويقدّم خدماته في مختلف مناطق المملكة على مدار الساعة.</p>
@@ -413,6 +413,156 @@ write("about.html", head("من نحن | مركز أفنان الفائقة لل�
     </ul>
     <p>تفاصيل كل خدمة في <a href="services.html">صفحة الخدمات</a>.</p>
   </div>
+</div></section>
+</main>
+""" + TAIL)
+
+# ------------------------------------------------------------------ chairman's leadership profile (same content as afnanhomecare.sa/qutaiba-al-khalidi)
+# Photos and PDFs are served from afnanhomecare.sa, the center's other site, where they are published.
+LDR = "qutaiba-al-khalidi.html"
+_ah = "https://afnanhomecare.sa"
+_arr = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+_ldr_desc = "قتيبة بن محمد الخالدي، المؤسس ورئيس مجلس الإدارة والرئيس التنفيذي لشركة همة أفنان القابضة، والرئيس التنفيذي لمركز أفنان الفائقة للخدمات الطبية."
+_ldr_ld = ('<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "ProfilePage", "mainEntity": {
+    "@type": "Person", "name": "قتيبة بن محمد الخالدي", "alternateName": "Qutaiba bin Mohammed Al-Khalidi", "birthDate": "1986",
+    "nationality": "سوري", "jobTitle": "المؤسس ورئيس مجلس الإدارة والرئيس التنفيذي لشركة همة أفنان القابضة",
+    "image": f"{_ah}/leadership/manager-homeland-portrait.jpg",
+    "worksFor": {"@type": "MedicalBusiness", "name": "مركز أفنان الفائقة للخدمات الطبية", "url": f"{SITE_URL}/"},
+    "sameAs": ["https://x.com/Alafnan112", "https://www.linkedin.com/in/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF-62b399367",
+               "https://www.tiktok.com/@kuteba.alkhaldy", "https://manhom.com/%D8%B4%D8%AE%D8%B5%D9%8A%D8%A7%D8%AA/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF/"]}},
+    ensure_ascii=False) + "</script>\n") if SITE_URL and not PREVIEW else ""
+_cos = [("شركة همة أفنان القابضة", "المؤسس ورئيس مجلس الإدارة · المملكة المتحدة"), ("مركز أفنان الفائقة للخدمات الطبية", "المالك والمدير العام التنفيذي"),
+        ("شركة همة أفنان للخدمات الطبية", "المالك والمؤسس"), ("شركة رعاية أفنان للخدمات اللوجستية", "المالك والمؤسس"),
+        ("شركة أفنان الطبية التجارية", "المالك والمؤسس"), ("مركز أفنان للرعاية الصحية", "يضم مركز أفنان للخدمات المنزلية ومركز رعايتي الطبية")]
+_media = [("qutaiba-saudi-appointments.jpg", "نخبة التعيينات السعودية", "يجمع بين الرؤية الاستثمارية والخبرة التنفيذية في إدارة الشركات والمجموعات الطبية وتوسيع أنشطتها.", "https://www.instagram.com/theellitesaudi", "منشور نخبة التعيينات السعودية عن قتيبة الخالدي ودوره في قيادة الأعمال والرعاية الطبية"),
+          ("qutaiba-manhom-feature.jpg", "من هم — إحدى منصات مجرة", "المالك والمدير العام التنفيذي في مركز أفنان الفائقة للخدمات الطبية.", "https://manhom.com/%D8%B4%D8%AE%D8%B5%D9%8A%D8%A7%D8%AA/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF/", "بطاقة تعريفية من منصة من هم عن قتيبة الخالدي ومركز أفنان الفائقة للخدمات الطبية"),
+          ("qutaiba-saudi-leaders.jpg", "قادة سعوديون — منصة X", "شخصية قيادية بارزة تتمتع بخبرة واسعة وريادة مثبتة في إدارة وتوجيه الاستثمارات الصحية وتطوير المجموعات الطبية القابضة.", "https://x.com/QadahSaudi", "لقطة لمنشور قادة سعوديون على منصة X يتناول السيرة المهنية لقتيبة الخالدي")]
+_well = [("drilling", "الحفر", "حفر البئر الارتوازية حتى الوصول إلى طبقة الماء.", "جهاز الحفر في موقع البئر بجوار لوحة المشروع"),
+         ("building", "البناء", "بناء غرفة البئر وحوض الماء وتجهيز الموقع.", "عامل يبني غرفة البئر من الطوب"),
+         ("water-flowing", "التشغيل", "الدهان وتركيب لوحة الإهداء، ثم تدفّق الماء.", "الماء يتدفق من صنبور البئر وفوقه لوحة الإهداء"),
+         ("opening-crowd", "الافتتاح", "افتتاح البئر بحضور الأهالي والدعاء لشهداء الوطن.", "الأهالي مصطفّون عند البئر يوم الافتتاح")]
+_ext = 'target="_blank" rel="noopener"'
+write(LDR, head("قتيبة بن محمد الخالدي | المؤسس ورئيس مجلس الإدارة – مركز أفنان الفائقة", _ldr_desc, path=LDR,
+                extra=_ldr_ld + '<meta property="og:type" content="profile">', image=f"{_ah}/leadership/manager-homeland-portrait.jpg") + f"""<main class="page-top ldr">
+<section class="ldr-hero"><div class="wrap ldr-hero-in">
+  <div class="ldr-hero-txt">
+    <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><a href="about.html">من نحن</a><span>/</span><span>قتيبة بن محمد الخالدي</span></nav>
+    <h1>قتيبة بن محمد الخالدي</h1>
+    <p class="ldr-en" lang="en" dir="ltr">Qutaiba bin Mohammed Al-Khalidi</p>
+    <p class="ldr-role">المؤسس ورئيس مجلس الإدارة والرئيس التنفيذي لشركة همة أفنان القابضة</p>
+    <p class="ldr-role2">الرئيس التنفيذي لمركز أفنان الفائقة للخدمات الطبية</p>
+    <p class="ldr-intro">أسّس قتيبة الخالدي شركة همة أفنان القابضة، ويقود مركز أفنان الفائقة للرعاية الصحية المنزلية في المملكة العربية السعودية، ويعمل على تسهيل وصول الأسر إلى التمريض والتأهيل ورعاية كبار السن في منازلهم.</p>
+    <div class="ldr-btns">
+      <a class="btn btn-navy" href="{_ah}/leadership/qutaiba-al-khalidi-profile-ar.pdf" {_ext}>تحميل الملف القيادي (PDF)</a>
+      <a class="btn btn-outline" href="#works">أعماله ومواقفه</a>
+    </div>
+    <ul class="ldr-social" aria-label="حساباته">
+      <li><a href="https://x.com/Alafnan112" {_ext}><b>X</b><span dir="ltr">@Alafnan112</span></a></li>
+      <li><a href="https://www.linkedin.com/in/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF-62b399367" {_ext}><b>in</b><span>LinkedIn</span></a></li>
+      <li><a href="https://www.tiktok.com/@kuteba.alkhaldy" {_ext}><b>♪</b><span dir="ltr">@kuteba.alkhaldy</span></a></li>
+      <li><a href="https://manhom.com/%D8%B4%D8%AE%D8%B5%D9%8A%D8%A7%D8%AA/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF/" {_ext}><b>م</b><span>من هم</span></a></li>
+    </ul>
+  </div>
+  <figure class="ldr-portrait"><img src="{_ah}/leadership/manager-homeland-portrait.jpg" alt="قتيبة الخالدي إلى جوار العلم السعودي" width="980" height="1600" fetchpriority="high"></figure>
+</div></section>
+
+<section class="sec ldr-sec"><div class="wrap">
+  <div class="ldr-grid">
+    <div class="ldr-card">
+      <h2>سيرته</h2>
+      <p>مستثمر ورائد أعمال، وقيادي صحي معتمد من وزارة الصحة السعودية، يمتلك خبرة تمتد لأكثر من 25 عامًا في قيادة الاستثمارات الرأسمالية في القطاع الصحي وتأسيس مشاريع طبية نوعية مستدامة.</p>
+      <p>تشمل خبرته التخطيط الاستراتيجي للقوى العاملة الطبية، وهندسة الهياكل التنظيمية للشركات القابضة، وحوكمة الأداء، وهيكلة استراتيجيات الموارد البشرية للمجموعات الكبرى، وبناء الكفاءات التنفيذية والطبية لضمان أعلى معايير الجودة والامتثال الطبي.</p>
+      <p>أسهم في إدارة وتوسيع العمليات الطبية في السعودية واليمن والسودان، ومواءمة الكوادر البشرية والطبية مع الأنظمة والتشريعات المحلية في كل دولة.</p>
+    </div>
+    <dl class="ldr-facts">
+      <div><dt>الخبرة</dt><dd>أكثر من 25 عامًا</dd></div>
+      <div><dt>مواليد</dt><dd>1986</dd></div>
+      <div><dt>الجنسية</dt><dd>سوري</dd></div>
+      <div><dt>الإقامة</dt><dd>المملكة العربية السعودية</dd></div>
+    </dl>
+  </div>
+
+  <h2 class="ldr-h">الشركات التي أسّسها ويقودها</h2>
+  <ul class="ldr-cos">{"".join(f"<li><b>{esc(n)}</b><span>{esc(r)}</span></li>" for n, r in _cos)}</ul>
+
+  <h2 class="ldr-h">الاعتمادات والشهادات</h2>
+  <ul class="ldr-creds">
+    <li>{TICK}قيادي صحي معتمد من وزارة الصحة السعودية</li>
+    <li>{TICK}شهادة في القيادة الاستراتيجية وإدارة الأصول المتقدمة</li>
+    <li>{TICK}شهادة كفاءة MSH للمهارات القيادية العليا: إدارة الأزمات الاقتصادية وسلاسل الإمداد الدولية والتخطيط المالي للمجموعات التجارية عابرة الحدود</li>
+  </ul>
+  <p class="ldr-src">المصدر: <a href="https://manhom.com/%D8%B4%D8%AE%D8%B5%D9%8A%D8%A7%D8%AA/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF/" {_ext}>ملفه الموثّق في منصة «من هم»</a></p>
+</div></section>
+
+<section class="sec ldr-band" id="works"><div class="wrap">
+  <h2 class="ldr-h">من أعماله ومواقفه</h2>
+
+  <article class="ldr-work" id="well-kyrgyzstan">
+    <img class="ldr-work-cover" src="{_ah}/archive/kuts339/cover-opening.jpg" alt="أهالي القرية في قرغيزستان يقفون عند البئر يوم افتتاحها ويحملون علم المملكة العربية السعودية" width="1280" height="720" loading="lazy">
+    <div class="ldr-work-b">
+      <p class="ldr-meta"><span>عمل خيري</span>نوفمبر 2026 · 1448 هـ · منطقة تشوي، قرغيزستان</p>
+      <h3>بئر ماء ارتوازي في قرغيزستان صدقةً جاريةً عن شهداء الوطن</h3>
+      <p>اكتمل مشروع بئر ماء ارتوازي في منطقة تشوي بقرغيزستان (KUTS339)، قدّمه قتيبة بن محمد الخالدي وأسرته صدقةً جاريةً عن شهداء الوطن، وأشركوا في ثوابه الشعب السعودي كافة.</p>
+      <details><summary>اقرأ التفاصيل</summary>
+        <p>في قرية من قرى منطقة تشوي شمال قرغيزستان، صار الماء يصل اليوم إلى الأهالي من بئر ارتوازية جديدة. قدّمها قتيبة بن محمد الخالدي مع أفراد من أسرته صدقةً جاريةً عن شهداء الوطن، رحمهم الله، وأشركوا في ثوابها الشعب السعودي كافة، نساءً ورجالًا. نُفّذت البئر بالتعاون مع جمعية طريق السعادة، وبإشراف مركز أفنان الفائقة للخدمات الطبية، وهي الثالثة التي يحفرها مع الجمعية بعد بئرين سابقتين.</p>
+        <blockquote class="ldr-plaque"><b>نص لوحة البئر</b><span>مشروع بئر ماء ارتوازي</span><span>صدقة جارية عن شهداء الوطن</span><span>– رحمهم الله –</span><span>أشركنا في ثوابها الشعب السعودي كافة نساءً ورجالًا</span><span>مقدّمة من</span><span>قتيبة بن محمد الخالدي</span><span>حسان الخالد · علي الخالد · أفنان الخالدي · توجان الخالدي</span><small>كما كُتب على اللوحة المثبتة على البئر.</small></blockquote>
+        <h4>من أول ضربة حفر إلى أول قطرة ماء</h4>
+        <ol class="ldr-steps">{"".join(f'<li><img src="{_ah}/archive/kuts339/{f}.jpg" alt="{esc(a)}" loading="lazy"><b>{esc(t)}</b><span>{esc(d)}</span></li>' for f, t, d, a in _well)}</ol>
+        <div class="ldr-pics"><img src="{_ah}/archive/kuts339/first-water.jpg" alt="أطفال القرية عند البئر يوم الافتتاح" loading="lazy"><img src="{_ah}/archive/kuts339/opening-children.jpg" alt="الأهالي والأطفال عند حوض الماء" loading="lazy"></div>
+        <blockquote class="ldr-quote">«لقد كان هذا الجود بمثابة الغيث لقريةٍ أنهكها العطش وأضناها عناء البحث عن قطرة ماء، واليوم، بفضل الله ثم بفيض عطائكم، انبثقت ينابيع الحياة لتغسل تعب السنين عن كواهل الأهالي، وتزرع الفرحة والطمأنينة في قلوب الأمهات والأطفال.»<cite>من رسالة شكر جمعية طريق السعادة إلى المتبرعين</cite></blockquote>
+        <p class="ldr-hadith">قال رسول الله ﷺ: «إذا مات الإنسان انقطع عنه عمله إلا من ثلاثة: إلا من صدقةٍ جارية، أو علمٍ يُنتفع به، أو ولدٍ صالحٍ يدعو له» <small>رواه مسلم</small></p>
+        <dl class="ldr-card-dl">
+          <div><dt>نوع المشروع</dt><dd>بئر ماء ارتوازي</dd></div><div><dt>رقم المشروع</dt><dd>KUTS339</dd></div>
+          <div><dt>الموقع</dt><dd>غرب العاصمة بشكيك، مقاطعة سوقلوق، منطقة تشوي، قرغيزستان</dd></div><div><dt>الإهداء</dt><dd>شهداء الوطن، رحمهم الله</dd></div>
+          <div><dt>التنفيذ</dt><dd>جمعية طريق السعادة</dd></div><div><dt>الإشراف</dt><dd>مركز أفنان الفائقة للخدمات الطبية</dd></div>
+          <div><dt>في السلسلة</dt><dd>البئر الثالثة مع الجمعية</dd></div>
+        </dl>
+        <p class="ldr-links"><a href="{_ah}/archive/kuts339/kuts339-well-report-ar.pdf" {_ext}>تقرير المشروع (PDF)</a><a href="https://youtu.be/wwFjTFbuaEw" {_ext}>فيديو التوثيق على يوتيوب</a><a href="https://maps.google.com/?q=43.1285,74.2683" {_ext}>موقع البئر على الخريطة</a></p>
+      </details>
+    </div>
+  </article>
+
+  <article class="ldr-work" id="statement">
+    <img class="ldr-work-cover ldr-tall" src="{_ah}/leadership/manager-statement-original.jpeg" alt="الكلمة المنشورة لقتيبة الخالدي بعنوان إمكاناتنا في خدمة الوطن" width="900" height="1600" loading="lazy">
+    <div class="ldr-work-b">
+      <p class="ldr-meta"><span>كلمة وموقف</span>أكتوبر 2026 · 1448 هـ</p>
+      <h3>إمكاناتنا في خدمة الوطن: كلمة قتيبة الخالدي إلى القيادة والجهات الصحية</h3>
+      <p>وضع قتيبة الخالدي نفسه وشركته وكامل الكادر الطبي والإداري وإمكانات الشركة ومرافقها في خدمة القيادة وحكومة المملكة والشعب السعودي، لدعم المنظومة الصحية والمساندة في الطوارئ.</p>
+      <details><summary>اقرأ نص الكلمة كاملًا</summary>
+        <p>مقام خادم الحرمين الشريفين الملك سلمان بن عبد العزيز آل سعود – حفظه الله –، وصاحب السمو الملكي الأمير محمد بن سلمان بن عبد العزيز آل سعود، ولي العهد رئيس مجلس الوزراء – حفظه الله –، أصحاب المعالي والسمو، مسؤولي الجهات الحكومية والصحية في وطننا الغالي، أبناء الشعب السعودي الكريم.</p>
+        <p>انطلاقًا من قيم المواطنة والانتماء، وإيمانًا بالدور الحيوي للقطاع الخاص في دعم مسيرة النماء والازدهار التي تشهدها مملكتنا الغالية تحت ظل قيادتكم الرشيدة، ووفاءً لهذا الوطن المعطاء وشعبه الوفي:</p>
+        <p>أتشرف بأن أضع نفسي، وشركتي، وكامل كادرنا الطبي والإداري، وكافة إمكانياتنا ومرافقنا، تحت تصرف القيادة الحكيمة، وحكومة المملكة، والشعب السعودي الكريم، في أي وقت وفي أي موقع يتطلبه الواجب الوطني. ونعلن جاهزيتنا التامة وتسخير كافة طاقاتنا وخبراتنا الطبية واللوجستية للمساهمة في:</p>
+        <ul><li>دعم المنظومة الصحية الوطنية في كافة المبادرات والحملات الرسمية.</li><li>تقديم الرعاية الطبية والخدمات الإنسانية للمجتمع بالشراكة مع الجهات المعنية.</li><li>المساندة الفورية في حالات الطوارئ أو الأزمات، لا قدّر الله، تلبيةً لنداء الواجب.</li></ul>
+        <p>نحن جنودٌ لهذا الوطن في ميدان الرعاية الصحية، ونعاهدكم على البقاء دائمًا على قدر المسؤولية، مستمدّين العون من الله، ثم من توجيهاتكم السديدة، لتحقيق مستهدفات رؤية المملكة 2030 في بناء مجتمع حيوي وصحي.</p>
+        <p>حفظ الله قيادتنا، وأدام على وطننا وشعبنا أمنه وأمانه واستقراره.</p>
+        <p class="ldr-sign">قتيبة الخالدي · مدير مجلس الإدارة</p>
+        <dl class="ldr-card-dl">
+          <div><dt>النوع</dt><dd>كلمة منشورة</dd></div><div><dt>موجّهة إلى</dt><dd>القيادة والجهات الحكومية والصحية والشعب السعودي</dd></div>
+          <div><dt>الجهات</dt><dd>شركة همة أفنان القابضة، مركز أفنان للخدمات المنزلية، رعاية أفنان الفائقة للخدمات الطبية</dd></div>
+        </dl>
+        <p class="ldr-links"><a href="https://www.tiktok.com/@a3ean_shkhseat/video/7699568390788369685" {_ext}>تناول «شخصيات وأعيان» للكلمة</a></p>
+      </details>
+    </div>
+  </article>
+
+  <div class="ldr-card ldr-community">
+    <h2>الرعاية المنزلية وخدمة المجتمع</h2>
+    <p>يتناول الخالدي في كلمته المنشورة دور فرق أفنان في دعم المبادرات الصحية، وتقديم الرعاية والخدمات الإنسانية، والمساندة في حالات الطوارئ بالتنسيق مع الجهات المختصة.</p>
+  </div>
+</div></section>
+
+<section class="sec ldr-sec"><div class="wrap">
+  <h2 class="ldr-h">للتواصل مع الإدارة</h2>
+  <ul class="ldr-contact">
+    <li><span>الجوال المباشر</span><a href="tel:+966550604554" dir="ltr">055 060 4554</a></li>
+    <li><span>الرقم الموحد</span><a href="tel:920005284" dir="ltr">9200 05284</a></li>
+    <li><span>المكتب</span><a href="tel:+966112988883" dir="ltr">011 298 8883</a></li>
+    <li><span>البريد الإلكتروني للشركة</span><a href="mailto:info@afnanfaeqa.sa" dir="ltr">info@afnanfaeqa.sa</a></li>
+  </ul>
+
+  <h2 class="ldr-h">حضور إعلامي</h2>
+  <p class="ldr-lead">ما نشرته منصات التعريف بالقيادات والشخصيات البارزة عنه. اضغط على أي صورة لقراءة المنشور كاملًا.</p>
+  <div class="ldr-media">{"".join(f'<figure><a href="{u}" {_ext}><img src="{_ah}/leadership/{img}" alt="{esc(a)}" loading="lazy"></a><figcaption><b>{esc(t)}</b><q>{esc(q)}</q><a href="{u}" {_ext}>زيارة المصدر {_arr}</a></figcaption></figure>' for img, t, q, u, a in _media)}</div>
 </div></section>
 </main>
 """ + TAIL)
@@ -523,7 +673,7 @@ for f in glob.glob(os.path.join(DIST, "*.html")) + glob.glob(os.path.join(DIST, 
         with open(f, "w", encoding="utf8") as fh:
             fh.write(t2)
 
-pages = ["index.html", "services.html"] + [s["_slug"] + ".html" for s in SERVICES] + (["nurses.html"] + [f"nurse-{n['_slug']}.html" for n in NURSES] if NURSES else []) + ["about.html", "privacy.html", "terms.html"]
+pages = ["index.html", "services.html"] + [s["_slug"] + ".html" for s in SERVICES] + (["nurses.html"] + [f"nurse-{n['_slug']}.html" for n in NURSES] if NURSES else []) + ["about.html", "qutaiba-al-khalidi.html", "privacy.html", "terms.html"]
 if PREVIEW or not SITE_URL:
     write("robots.txt", "User-agent: *\nDisallow: /\n" if PREVIEW else "User-agent: *\nAllow: /\n")
 else:

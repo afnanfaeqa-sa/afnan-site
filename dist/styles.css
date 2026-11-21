@@ -862,3 +862,102 @@ body.book-in-view .afab{opacity:0;transform:translateY(14px);pointer-events:none
 .about-person img{width:150px;height:150px;border-radius:20px;object-fit:cover;box-shadow:0 0 0 4px #fff,0 0 0 5px var(--gold),var(--shadow)}
 .about-person p{margin:0}
 @media (max-width:560px){.about-person{grid-template-columns:1fr;gap:18px}.about-person img{width:130px;height:130px}}
+
+/* ---------- chairman's leadership profile (qutaiba-al-khalidi.html) ---------- */
+.ldr-hero{background:var(--navy) var(--stars);color:#fff;padding:30px 0 40px;position:relative;overflow:hidden}
+.ldr-hero::after{content:"";position:absolute;inset:auto 0 0;height:4px;background:linear-gradient(90deg,var(--gold),var(--green),var(--gold))}
+.ldr-hero-in{display:grid;gap:28px;align-items:center}
+.ldr-hero .crumbs,.ldr-hero .crumbs a{color:rgba(255,255,255,.78)}
+.ldr-hero h1{color:#fff;font-size:clamp(30px,5vw,50px);margin-top:10px;line-height:1.3}
+.ldr-en{color:var(--gold-lt);font:500 15px var(--body);margin:4px 0 14px;letter-spacing:.3px}
+.ldr-role{font:600 17px/1.7 var(--display);color:#fff;margin:0}
+.ldr-role2{color:rgba(255,255,255,.8);margin:2px 0 0;font-size:15px}
+.ldr-intro{color:rgba(255,255,255,.86);margin:16px 0 0;max-width:40em}
+.ldr-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.ldr-hero .btn-navy{background:var(--gold);color:var(--navy)}
+.ldr-hero .btn-outline{color:#fff;border-color:rgba(255,255,255,.4)}
+.ldr-social{list-style:none;padding:0;margin:20px 0 0;display:flex;flex-wrap:wrap;gap:8px}
+.ldr-social a{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 8px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;text-decoration:none;font-size:13.5px}
+.ldr-social b{width:24px;height:24px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font:700 12px var(--display)}
+.ldr-portrait{margin:0;justify-self:center;max-width:340px;width:100%}
+.ldr-portrait img{width:100%;height:auto;border-radius:28px;border:4px solid var(--gold);box-shadow:0 30px 60px -30px rgba(0,0,0,.6);display:block}
+@media (min-width:900px){.ldr-hero{padding:44px 0 56px}.ldr-hero-in{grid-template-columns:1.3fr .7fr;gap:56px}}
+.ldr-sec{padding-top:44px}
+.ldr-h{font-size:clamp(22px,3vw,30px);margin:40px 0 16px}
+.ldr-grid{display:grid;gap:16px}
+@media (min-width:900px){.ldr-grid{grid-template-columns:1.6fr 1fr;align-items:start}}
+.ldr-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px 24px;line-height:2;color:#2a3557}
+.ldr-card h2{font-size:24px;margin-bottom:10px}
+.ldr-card p{margin:0 0 10px}
+.ldr-facts{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ldr-facts div{background:var(--mist);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.ldr-facts dt{font-size:13px;color:var(--muted)}
+.ldr-facts dd{margin:2px 0 0;font:700 17px var(--display);color:var(--navy)}
+.ldr-cos{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+@media (min-width:700px){.ldr-cos{grid-template-columns:1fr 1fr}}
+@media (min-width:1000px){.ldr-cos{grid-template-columns:repeat(3,1fr)}}
+.ldr-cos li{background:#fff;border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:18px;padding:16px 18px;display:grid;gap:4px}
+.ldr-cos b{font:700 16px/1.5 var(--display);color:var(--navy)}
+.ldr-cos span{font-size:14px;color:var(--muted)}
+.ldr-creds{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.ldr-creds li{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 16px}
+.ldr-creds svg{width:22px;height:22px;flex:none;padding:3px;border-radius:50%;background:var(--mist-green);color:var(--green);margin-top:3px}
+.ldr-src{font-size:14px;color:var(--muted);margin-top:12px}
+.ldr-src a{color:var(--green)}
+.ldr-band{background:var(--mist);border-block:1px solid var(--line)}
+.ldr-band .ldr-h{margin-top:0}
+.ldr-work{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;display:grid;margin-bottom:18px}
+@media (min-width:900px){.ldr-work{grid-template-columns:380px 1fr}.ldr-work-cover{height:100%}}
+.ldr-work-cover{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}
+.ldr-work-cover.ldr-tall{aspect-ratio:4/5;object-position:top}
+.ldr-work-b{padding:22px 22px 24px;line-height:2;color:#2a3557}
+.ldr-meta{font-size:13.5px;color:var(--muted);margin:0 0 6px}
+.ldr-meta span{display:inline-block;background:var(--navy);color:var(--gold-lt);font-weight:600;border-radius:999px;padding:2px 10px;margin-inline-end:8px}
+.ldr-work h3{font-size:20px;line-height:1.6;margin-bottom:8px}
+.ldr-work p{margin:0 0 10px}
+.ldr-work details{margin-top:6px}
+.ldr-work summary{cursor:pointer;font:600 15px var(--display);color:var(--green);list-style:none;display:inline-flex;align-items:center;gap:6px}
+.ldr-work summary::-webkit-details-marker{display:none}
+.ldr-work summary::after{content:"＋";font-size:14px}
+.ldr-work details[open] summary::after{content:"－"}
+.ldr-work details[open] summary{margin-bottom:12px}
+.ldr-work ul{padding-inline-start:20px;margin:0 0 10px}
+.ldr-work h4{font-size:17px;margin:18px 0 10px}
+.ldr-plaque{margin:14px 0;padding:18px;border-radius:18px;background:var(--navy) var(--stars);color:#fff;text-align:center;display:grid;gap:4px;font-family:var(--display)}
+.ldr-plaque b{color:var(--gold-lt);font-size:14px;margin-bottom:4px}
+.ldr-plaque small{opacity:.7;font:400 12.5px var(--body);margin-top:6px}
+.ldr-steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (min-width:700px){.ldr-steps{grid-template-columns:repeat(4,1fr)}}
+.ldr-steps li{background:var(--mist);border-radius:16px;overflow:hidden;display:grid;font-size:13.5px;line-height:1.7}
+.ldr-steps img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.ldr-steps b{padding:8px 12px 0;font:700 15px var(--display);color:var(--navy)}
+.ldr-steps span{padding:0 12px 12px;color:var(--muted)}
+.ldr-pics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.ldr-pics img{width:100%;aspect-ratio:16/8;object-fit:cover;border-radius:16px}
+.ldr-quote{margin:14px 0;padding:16px 18px;border-inline-start:4px solid var(--gold);background:var(--cream);border-radius:0 16px 16px 0;font-size:15.5px}
+.ldr-quote cite{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:6px}
+.ldr-hadith{font-size:15px;color:var(--navy)}
+.ldr-hadith small{color:var(--muted)}
+.ldr-sign{font:700 15px var(--display);color:var(--navy)}
+.ldr-card-dl{margin:12px 0;display:grid;gap:6px;background:var(--mist);border-radius:16px;padding:12px 16px}
+.ldr-card-dl div{display:grid;grid-template-columns:110px 1fr;gap:10px;font-size:14px;line-height:1.7}
+.ldr-card-dl dt{color:var(--muted)}
+.ldr-card-dl dd{margin:0;color:var(--ink);font-weight:500}
+.ldr-links{display:flex;flex-wrap:wrap;gap:8px}
+.ldr-links a{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;text-decoration:none;color:var(--navy);font-size:14px;font-weight:600}
+.ldr-community{margin-top:6px}
+.ldr-contact{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (min-width:900px){.ldr-contact{grid-template-columns:repeat(4,1fr)}}
+.ldr-contact li{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:grid;gap:2px}
+.ldr-contact span{font-size:13px;color:var(--muted)}
+.ldr-contact a{font:700 16px var(--display);color:var(--navy);text-decoration:none;word-break:break-all}
+.ldr-lead{color:var(--muted);margin:-6px 0 16px}
+.ldr-media{display:grid;gap:14px}
+@media (min-width:800px){.ldr-media{grid-template-columns:repeat(3,1fr)}}
+.ldr-media figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.ldr-media img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.ldr-media figcaption{padding:14px 16px 16px;display:grid;gap:6px;flex:1}
+.ldr-media b{font:700 15px var(--display);color:var(--navy)}
+.ldr-media q{font-size:14.5px;color:#2a3557;line-height:1.8}
+.ldr-media figcaption>a{margin-top:auto;display:inline-flex;align-items:center;gap:4px;color:var(--green);font-weight:600;font-size:14px;text-decoration:none}
+.ldr-media figcaption svg{width:16px;height:16px}
