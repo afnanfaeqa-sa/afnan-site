@@ -442,60 +442,79 @@ _well = [("drilling", "الحفر", "حفر البئر الارتوازية حت
          ("water-flowing", "التشغيل", "الدهان وتركيب لوحة الإهداء، ثم تدفّق الماء.", "الماء يتدفق من صنبور البئر وفوقه لوحة الإهداء"),
          ("opening-crowd", "الافتتاح", "افتتاح البئر بحضور الأهالي والدعاء لشهداء الوطن.", "الأهالي مصطفّون عند البئر يوم الافتتاح")]
 _ext = 'target="_blank" rel="noopener"'
+_star = '<svg class="ldr-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.9 7 7.6.6-5.8 4.9 1.8 7.4L12 17.5l-6.5 3.9 1.8-7.4-5.8-4.9 7.6-.6z" fill="currentColor"/></svg>'
+_oct = '<svg class="ldr-oct" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2l5.3 12.7L38 20l-12.7 5.3L20 38l-5.3-12.7L2 20l12.7-5.3z" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="9" y="9" width="22" height="22" transform="rotate(45 20 20)" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="20" cy="20" r="3" fill="currentColor"/></svg>'
+_h = lambda t, id="": f'<div class="ldr-title"{f" id={chr(34)}{id}{chr(34)}" if id else ""}>{_oct}<h2>{t}</h2><span class="ldr-rule" aria-hidden="true"></span></div>'
+_najdi = '<div class="ldr-najdi" aria-hidden="true"></div>'
+_sadu = '<div class="ldr-sadu" aria-hidden="true"></div>'
 write(LDR, head("قتيبة بن محمد الخالدي | المؤسس ورئيس مجلس الإدارة – مركز أفنان الفائقة", _ldr_desc, path=LDR,
-                extra=_ldr_ld + '<meta property="og:type" content="profile">', image=f"{_ah}/leadership/manager-homeland-portrait.jpg") + f"""<main class="page-top ldr">
-<section class="ldr-hero"><div class="wrap ldr-hero-in">
-  <div class="ldr-hero-txt">
-    <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><a href="about.html">من نحن</a><span>/</span><span>قتيبة بن محمد الخالدي</span></nav>
-    <h1>قتيبة بن محمد الخالدي</h1>
-    <p class="ldr-en" lang="en" dir="ltr">Qutaiba bin Mohammed Al-Khalidi</p>
-    <p class="ldr-role">المؤسس ورئيس مجلس الإدارة والرئيس التنفيذي لشركة همة أفنان القابضة</p>
-    <p class="ldr-role2">الرئيس التنفيذي لمركز أفنان الفائقة للخدمات الطبية</p>
-    <p class="ldr-intro">أسّس قتيبة الخالدي شركة همة أفنان القابضة، ويقود مركز أفنان الفائقة للرعاية الصحية المنزلية في المملكة العربية السعودية، ويعمل على تسهيل وصول الأسر إلى التمريض والتأهيل ورعاية كبار السن في منازلهم.</p>
-    <div class="ldr-btns">
-      <a class="btn btn-navy" href="{_ah}/leadership/qutaiba-al-khalidi-profile-ar.pdf" {_ext}>تحميل الملف القيادي (PDF)</a>
-      <a class="btn btn-outline" href="#works">أعماله ومواقفه</a>
+                extra=_ldr_ld + '<meta property="og:type" content="profile">\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&display=swap">',
+                image=f"{_ah}/leadership/manager-homeland-portrait.jpg") + f"""<main class="page-top ldr">
+<section class="ldr-hero">
+  {_najdi}
+  <div class="wrap ldr-hero-in">
+    <div class="ldr-hero-txt">
+      <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><a href="about.html">من نحن</a><span>/</span><span>الملف القيادي</span></nav>
+      <p class="ldr-kicker">{_star} الملف القيادي</p>
+      <h1>قتيبة بن محمد الخالدي</h1>
+      <p class="ldr-en" lang="en" dir="ltr">Qutaiba bin Mohammed Al-Khalidi</p>
+      <div class="ldr-roles">
+        <p>المؤسس ورئيس مجلس الإدارة والرئيس التنفيذي لشركة همة أفنان القابضة</p>
+        <p>الرئيس التنفيذي لمركز أفنان الفائقة للخدمات الطبية</p>
+      </div>
+      <p class="ldr-intro">أسّس قتيبة الخالدي شركة همة أفنان القابضة، ويقود مركز أفنان الفائقة للرعاية الصحية المنزلية في المملكة العربية السعودية، ويعمل على تسهيل وصول الأسر إلى التمريض والتأهيل ورعاية كبار السن في منازلهم.</p>
+      <div class="ldr-btns">
+        <a class="ldr-btn ldr-btn-gold" href="{_ah}/leadership/qutaiba-al-khalidi-profile-ar.pdf" {_ext}>تحميل الملف القيادي (PDF)</a>
+        <a class="ldr-btn ldr-btn-line" href="#works">أعماله ومواقفه</a>
+      </div>
+      <ul class="ldr-social" aria-label="حساباته">
+        <li><a href="https://x.com/Alafnan112" {_ext}><b>X</b><span dir="ltr">@Alafnan112</span></a></li>
+        <li><a href="https://www.linkedin.com/in/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF-62b399367" {_ext}><b>in</b><span>LinkedIn</span></a></li>
+        <li><a href="https://www.tiktok.com/@kuteba.alkhaldy" {_ext}><b>♪</b><span dir="ltr">@kuteba.alkhaldy</span></a></li>
+        <li><a href="https://manhom.com/%D8%B4%D8%AE%D8%B5%D9%8A%D8%A7%D8%AA/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF/" {_ext}><b>م</b><span>من هم</span></a></li>
+      </ul>
     </div>
-    <ul class="ldr-social" aria-label="حساباته">
-      <li><a href="https://x.com/Alafnan112" {_ext}><b>X</b><span dir="ltr">@Alafnan112</span></a></li>
-      <li><a href="https://www.linkedin.com/in/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF-62b399367" {_ext}><b>in</b><span>LinkedIn</span></a></li>
-      <li><a href="https://www.tiktok.com/@kuteba.alkhaldy" {_ext}><b>♪</b><span dir="ltr">@kuteba.alkhaldy</span></a></li>
-      <li><a href="https://manhom.com/%D8%B4%D8%AE%D8%B5%D9%8A%D8%A7%D8%AA/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF/" {_ext}><b>م</b><span>من هم</span></a></li>
-    </ul>
+    <figure class="ldr-portrait">
+      <div class="ldr-arch"><img src="{_ah}/leadership/manager-homeland-portrait.jpg" alt="قتيبة الخالدي إلى جوار العلم السعودي" width="980" height="1600" fetchpriority="high"></div>
+      <figcaption>«نحن جنودٌ لهذا الوطن في ميدان الرعاية الصحية»</figcaption>
+    </figure>
   </div>
-  <figure class="ldr-portrait"><img src="{_ah}/leadership/manager-homeland-portrait.jpg" alt="قتيبة الخالدي إلى جوار العلم السعودي" width="980" height="1600" fetchpriority="high"></figure>
+  {_sadu}
+</section>
+
+<section class="ldr-facts-band"><div class="wrap">
+  <dl class="ldr-facts">
+    <div>{_oct}<dt>الخبرة</dt><dd>أكثر من 25 عامًا</dd></div>
+    <div>{_oct}<dt>مواليد</dt><dd>1986</dd></div>
+    <div>{_oct}<dt>الجنسية</dt><dd>سوري</dd></div>
+    <div>{_oct}<dt>الإقامة</dt><dd>المملكة العربية السعودية</dd></div>
+  </dl>
 </div></section>
 
-<section class="sec ldr-sec"><div class="wrap">
-  <div class="ldr-grid">
-    <div class="ldr-card">
-      <h2>سيرته</h2>
-      <p>مستثمر ورائد أعمال، وقيادي صحي معتمد من وزارة الصحة السعودية، يمتلك خبرة تمتد لأكثر من 25 عامًا في قيادة الاستثمارات الرأسمالية في القطاع الصحي وتأسيس مشاريع طبية نوعية مستدامة.</p>
-      <p>تشمل خبرته التخطيط الاستراتيجي للقوى العاملة الطبية، وهندسة الهياكل التنظيمية للشركات القابضة، وحوكمة الأداء، وهيكلة استراتيجيات الموارد البشرية للمجموعات الكبرى، وبناء الكفاءات التنفيذية والطبية لضمان أعلى معايير الجودة والامتثال الطبي.</p>
-      <p>أسهم في إدارة وتوسيع العمليات الطبية في السعودية واليمن والسودان، ومواءمة الكوادر البشرية والطبية مع الأنظمة والتشريعات المحلية في كل دولة.</p>
-    </div>
-    <dl class="ldr-facts">
-      <div><dt>الخبرة</dt><dd>أكثر من 25 عامًا</dd></div>
-      <div><dt>مواليد</dt><dd>1986</dd></div>
-      <div><dt>الجنسية</dt><dd>سوري</dd></div>
-      <div><dt>الإقامة</dt><dd>المملكة العربية السعودية</dd></div>
-    </dl>
+<section class="ldr-sec"><div class="wrap">
+  {_h("سيرته")}
+  <div class="ldr-bio">
+    <p class="ldr-bio-lead">مستثمر ورائد أعمال، وقيادي صحي معتمد من وزارة الصحة السعودية، يمتلك خبرة تمتد لأكثر من 25 عامًا في قيادة الاستثمارات الرأسمالية في القطاع الصحي وتأسيس مشاريع طبية نوعية مستدامة.</p>
+    <p>تشمل خبرته التخطيط الاستراتيجي للقوى العاملة الطبية، وهندسة الهياكل التنظيمية للشركات القابضة، وحوكمة الأداء، وهيكلة استراتيجيات الموارد البشرية للمجموعات الكبرى، وبناء الكفاءات التنفيذية والطبية لضمان أعلى معايير الجودة والامتثال الطبي.</p>
+    <p>أسهم في إدارة وتوسيع العمليات الطبية في السعودية واليمن والسودان، ومواءمة الكوادر البشرية والطبية مع الأنظمة والتشريعات المحلية في كل دولة.</p>
   </div>
 
-  <h2 class="ldr-h">الشركات التي أسّسها ويقودها</h2>
-  <ul class="ldr-cos">{"".join(f"<li><b>{esc(n)}</b><span>{esc(r)}</span></li>" for n, r in _cos)}</ul>
+  {_h("الشركات التي أسّسها ويقودها")}
+  <ul class="ldr-cos">{"".join(f"<li><span class='ldr-cos-n'>{i+1:02d}</span><b>{esc(n)}</b><span>{esc(r)}</span></li>" for i, (n, r) in enumerate(_cos))}</ul>
 
-  <h2 class="ldr-h">الاعتمادات والشهادات</h2>
+  {_h("الاعتمادات والشهادات")}
   <ul class="ldr-creds">
-    <li>{TICK}قيادي صحي معتمد من وزارة الصحة السعودية</li>
-    <li>{TICK}شهادة في القيادة الاستراتيجية وإدارة الأصول المتقدمة</li>
-    <li>{TICK}شهادة كفاءة MSH للمهارات القيادية العليا: إدارة الأزمات الاقتصادية وسلاسل الإمداد الدولية والتخطيط المالي للمجموعات التجارية عابرة الحدود</li>
+    <li>{_star}<span>قيادي صحي معتمد من وزارة الصحة السعودية</span></li>
+    <li>{_star}<span>شهادة في القيادة الاستراتيجية وإدارة الأصول المتقدمة</span></li>
+    <li>{_star}<span>شهادة كفاءة MSH للمهارات القيادية العليا: إدارة الأزمات الاقتصادية وسلاسل الإمداد الدولية والتخطيط المالي للمجموعات التجارية عابرة الحدود</span></li>
   </ul>
   <p class="ldr-src">المصدر: <a href="https://manhom.com/%D8%B4%D8%AE%D8%B5%D9%8A%D8%A7%D8%AA/%D9%82%D8%AA%D9%8A%D8%A8%D8%A9-%D8%A7%D9%84%D8%AE%D8%A7%D9%84%D8%AF/" {_ext}>ملفه الموثّق في منصة «من هم»</a></p>
 </div></section>
 
-<section class="sec ldr-band" id="works"><div class="wrap">
-  <h2 class="ldr-h">من أعماله ومواقفه</h2>
+<section class="ldr-sec ldr-band" id="works">
+  {_najdi}
+  <div class="wrap">
+  {_h("من أعماله ومواقفه")}
 
   <article class="ldr-work" id="well-kyrgyzstan">
     <img class="ldr-work-cover" src="{_ah}/archive/kuts339/cover-opening.jpg" alt="أهالي القرية في قرغيزستان يقفون عند البئر يوم افتتاحها ويحملون علم المملكة العربية السعودية" width="1280" height="720" loading="lazy">
@@ -507,7 +526,7 @@ write(LDR, head("قتيبة بن محمد الخالدي | المؤسس ورئي
         <p>في قرية من قرى منطقة تشوي شمال قرغيزستان، صار الماء يصل اليوم إلى الأهالي من بئر ارتوازية جديدة. قدّمها قتيبة بن محمد الخالدي مع أفراد من أسرته صدقةً جاريةً عن شهداء الوطن، رحمهم الله، وأشركوا في ثوابها الشعب السعودي كافة، نساءً ورجالًا. نُفّذت البئر بالتعاون مع جمعية طريق السعادة، وبإشراف مركز أفنان الفائقة للخدمات الطبية، وهي الثالثة التي يحفرها مع الجمعية بعد بئرين سابقتين.</p>
         <blockquote class="ldr-plaque"><b>نص لوحة البئر</b><span>مشروع بئر ماء ارتوازي</span><span>صدقة جارية عن شهداء الوطن</span><span>– رحمهم الله –</span><span>أشركنا في ثوابها الشعب السعودي كافة نساءً ورجالًا</span><span>مقدّمة من</span><span>قتيبة بن محمد الخالدي</span><span>حسان الخالد · علي الخالد · أفنان الخالدي · توجان الخالدي</span><small>كما كُتب على اللوحة المثبتة على البئر.</small></blockquote>
         <h4>من أول ضربة حفر إلى أول قطرة ماء</h4>
-        <ol class="ldr-steps">{"".join(f'<li><img src="{_ah}/archive/kuts339/{f}.jpg" alt="{esc(a)}" loading="lazy"><b>{esc(t)}</b><span>{esc(d)}</span></li>' for f, t, d, a in _well)}</ol>
+        <ol class="ldr-steps">{"".join(f'<li><img src="{_ah}/archive/kuts339/{f}.jpg" alt="{esc(a)}" loading="lazy"><b><i>0{i+1}</i>{esc(t)}</b><span>{esc(d)}</span></li>' for i, (f, t, d, a) in enumerate(_well))}</ol>
         <div class="ldr-pics"><img src="{_ah}/archive/kuts339/first-water.jpg" alt="أطفال القرية عند البئر يوم الافتتاح" loading="lazy"><img src="{_ah}/archive/kuts339/opening-children.jpg" alt="الأهالي والأطفال عند حوض الماء" loading="lazy"></div>
         <blockquote class="ldr-quote">«لقد كان هذا الجود بمثابة الغيث لقريةٍ أنهكها العطش وأضناها عناء البحث عن قطرة ماء، واليوم، بفضل الله ثم بفيض عطائكم، انبثقت ينابيع الحياة لتغسل تعب السنين عن كواهل الأهالي، وتزرع الفرحة والطمأنينة في قلوب الأمهات والأطفال.»<cite>من رسالة شكر جمعية طريق السعادة إلى المتبرعين</cite></blockquote>
         <p class="ldr-hadith">قال رسول الله ﷺ: «إذا مات الإنسان انقطع عنه عمله إلا من ثلاثة: إلا من صدقةٍ جارية، أو علمٍ يُنتفع به، أو ولدٍ صالحٍ يدعو له» <small>رواه مسلم</small></p>
@@ -522,8 +541,8 @@ write(LDR, head("قتيبة بن محمد الخالدي | المؤسس ورئي
     </div>
   </article>
 
-  <article class="ldr-work" id="statement">
-    <img class="ldr-work-cover ldr-tall" src="{_ah}/leadership/manager-statement-original.jpeg" alt="الكلمة المنشورة لقتيبة الخالدي بعنوان إمكاناتنا في خدمة الوطن" width="900" height="1600" loading="lazy">
+  <article class="ldr-work ldr-work-st" id="statement">
+    <img class="ldr-work-cover" src="{_ah}/leadership/manager-statement-original.jpeg" alt="الكلمة المنشورة لقتيبة الخالدي بعنوان إمكاناتنا في خدمة الوطن" width="900" height="1600" loading="lazy">
     <div class="ldr-work-b">
       <p class="ldr-meta"><span>كلمة وموقف</span>أكتوبر 2026 · 1448 هـ</p>
       <h3>إمكاناتنا في خدمة الوطن: كلمة قتيبة الخالدي إلى القيادة والجهات الصحية</h3>
@@ -545,22 +564,29 @@ write(LDR, head("قتيبة بن محمد الخالدي | المؤسس ورئي
     </div>
   </article>
 
-  <div class="ldr-card ldr-community">
-    <h2>الرعاية المنزلية وخدمة المجتمع</h2>
-    <p>يتناول الخالدي في كلمته المنشورة دور فرق أفنان في دعم المبادرات الصحية، وتقديم الرعاية والخدمات الإنسانية، والمساندة في حالات الطوارئ بالتنسيق مع الجهات المختصة.</p>
+  <div class="ldr-community">
+    <img src="img/vision-2030.png" alt="شعار رؤية المملكة 2030" width="560" height="375" loading="lazy">
+    <div><h3>الرعاية المنزلية وخدمة المجتمع</h3>
+    <p>يتناول الخالدي في كلمته المنشورة دور فرق أفنان في دعم المبادرات الصحية، وتقديم الرعاية والخدمات الإنسانية، والمساندة في حالات الطوارئ بالتنسيق مع الجهات المختصة.</p></div>
   </div>
-</div></section>
+  </div>
+</section>
 
-<section class="sec ldr-sec"><div class="wrap">
-  <h2 class="ldr-h">للتواصل مع الإدارة</h2>
+<section class="ldr-sec ldr-contact-band">
+  {_sadu}
+  <div class="wrap">
+  <div class="ldr-title ldr-title-light">{_oct}<h2>للتواصل مع الإدارة</h2><span class="ldr-rule" aria-hidden="true"></span></div>
   <ul class="ldr-contact">
     <li><span>الجوال المباشر</span><a href="tel:+966550604554" dir="ltr">055 060 4554</a></li>
     <li><span>الرقم الموحد</span><a href="tel:920005284" dir="ltr">9200 05284</a></li>
     <li><span>المكتب</span><a href="tel:+966112988883" dir="ltr">011 298 8883</a></li>
     <li><span>البريد الإلكتروني للشركة</span><a href="mailto:info@afnanfaeqa.sa" dir="ltr">info@afnanfaeqa.sa</a></li>
   </ul>
+  </div>
+</section>
 
-  <h2 class="ldr-h">حضور إعلامي</h2>
+<section class="ldr-sec"><div class="wrap">
+  {_h("حضور إعلامي")}
   <p class="ldr-lead">ما نشرته منصات التعريف بالقيادات والشخصيات البارزة عنه. اضغط على أي صورة لقراءة المنشور كاملًا.</p>
   <div class="ldr-media">{"".join(f'<figure><a href="{u}" {_ext}><img src="{_ah}/leadership/{img}" alt="{esc(a)}" loading="lazy"></a><figcaption><b>{esc(t)}</b><q>{esc(q)}</q><a href="{u}" {_ext}>زيارة المصدر {_arr}</a></figcaption></figure>' for img, t, q, u, a in _media)}</div>
 </div></section>
