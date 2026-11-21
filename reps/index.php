@@ -61,6 +61,16 @@ if ($path === '/e') {
     if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) < 600) {
         $ev = (string) ($_POST['e'] ?? '');
         if (in_array($ev, ['whatsapp', 'call', 'quiz'], true)) rep_log((string) $rep['code'], $ev, (string) ($_POST['p'] ?? ''), (string) ($_POST['s'] ?? ''));
+        // page views come from the page's own script, so scanners and referrer-spam bots (which don't run JS) aren't counted
+        if ($ev === 'view') {
+            $vp = '/' . trim((string) parse_url((string) ($_POST['p'] ?? '/'), PHP_URL_PATH), '/');
+            $vs = '';
+            foreach ($data['sections'] as $x) { if ($vp === '/services/' . $x['slug']) $vs = $x['name']; }
+            $ref = (string) ($_POST['r'] ?? '');
+            $own = $ref !== '' && strtolower((string) parse_url($ref, PHP_URL_HOST)) === $host;
+            if ($vs !== '' || in_array($vp, ['/', '/services', '/about', '/faq', '/contact'], true))
+                rep_log((string) $rep['code'], 'view', $vp, $vs, $own ? '' : rep_source($ref, ltrim((string) ($_POST['q'] ?? ''), '?')));
+        }
     }
     http_response_code(204); exit;
 }
@@ -72,11 +82,6 @@ $pages = ['/' => 'home', '/services' => 'services', '/about' => 'about', '/faq' 
 $page = $pages[$path] ?? (isset($bySlug[$path]) ? 'section' : null);
 if ($page === null && !$isDash) { http_response_code(404); $page = 'notfound'; }
 $sec = $page === 'section' ? $bySlug[$path] : null;
-if ($page !== null && $page !== 'notfound' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
-    $ref = (string) ($_SERVER['HTTP_REFERER'] ?? '');
-    $own = $ref !== '' && strtolower((string) parse_url($ref, PHP_URL_HOST)) === $host;
-    rep_log((string) $rep['code'], 'view', $path, $sec['name'] ?? '', $own ? '' : rep_source($ref, (string) ($_SERVER['QUERY_STRING'] ?? '')));
-}
 
 /* ---------- helpers ---------- */
 function e($s): string { return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8'); }
@@ -141,6 +146,7 @@ $track = "<script>document.addEventListener('click',function(ev){var a=ev.target
        . "},true);</script>";
 if ($px === '') { $track = ''; }   // no pixels set → no pixel events
 // the site's own count of WhatsApp / call clicks for the rep's dashboard (first-party, no cookies)
+$track .= "<script>(function(){if(!navigator.sendBeacon)return;var f=new FormData();f.append('e','view');f.append('p',location.pathname);f.append('r',document.referrer||'');f.append('q',location.search||'');navigator.sendBeacon('/e',f)})();</script>";
 $track .= "<script>document.addEventListener('click',function(ev){var a=ev.target.closest&&ev.target.closest('a[href]');if(!a||a.hasAttribute('data-quiz'))return;var h=a.getAttribute('href')||'';var k=a.hasAttribute('data-quiz-send')?'quiz':(h.indexOf('wa.me')>-1?'whatsapp':(h.indexOf('tel:')===0?'call':''));if(!k||!navigator.sendBeacon)return;var f=new FormData();f.append('e',k);f.append('p',location.pathname);f.append('s',a.getAttribute('data-svc-name')||'');navigator.sendBeacon('/e',f)},true);</script>";
 /* ---------- end pixels ---------- */
 
