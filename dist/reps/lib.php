@@ -67,7 +67,9 @@ function rep_source(string $ref, string $qs): string {
         if (str_contains($hay, $k)) return $v;
     }
     $h = parse_url($ref, PHP_URL_HOST);
-    return $h ? (string) preg_replace('/^www\./', '', $h) : 'مباشر';
+    if ($h) return (string) preg_replace('/^www\./', '', $h);
+    $u = trim((string) ($q['utm_source'] ?? ''));
+    return $u !== '' ? mb_substr($u, 0, 30) : 'مباشر';
 }
 function rep_log(string $code, string $type, string $page, string $svc = '', string $src = ''): void {
     if (rep_is_bot()) return;
@@ -84,7 +86,9 @@ function rep_events(string $code, int $since): array {
     for ($m = gmmktime(0, 0, 0, $mo, 1, $y); $m <= time(); $m = gmmktime(0, 0, 0, ++$mo, 1, $y)) {
         $f = rep_dir($code) . '/events-' . gmdate('Y-m', $m) . '.jsonl';
         if (!is_file($f)) continue;
-        foreach (file($f, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $l) {
+        // a file saved from cPanel loses its last newline, so two records can end up on one line
+        foreach (explode("\n", str_replace('}{', "}\n{", (string) file_get_contents($f))) as $l) {
+            if (trim($l) === '') continue;
             $e = json_decode($l, true);
             if (is_array($e) && ($e['t'] ?? 0) >= $since) $out[] = $e;
         }
