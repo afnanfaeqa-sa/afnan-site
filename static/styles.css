@@ -869,7 +869,7 @@ body.book-in-view .afab{opacity:0;transform:translateY(14px);pointer-events:none
 .ldr-hero-in{display:grid;gap:28px;align-items:center}
 .ldr-hero .crumbs,.ldr-hero .crumbs a{color:rgba(255,255,255,.78)}
 .ldr-hero h1{color:#fff;font-size:clamp(30px,5vw,50px);margin-top:10px;line-height:1.3}
-.ldr-en{color:var(--gold-lt);font:500 15px var(--body);margin:4px 0 14px;letter-spacing:.3px}
+.ldr-en{text-align:right;color:var(--gold-lt);font:500 15px var(--body);margin:4px 0 14px;letter-spacing:.3px}
 .ldr-role{font:600 17px/1.7 var(--display);color:#fff;margin:0}
 .ldr-role2{color:rgba(255,255,255,.8);margin:2px 0 0;font-size:15px}
 .ldr-intro{color:rgba(255,255,255,.86);margin:16px 0 0;max-width:40em}
