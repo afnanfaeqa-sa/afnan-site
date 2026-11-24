@@ -302,7 +302,7 @@ for s in SERVICES:
     arts_html = ""
     if arts:
         arts_html = '<div class="block rv"><h2>من دليلك الصحي</h2><div class="rel-arts">' + "".join(
-            f'<a class="rel-art" href="index.html#{a["_slug"]}"><img src="{esc(img(a.get("image")))}" alt="" width="1600" height="900" loading="lazy"><div><small>{esc(a.get("label"))}</small><b>{esc(a.get("title"))}</b></div></a>'
+            f'<a class="rel-art" href="guide-{a["_slug"]}.html"><img src="{esc(img(a.get("image")))}" alt="" width="1600" height="900" loading="lazy"><div><small>{esc(a.get("label"))}</small><b>{esc(a.get("title"))}</b></div></a>'
             for a in arts) + "</div></div>"
     inc = "".join(f'<div class="inc"><span class="ck">{TICK}</span><span>{esc(x)}</span></div>' for x in s.get("includes", []))
     who = "".join(f"<span>{esc(x)}</span>" for x in s.get("suitable_for", []))
@@ -361,6 +361,55 @@ for s in SERVICES:
 </main>
 '''
     write(slug + ".html", head(f"{tt} | مركز أفنان الفائقة", desc, t, extra, simg, slug + ".html") + body + TAIL)
+
+# ------------------------------------------------------------------ standalone article pages (/guide-<slug>): own URL, canonical, schema
+def article_page(a):
+    slug, title, svc = a["_slug"], a.get("title", ""), a.get("service", "")
+    path = f"guide-{slug}.html"
+    aimg = img(a.get("image"))
+    desc = str(a.get("excerpt", ""))
+    ld = ""
+    if SITE_URL and not PREVIEW:
+        url = f"{SITE_URL}/guide-{slug}"
+        ld = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@graph": [
+            {"@type": "Article", "@id": url + "#article", "headline": title, "description": desc, "inLanguage": "ar", "mainEntityOfPage": url,
+             "image": f"{SITE_URL}/{aimg}", "publisher": {"@id": SITE_URL + "/#org"}},
+            {"@type": "BreadcrumbList", "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "الرئيسية", "item": SITE_URL + "/"},
+                {"@type": "ListItem", "position": 2, "name": "دليلك الصحي", "item": SITE_URL + "/#guide"},
+                {"@type": "ListItem", "position": 3, "name": title, "item": url}]}]}, ensure_ascii=False) + "</script>"
+    body_html = markdown(a.get("body")).replace("<h3>", "<h2>").replace("</h3>", "</h2>")
+    svc_slug = SLUG.get(svc)
+    rel = [x for x in ARTICLES if x is not a][:2]
+    rel_html = ""
+    if rel:
+        rel_html = '<div class="block"><h2>اقرأ أيضًا</h2><div class="rel-arts">' + "".join(
+            f'<a class="rel-art" href="guide-{x["_slug"]}.html"><img src="{esc(img(x.get("image")))}" alt="" width="1600" height="900" loading="lazy"><div><small>{esc(x.get("label"))}</small><b>{esc(x.get("title"))}</b></div></a>'
+            for x in rel) + "</div></div>"
+    svc_link = f'<a class="btn btn-outline" href="{svc_slug}.html">تفاصيل خدمة {esc(svc)}</a>' if svc_slug else ""
+    full_title = f"{title} | مركز أفنان الفائقة"
+    if len(full_title) > 65:
+        full_title = title if len(title) >= 20 else full_title
+    if len(desc) < 70:
+        desc += " من دليل مركز أفنان الفائقة الصحي."
+    return head(full_title, desc, svc, ld, aimg, path) + f'''<main class="page-top">
+<section class="sec" style="padding-top:40px"><div class="wrap" style="max-width:860px">
+  <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><a href="index.html#guide">دليلك الصحي</a><span>/</span><span>{esc(a.get("label"))}</span></nav>
+  <article class="reader-body" style="padding-inline:0">
+    <div class="reader-meta"><span>{esc(a.get("label"))}</span><span>قراءة {esc(a.get("minutes", 3))} دقائق</span></div>
+    <h1 style="font-size:clamp(24px,3.4vw,36px)">{esc(title)}</h1>
+    <div class="reader-hero" style="border-radius:22px"><img src="{esc(aimg)}" alt="{esc(title)}" width="1600" height="900" fetchpriority="high"></div>
+    <div class="reader-text">{body_html}</div>
+    <p class="reader-note">هذه المعلومات للتوعية العامة ولا تغني عن استشارة الطبيب المعالج.</p>
+    <div class="reader-cta"><button class="btn btn-green" type="button" data-book data-svc="{esc(svc)}">ابدأ الحجز</button><a class="btn btn-outline" id="heroWa" href="#" target="_blank" rel="noopener">استفسر على واتساب</a>{svc_link}</div>
+  </article>
+  {rel_html}
+</div></section>
+</main>
+''' + TAIL
+
+for _a in ARTICLES:
+    write(f"guide-{_a['_slug']}.html", article_page(_a))
 
 chips = '<button type="button" class="chip" data-c="all" aria-pressed="true">كل الخدمات</button>' + "".join(
     f'<button type="button" class="chip" data-c="{c[0]}" aria-pressed="false">{c[1]}</button>' for c in CATS)
@@ -721,7 +770,7 @@ for f in glob.glob(os.path.join(DIST, "*.html")) + glob.glob(os.path.join(DIST, 
         with open(f, "w", encoding="utf8") as fh:
             fh.write(t2)
 
-pages = ["index.html", "services.html"] + [s["_slug"] + ".html" for s in SERVICES] + (["nurses.html"] + [f"nurse-{n['_slug']}.html" for n in NURSES] if NURSES else []) + ["about.html", "qutaiba-al-khalidi.html", "privacy.html", "terms.html"]
+pages = ["index.html", "services.html"] + [s["_slug"] + ".html" for s in SERVICES] + (["nurses.html"] + [f"nurse-{n['_slug']}.html" for n in NURSES] if NURSES else []) + ["about.html", "qutaiba-al-khalidi.html", "privacy.html", "terms.html"] + [f"guide-{a['_slug']}.html" for a in ARTICLES]
 if PREVIEW or not SITE_URL:
     write("robots.txt", "User-agent: *\nDisallow: /\n" if PREVIEW else "User-agent: *\nAllow: /\n")
 else:
@@ -735,6 +784,7 @@ if SITE_URL and not PREVIEW:
           "> مركز رعاية صحية منزلية مرخّص في الرياض، يقدّم خدماته في مختلف مناطق المملكة العربية السعودية على مدار الساعة، "
           "باشتراكات شهرية أو سنوية (من شهر حتى سنة) مع ممرض أو ممرضة مقيمة، ولا يقدّم زيارات منفردة.\n\n"
           "## الخدمات\n" + "".join(f"- [{x['title']}]({SITE_URL}/{x['_slug']}): {x.get('description', '')}\n" for x in SERVICES) +
+          "\n## مقالات\n" + "".join(f"- [{a['title']}]({SITE_URL}/guide-{a['_slug']}): {a.get('excerpt', '')}\n" for a in ARTICLES) +
           f"\n## عن المركز\n- [من نحن]({SITE_URL}/about): الاسم الرسمي والإدارة والتغطية\n"
           f"- [قتيبة بن محمد الخالدي]({SITE_URL}/{LDR.replace('.html', '')}): المؤسس ورئيس مجلس الإدارة\n"
           f"- [كل الخدمات]({SITE_URL}/services)\n\n"
