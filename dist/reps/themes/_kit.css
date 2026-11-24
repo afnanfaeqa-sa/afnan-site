@@ -1,0 +1,58 @@
+/* Shared structure for the care2–care15 themes (sheets, request quiz, floating WhatsApp, payment logos, FAQ, reveal).
+   Each theme sets the --k-* variables on :root and styles everything else itself. */
+:root{--k-bg:#fff;--k-fg:#14213d;--k-muted:#5b6478;--k-acc:#0b6b45;--k-acc-fg:#fff;--k-line:#e3e6ec;--k-soft:#f3f5f8;--k-r:16px;--k-font:system-ui,sans-serif;--k-wa:#1fa855}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+bdi{unicode-bidi:isolate}
+svg{width:1.15em;height:1.15em;flex:none}
+:focus-visible{outline:3px solid var(--k-acc);outline-offset:3px}
+.rv{transition:opacity .6s ease,transform .6s ease}
+.js .rv:not(.in){opacity:0;transform:translateY(18px)}
+@media (prefers-reduced-motion:reduce){.rv{transition:none}.js .rv:not(.in){opacity:1;transform:none}html{scroll-behavior:auto}}
+
+/* sheets */
+.k-sh{position:fixed;inset:0;z-index:90;background:rgba(10,14,24,.5);display:grid;place-items:center;padding:16px;opacity:0;transition:opacity .3s}
+.k-sh.open{opacity:1}
+.k-sh[hidden]{display:none}
+.k-p{width:min(460px,100%);max-height:90vh;overflow:auto;background:var(--k-bg);color:var(--k-fg);border-radius:var(--k-r);padding:18px 18px 22px;font-family:var(--k-font);transform:translateY(20px);transition:transform .3s}
+.k-sh.open .k-p{transform:none}
+.k-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.k-top b{font-size:17px}
+.k-top button{background:none;border:0;color:var(--k-muted);font:inherit;font-size:14px;cursor:pointer;padding:8px 4px;min-height:44px}
+.k-bar{height:4px;background:var(--k-line);border-radius:4px;overflow:hidden;margin-bottom:16px}
+.k-bar i{display:block;height:100%;background:var(--k-acc);transform-origin:right;transform:scaleX(.25);transition:transform .3s}
+.k-q{display:none}.k-q.on{display:block}
+.k-q h4{margin:0 0 12px;font-size:19px}
+.k-ans{display:grid;gap:8px}
+.k-an{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:50px;padding:12px 14px;border:1.5px solid var(--k-line);border-radius:calc(var(--k-r)*.7);background:transparent;color:var(--k-fg);font:inherit;font-size:15.5px;text-align:right;text-decoration:none;cursor:pointer}
+.k-an small{display:block;font-size:12.5px;color:var(--k-muted);margin-top:2px}
+.k-an:hover,.k-an[aria-pressed=true],.k-an[aria-current]{border-color:var(--k-acc);background:var(--k-soft)}
+.k-fld{display:grid;gap:6px;margin-bottom:12px}
+.k-fld label{font-size:14px;color:var(--k-muted)}
+.k-fld select{min-height:48px;border:1.5px solid var(--k-line);border-radius:calc(var(--k-r)*.6);padding:0 12px;font:inherit;background:var(--k-bg);color:var(--k-fg)}
+.k-sum{display:grid;gap:4px;font-size:14px;color:var(--k-muted);margin-bottom:14px}
+.k-sum b{color:var(--k-fg)}
+.k-send{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border-radius:calc(var(--k-r)*.7);background:var(--k-wa);color:#fff;text-decoration:none;font-weight:600}
+.k-note{font-size:12.5px;color:var(--k-muted);margin:10px 0 0;text-align:center}
+@media (max-width:640px){.k-sh{place-items:end stretch;padding:0}.k-p{width:100%;border-radius:var(--k-r) var(--k-r) 0 0;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}}
+
+/* floating WhatsApp */
+.k-float{position:fixed;inset-inline-start:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--k-wa);color:#fff;box-shadow:0 10px 24px -8px rgba(0,0,0,.4);opacity:0;transform:scale(.6);pointer-events:none;transition:.3s}
+.k-float.show{opacity:1;transform:none;pointer-events:auto}
+.k-float svg{width:28px;height:28px}
+
+/* payment logos */
+.k-pay{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.k-pay li{background:#fff;border-radius:8px;padding:6px 10px;display:grid;place-items:center}
+.k-pay img{height:20px;width:auto}
+
+/* FAQ (themes restyle) */
+.k-faq details{border-bottom:1px solid var(--k-line)}
+.k-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 0;font-weight:600;min-height:44px}
+.k-faq summary::-webkit-details-marker{display:none}
+.k-faq summary i{flex:none;width:12px;height:12px;border-inline-start:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .25s;margin-top:-4px}
+.k-faq details[open] summary i{transform:rotate(135deg);margin-top:4px}
+.k-faq p{margin:0 0 16px;color:var(--k-muted);line-height:1.9}
