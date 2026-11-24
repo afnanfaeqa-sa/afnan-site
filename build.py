@@ -168,7 +168,22 @@ FONTS = '''<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">'''
 
+def page_ld(name, desc, path, kind="WebPage"):
+    if not SITE_URL or PREVIEW:
+        return ""
+    url = f"{SITE_URL}/{path.replace('.html', '')}"
+    g = {"@context": "https://schema.org", "@graph": [
+        {"@type": kind, "@id": url + "#page", "url": url, "name": name, "description": desc, "inLanguage": "ar",
+         "isPartOf": {"@type": "WebSite", "url": SITE_URL + "/", "name": "مركز أفنان الفائقة"}, "about": {"@id": SITE_URL + "/#org"}},
+        {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "الرئيسية", "item": SITE_URL + "/"},
+            {"@type": "ListItem", "position": 2, "name": name, "item": url}]}]}
+    return '<script type="application/ld+json">' + json.dumps(g, ensure_ascii=False) + "</script>"
+
 def head(title, desc, svc="", extra="", image="img/elderly-walk.jpg", path=""):
+    if SITE_URL and not PREVIEW and not image.startswith("http"):
+        image = f"{SITE_URL}/{image}"                      # social crawlers need an absolute image URL
+    og_page = (f'<meta property="og:url" content="{SITE_URL}/{"" if path == "index.html" else path}">\n' if path and SITE_URL and not PREVIEW else "")
     return f'''<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -179,7 +194,9 @@ def head(title, desc, svc="", extra="", image="img/elderly-walk.jpg", path=""):
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:image" content="{esc(image)}">
+<meta property="og:type" content="website">
 <meta property="og:locale" content="ar_SA">
+{og_page}<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="img/mark.png">
 {FONTS}
 <link rel="stylesheet" href="styles.css">
@@ -242,12 +259,14 @@ write("index.html", f'''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-{GTM_HEAD}{ROBOTS}{canon("index.html")}<meta name="description" content="مركز أفنان الفائقة للخدمات الطبية المنزلية: تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية، ورعاية الأم والمولود. باشتراك من شهر حتى سنة، على مدار الساعة في جميع مناطق المملكة.">
+{GTM_HEAD}{ROBOTS}{canon("index.html")}<meta name="description" content="مركز أفنان الفائقة للخدمات الطبية المنزلية: تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية. باشتراك من شهر حتى سنة، على مدار الساعة في جميع مناطق المملكة.">
 <meta property="og:title" content="مركز أفنان الفائقة | رعاية طبية متكاملة في راحة بيتك">
 <meta property="og:description" content="تمريض منزلي، رعاية كبار السن، علاج طبيعي وتحاليل منزلية، على مدار الساعة في جميع مناطق المملكة.">
 <meta property="og:image" content="{SITE_URL}/img/elderly-walk.jpg">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ar_SA">
+<meta property="og:url" content="{SITE_URL}/">
+<meta name="twitter:card" content="summary_large_image">
 {ORG_LD}{home[:i].strip()}
 <style>body{{margin:0}} img{{max-width:100%}}</style>
 </head>
@@ -270,6 +289,8 @@ for s in SERVICES:
     tt = t if ("منزل" in t or "النقل" in t) else t + " في المنزل"
     lead = d + " بكادر مرخّص، باشتراك من شهر واحد حتى سنة كاملة، وعلى مدار الساعة."
     desc = f"{tt} من مركز أفنان الفائقة: {d} خدمة على مدار الساعة في جميع مناطق المملكة. احجز عبر واتساب."
+    if len(desc) > 160:
+        desc = desc.replace(" احجز عبر واتساب.", "")
     ld = {"@context": "https://schema.org", "@type": "Service", "name": t, "serviceType": t, "description": d,
           "areaServed": {"@type": "Country", "name": "المملكة العربية السعودية"},
           "provider": {"@type": "MedicalBusiness", "name": "مركز أفنان الفائقة للخدمات الطبية", "telephone": CALL_NUM}}
@@ -343,7 +364,7 @@ for s in SERVICES:
 
 chips = '<button type="button" class="chip" data-c="all" aria-pressed="true">كل الخدمات</button>' + "".join(
     f'<button type="button" class="chip" data-c="{c[0]}" aria-pressed="false">{c[1]}</button>' for c in CATS)
-write("services.html", head("خدماتنا | مركز أفنان الفائقة", "جميع خدمات الرعاية الطبية المنزلية من مركز أفنان الفائقة: تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية، ورعاية الأم والمولود.", path="services.html") + f'''<main class="page-top">
+write("services.html", head("خدماتنا | مركز أفنان الفائقة", "جميع خدمات الرعاية الطبية المنزلية من مركز أفنان الفائقة: تمريض منزلي، رعاية كبار السن، علاج طبيعي، تحاليل منزلية، ورعاية الأم والمولود.", path="services.html", extra=page_ld("خدماتنا", "جميع خدمات الرعاية الطبية المنزلية من مركز أفنان الفائقة", "services.html", "CollectionPage")) + f'''<main class="page-top">
 <section class="sec" style="padding-top:20px"><div class="wrap">
   <div class="hub-head">
     <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><span>الخدمات</span></nav>
@@ -351,6 +372,7 @@ write("services.html", head("خدماتنا | مركز أفنان الفائقة
     <p>{len(SERVICES)} خدمة ينفّذها كادر صحي مرخّص بأدوات معقّمة، على مدار الساعة وفي جميع مناطق المملكة. اختر القسم، ثم افتح الخدمة لتعرف تفاصيلها وتحجزها.</p>
   </div>
   <div class="chips-row" id="hubChips" role="group" aria-label="تصفية حسب القسم">{chips}</div>
+  <h2 class="vh">كل الخدمات</h2>
   <div class="svc-cards" id="hubGrid">{"".join(scard(x) for x in SERVICES)}</div>
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap">
@@ -368,7 +390,7 @@ for f in sorted(glob.glob(P("templates", "legal", "*.html"))):
     title = re.search(r"<!-- title: (.*?) -->", raw).group(1)
     desc = re.search(r"<!-- description: (.*?) -->", raw).group(1)
     content = re.sub(r"<!--.*?-->\n?", "", raw).strip()
-    write(os.path.basename(f), head(f"{title} | مركز أفنان الفائقة", desc, path=os.path.basename(f)) + f'''<main class="page-top">
+    write(os.path.basename(f), head(f"{title} | مركز أفنان الفائقة", desc, path=os.path.basename(f), extra=page_ld(title, desc, os.path.basename(f))) + f'''<main class="page-top">
 <section class="sec" style="padding-top:20px"><div class="wrap legal">
   <nav class="crumbs" aria-label="مسار الصفحة"><a href="index.html">الرئيسية</a><span>/</span><span>{title}</span></nav>
   <h1>{title}</h1>
@@ -706,6 +728,38 @@ else:
     write("robots.txt", f"User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: {SITE_URL}/sitemap.xml\n")
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
           "".join(f"  <url><loc>{SITE_URL}/{'' if p == 'index.html' else p}</loc>" + (f"<lastmod>{ABOUT_UPDATED}</lastmod>" if p == "about.html" else "") + "</url>\n" for p in pages) + "</urlset>\n")
+
+# ------------------------------------------------------------------ llms.txt (plain summary for AI assistants; only what the site itself says)
+if SITE_URL and not PREVIEW:
+    write("llms.txt", "# مركز أفنان الفائقة للخدمات الطبية المنزلية\n\n"
+          "> مركز رعاية صحية منزلية مرخّص في الرياض، يقدّم خدماته في مختلف مناطق المملكة العربية السعودية على مدار الساعة، "
+          "باشتراكات شهرية أو سنوية (من شهر حتى سنة) مع ممرض أو ممرضة مقيمة، ولا يقدّم زيارات منفردة.\n\n"
+          "## الخدمات\n" + "".join(f"- [{x['title']}]({SITE_URL}/{x['_slug']}): {x.get('description', '')}\n" for x in SERVICES) +
+          f"\n## عن المركز\n- [من نحن]({SITE_URL}/about): الاسم الرسمي والإدارة والتغطية\n"
+          f"- [قتيبة بن محمد الخالدي]({SITE_URL}/{LDR.replace('.html', '')}): المؤسس ورئيس مجلس الإدارة\n"
+          f"- [كل الخدمات]({SITE_URL}/services)\n\n"
+          f"## التواصل\n- الرقم الموحد: 920005284\n- واتساب واتصال: {PHONE}\n- الموقع: {SITE_URL}/\n")
+
+# ------------------------------------------------------------------ width next to a lone height attribute (payment logos), so the browser reserves the space
+def _png_size(path):
+    with open(path, "rb") as fh:
+        head8 = fh.read(24)
+    return (int.from_bytes(head8[16:20], "big"), int.from_bytes(head8[20:24], "big")) if head8[:8] == b"\x89PNG\r\n\x1a\n" else None
+def _fix_img(m):
+    tag = m.group(0)
+    hm = re.search(r'\sheight="(\d+)"', tag)
+    src = re.search(r'src="(img/[^"?#]+\.png)"', tag)
+    if re.search(r"\swidth=", tag) or not hm or not src or not os.path.isfile(os.path.join(DIST, src.group(1))):
+        return tag
+    size = _png_size(os.path.join(DIST, src.group(1)))
+    if not size or not size[1]:
+        return tag
+    return tag.replace(hm.group(0), f' width="{round(size[0] * int(hm.group(1)) / size[1])}"{hm.group(0)}', 1)
+for f in glob.glob(os.path.join(DIST, "*.html")):
+    t = open(f, encoding="utf8").read()
+    t2 = re.sub(r"<img\b[^>]*>", _fix_img, t)
+    if t2 != t:
+        open(f, "w", encoding="utf8").write(t2)
 
 # ------------------------------------------------------------------ clean URLs (/page instead of /page.html; .htaccess serves and 301s)
 for f in glob.glob(os.path.join(DIST, "*.html")) + [os.path.join(DIST, "sitemap.xml")]:
